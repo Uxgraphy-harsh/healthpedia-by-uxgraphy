@@ -18,7 +18,7 @@ export default function Dashboard() {
       <div className="px-5 pt-6 pb-2 flex justify-between items-center">
         <div>
           <p className="text-sm text-muted-foreground">Good Morning</p>
-          <h1 className="text-xl font-bold font-serif">Here's your health summary</h1>
+          <h1 className="text-xl font-bold font-serif">Your Health Stats</h1>
         </div>
         <button onClick={() => navigate("/profile")} className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center">
           <User className="w-5 h-5 text-primary-foreground" />

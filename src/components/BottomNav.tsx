@@ -3,8 +3,8 @@ import { LayoutDashboard, MessageCircle, Activity, FolderOpen, Bell } from "luci
 import { motion } from "framer-motion";
 
 const tabs = [
-  { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { path: "/chat", icon: MessageCircle, label: "Chat" },
+  { path: "/stats", icon: LayoutDashboard, label: "Stats" },
   { path: "/symptoms", icon: Activity, label: "Symptoms" },
   { path: "/records", icon: FolderOpen, label: "Records" },
   { path: "/reminders", icon: Bell, label: "Reminders" },

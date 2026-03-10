@@ -24,8 +24,8 @@ function AppContent() {
     <>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/chat" element={<AIChat />} />
+        <Route path="/stats" element={<Stats />} />
         <Route path="/symptoms" element={<Symptoms />} />
         <Route path="/records" element={<Records />} />
         <Route path="/reminders" element={<Reminders />} />
