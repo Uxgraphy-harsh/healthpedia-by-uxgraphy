@@ -267,8 +267,53 @@ export default function Profile() {
           )}
         </motion.div>
 
+        {/* 9. Connected Services */}
+        <motion.div {...fadeIn(9)} className="space-y-0.5">
+          <SectionHeader icon={Smartphone} label="Connected Services" section="services" badge={`${Object.values(connectedServices).filter(Boolean).length} connected`} />
+          {expandedSection === "services" && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="glass-card px-4 py-2 mt-1 space-y-1">
+              {([
+                { key: "googleCalendar" as const, name: "Google Calendar", desc: "Sync appointments & reminders", color: "bg-blue-500" },
+                { key: "appleHealth" as const, name: "Apple Health", desc: "Import vitals, activity & sleep", color: "bg-red-500" },
+                { key: "samsungHealth" as const, name: "Samsung Health", desc: "Sync steps, heart rate & more", color: "bg-indigo-500" },
+                { key: "googleFit" as const, name: "Google Fit", desc: "Import fitness & wellness data", color: "bg-green-500" },
+              ]).map((service) => (
+                <div key={service.key} className="flex items-center gap-3 py-2.5 border-b border-border/30 last:border-0">
+                  <div className={`w-8 h-8 rounded-lg ${service.color} flex items-center justify-center`}>
+                    {service.key === "googleCalendar" ? (
+                      <Calendar className="w-4 h-4 text-white" />
+                    ) : service.key === "samsungHealth" ? (
+                      <Smartphone className="w-4 h-4 text-white" />
+                    ) : (
+                      <Heart className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold">{service.name}</p>
+                    <p className="text-[10px] text-muted-foreground">{service.desc}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {connectedServices[service.key] && (
+                      <span className="text-[9px] font-semibold health-status-good flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Connected
+                      </span>
+                    )}
+                    <Switch
+                      checked={connectedServices[service.key]}
+                      onCheckedChange={(checked) =>
+                        setConnectedServices((prev) => ({ ...prev, [service.key]: checked }))
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+              <p className="text-[10px] text-muted-foreground py-2">Connected services allow the AI to provide personalized health insights based on your real-time data.</p>
+            </motion.div>
+          )}
+        </motion.div>
+
         {/* Logout */}
-        <motion.div {...fadeIn(9)}>
+        <motion.div {...fadeIn(10)}>
           <button className="w-full glass-card p-4 flex items-center gap-4 text-health-alert mt-2">
             <LogOut className="w-5 h-5" />
             <span className="text-sm font-semibold">Log Out</span>
