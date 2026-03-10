@@ -36,6 +36,13 @@ interface GeneticRecord {
 export default function Profile() {
   const [expandedSection, setExpandedSection] = useState<string | null>("personal");
 
+  const [connectedServices, setConnectedServices] = useState({
+    googleCalendar: false,
+    appleHealth: true,
+    samsungHealth: false,
+    googleFit: true,
+  });
+
   // Mock data
   const birthDate = new Date(1992, 4, 15);
   const age = getAge(birthDate);
