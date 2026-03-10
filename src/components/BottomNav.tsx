@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, MessageCircle, Activity, FolderOpen, Bell, User } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Activity, Shield, Bell, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const tabs = [
   { path: "/chat", icon: MessageCircle, label: "Chat" },
   { path: "/stats", icon: LayoutDashboard, label: "Stats" },
   { path: "/symptoms", icon: Activity, label: "Symptoms" },
-  { path: "/records", icon: FolderOpen, label: "Records" },
+  { path: "/vault", icon: Shield, label: "Vault" },
   { path: "/reminders", icon: Bell, label: "Reminders" },
   { path: "/profile", icon: User, label: "Profile" },
 ];

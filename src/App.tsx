@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import Stats from "./pages/Dashboard";
 import AIChat from "./pages/AIChat";
 import Symptoms from "./pages/Symptoms";
-import Records from "./pages/Records";
+import Vault from "./pages/Records";
 import Reminders from "./pages/Reminders";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
