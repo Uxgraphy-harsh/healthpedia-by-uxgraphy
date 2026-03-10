@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import Stats from "./pages/Dashboard";
 import AIChat from "./pages/AIChat";
 import Symptoms from "./pages/Symptoms";
-import Records from "./pages/Records";
+import Vault from "./pages/Records";
 import Reminders from "./pages/Reminders";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const showNav = ["/chat", "/stats", "/symptoms", "/records", "/reminders", "/profile"].includes(location.pathname);
+  const showNav = ["/chat", "/stats", "/symptoms", "/vault", "/reminders", "/profile"].includes(location.pathname);
 
   return (
     <>
@@ -27,7 +27,7 @@ function AppContent() {
         <Route path="/chat" element={<AIChat />} />
         <Route path="/stats" element={<Stats />} />
         <Route path="/symptoms" element={<Symptoms />} />
-        <Route path="/records" element={<Records />} />
+        <Route path="/vault" element={<Vault />} />
         <Route path="/reminders" element={<Reminders />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
