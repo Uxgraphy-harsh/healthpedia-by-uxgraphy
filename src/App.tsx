@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
+import Stats from "./pages/Dashboard";
 import AIChat from "./pages/AIChat";
 import Symptoms from "./pages/Symptoms";
 import Records from "./pages/Records";
@@ -18,14 +18,14 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const showNav = ["/dashboard", "/chat", "/symptoms", "/records", "/reminders"].includes(location.pathname);
+  const showNav = ["/chat", "/stats", "/symptoms", "/records", "/reminders"].includes(location.pathname);
 
   return (
     <>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/chat" element={<AIChat />} />
+        <Route path="/stats" element={<Stats />} />
         <Route path="/symptoms" element={<Symptoms />} />
         <Route path="/records" element={<Records />} />
         <Route path="/reminders" element={<Reminders />} />
