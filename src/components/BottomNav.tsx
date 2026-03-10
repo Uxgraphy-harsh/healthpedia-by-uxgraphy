@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, MessageCircle, Activity, FolderOpen, Bell } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Activity, FolderOpen, Bell, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const tabs = [
@@ -8,6 +8,7 @@ const tabs = [
   { path: "/symptoms", icon: Activity, label: "Symptoms" },
   { path: "/records", icon: FolderOpen, label: "Records" },
   { path: "/reminders", icon: Bell, label: "Reminders" },
+  { path: "/profile", icon: User, label: "Profile" },
 ];
 
 export default function BottomNav() {
