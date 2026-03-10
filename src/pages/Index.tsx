@@ -1,14 +1,26 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import OnboardingFlow from "@/components/OnboardingFlow";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const Index = () => {
+export default function Index() {
+  const [onboarded, setOnboarded] = useState(() => localStorage.getItem("healthpedia_onboarded") === "true");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (onboarded) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [onboarded, navigate]);
+
+  if (onboarded) return null;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <OnboardingFlow
+      onComplete={() => {
+        localStorage.setItem("healthpedia_onboarded", "true");
+        setOnboarded(true);
+      }}
+    />
   );
-};
-
-export default Index;
+}
