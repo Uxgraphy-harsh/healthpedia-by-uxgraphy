@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   User, Calendar, Ruler, Weight, Heart, CreditCard, Fingerprint,
   Shield, Phone, Users, Dna, Mail, ChevronRight, ChevronDown,
-  LogOut, Edit2, Plus, Trash2
+  LogOut, Edit2, Plus, Trash2, Smartphone, Check
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 
