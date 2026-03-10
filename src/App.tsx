@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const showNav = ["/chat", "/stats", "/symptoms", "/records", "/reminders", "/profile"].includes(location.pathname);
+  const showNav = ["/chat", "/stats", "/symptoms", "/vault", "/reminders", "/profile"].includes(location.pathname);
 
   return (
     <>
