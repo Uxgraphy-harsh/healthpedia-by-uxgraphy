@@ -237,7 +237,7 @@ export default function Dashboard() {
         <div className="px-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-sm font-semibold font-sans">Recent Activity</h2>
-            <button onClick={() => navigate("/track")} className="text-[10px] text-primary font-medium flex items-center gap-0.5">
+            <button onClick={() => navigate("/timeline")} className="text-[10px] text-primary font-medium flex items-center gap-0.5">
               Full Timeline <ChevronRight className="w-3 h-3" />
             </button>
           </div>
