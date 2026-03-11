@@ -26,10 +26,21 @@ Updated: now
 - Records → /records (reports, documents)
 - Profile → /profile
 
+## Authentication
+- Google Sign-In via Supabase Auth (AuthContext)
+- Sign out clears localStorage onboarding flag
+- AuthProvider wraps app inside BrowserRouter
+
+## Onboarding (8 steps)
+- Welcome (Google sign-in) → Basic Profile → Conditions → Medications → Trackers → Integrations → Notifications → Complete
+
+## Profile
+- Profile completion indicator (percentage bar)
+- Sections: Account, Health Profile, Integrations, Preferences
+- Editable fields marked with edit icon
+
 ## Architecture
-- Types: src/types/health.ts (all health data models)
-- Sample data: src/data/sampleData.ts
-- Shared components: PageHeader, FloatingActionButton, GlobalSearch, HealthTimeline, TagBadge, PrivacyBadge
-- Health events feed into timeline automatically
-- Universal tagging system across all entries
-- Legacy routes (/stats, /symptoms, /vault) redirect to new paths
+- Types: src/types/health.ts
+- Sample data: src/data/sampleData.ts  
+- Auth: src/contexts/AuthContext.tsx
+- Shared: PageHeader, FAB, GlobalSearch, HealthTimeline, TagBadge, PrivacyBadge
