@@ -1,6 +1,11 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Heart, Footprints, Moon, Flame, TrendingUp, TrendingDown, MessageCircle, Activity, Upload, Bell, User } from "lucide-react";
+import {
+  Heart, Footprints, Moon, Flame, TrendingUp, TrendingDown,
+  MessageCircle, Activity, Upload, Bell, User, Clock
+} from "lucide-react";
+import HealthTimeline from "@/components/HealthTimeline";
+import { sampleEvents } from "@/data/sampleData";
 
 const metrics = [
   { icon: Footprints, label: "Steps", value: "8,432", trend: "up", change: "+12%" },
@@ -12,13 +17,19 @@ const metrics = [
 export default function Dashboard() {
   const navigate = useNavigate();
 
+  // Show only today's events
+  const todayEvents = sampleEvents.filter((e) => {
+    const eventDate = new Date(e.timestamp).toDateString();
+    return eventDate === new Date().toDateString() || sampleEvents.indexOf(e) < 4;
+  }).slice(0, 4);
+
   return (
     <div className="mobile-container pb-24">
       {/* Header */}
       <div className="px-5 pt-6 pb-2 flex justify-between items-center">
         <div>
           <p className="text-sm text-muted-foreground">Good Morning</p>
-          <h1 className="text-xl font-bold font-serif">Your Health Stats</h1>
+          <h1 className="text-xl font-bold font-serif">Your Health Dashboard</h1>
         </div>
         <button onClick={() => navigate("/profile")} className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center">
           <User className="w-5 h-5 text-primary-foreground" />
@@ -101,13 +112,24 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
+        {/* Recent Activity (Timeline Preview) */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold font-sans">Recent Activity</h2>
+            <button onClick={() => navigate("/track")} className="text-xs text-primary font-medium flex items-center gap-1">
+              View All <Clock className="w-3 h-3" />
+            </button>
+          </div>
+          <HealthTimeline events={todayEvents} />
+        </div>
+
         {/* Quick Actions */}
         <div>
           <h2 className="text-sm font-semibold mb-3 font-sans">Quick Actions</h2>
           <div className="grid grid-cols-4 gap-2">
             {[
               { icon: MessageCircle, label: "Ask AI", path: "/chat" },
-              { icon: Activity, label: "Log Symptom", path: "/symptoms" },
+              { icon: Activity, label: "Log Symptom", path: "/track" },
               { icon: Upload, label: "Upload", path: "/records" },
               { icon: Bell, label: "Reminder", path: "/reminders" },
             ].map((a, i) => (

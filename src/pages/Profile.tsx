@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  User, Calendar, Ruler, Weight, Heart, CreditCard, Fingerprint,
-  Shield, Phone, Users, Dna, Mail, ChevronRight, ChevronDown,
-  LogOut, Edit2, Plus, Trash2, Smartphone, Check
+  User, Calendar, Heart, CreditCard, Fingerprint,
+  Shield, Phone, Users, Dna, Mail, ChevronDown,
+  LogOut, Edit2, Plus, Smartphone, Check, Lock
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import PageHeader from "@/components/PageHeader";
+import { PrivacyBanner } from "@/components/PrivacyBadge";
 
 const fadeIn = (i: number) => ({
   initial: { opacity: 0, y: 10 },
@@ -43,7 +45,6 @@ export default function Profile() {
     googleFit: true,
   });
 
-  // Mock data
   const birthDate = new Date(1992, 4, 15);
   const age = getAge(birthDate);
 
@@ -96,11 +97,7 @@ export default function Profile() {
 
   return (
     <div className="mobile-container pb-28">
-      {/* Header */}
-      <div className="px-5 pt-6 pb-2">
-        <h1 className="text-xl font-bold font-serif">Profile</h1>
-        <p className="text-xs text-muted-foreground">Manage your health identity</p>
-      </div>
+      <PageHeader title="Profile" subtitle="Manage your health identity" icon={User} />
 
       <div className="px-5 space-y-3 mt-3">
         {/* Avatar Card */}
@@ -116,6 +113,11 @@ export default function Profile() {
           <button className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
             <Edit2 className="w-4 h-4 text-primary" />
           </button>
+        </motion.div>
+
+        {/* Privacy */}
+        <motion.div {...fadeIn(0.5)}>
+          <PrivacyBanner />
         </motion.div>
 
         {/* 1. Personal Information */}
@@ -222,7 +224,7 @@ export default function Profile() {
           )}
         </motion.div>
 
-        {/* 7. Genetic / Family Medical History */}
+        {/* 7. Family Medical History */}
         <motion.div {...fadeIn(7)} className="space-y-0.5">
           <SectionHeader icon={Dna} label="Family Medical History" section="genetics" badge={`${geneticRecords.length} records`} />
           {expandedSection === "genetics" && (
@@ -246,7 +248,7 @@ export default function Profile() {
           )}
         </motion.div>
 
-        {/* 8. Daily AI Summary to Email */}
+        {/* 8. Daily AI Summary */}
         <motion.div {...fadeIn(8)} className="space-y-0.5">
           <div className="glass-card p-4 w-full flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -273,19 +275,19 @@ export default function Profile() {
           {expandedSection === "services" && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="glass-card px-4 py-2 mt-1 space-y-1">
               {([
-                { key: "googleCalendar" as const, name: "Google Calendar", desc: "Sync appointments & reminders", color: "bg-blue-500" },
-                { key: "appleHealth" as const, name: "Apple Health", desc: "Import vitals, activity & sleep", color: "bg-red-500" },
-                { key: "samsungHealth" as const, name: "Samsung Health", desc: "Sync steps, heart rate & more", color: "bg-indigo-500" },
-                { key: "googleFit" as const, name: "Google Fit", desc: "Import fitness & wellness data", color: "bg-green-500" },
+                { key: "googleCalendar" as const, name: "Google Calendar", desc: "Sync appointments & reminders", color: "bg-primary/80" },
+                { key: "appleHealth" as const, name: "Apple Health", desc: "Import vitals, activity & sleep", color: "bg-health-alert" },
+                { key: "samsungHealth" as const, name: "Samsung Health", desc: "Sync steps, heart rate & more", color: "bg-secondary" },
+                { key: "googleFit" as const, name: "Google Fit", desc: "Import fitness & wellness data", color: "bg-health-good" },
               ]).map((service) => (
                 <div key={service.key} className="flex items-center gap-3 py-2.5 border-b border-border/30 last:border-0">
                   <div className={`w-8 h-8 rounded-lg ${service.color} flex items-center justify-center`}>
                     {service.key === "googleCalendar" ? (
-                      <Calendar className="w-4 h-4 text-white" />
+                      <Calendar className="w-4 h-4 text-primary-foreground" />
                     ) : service.key === "samsungHealth" ? (
-                      <Smartphone className="w-4 h-4 text-white" />
+                      <Smartphone className="w-4 h-4 text-primary-foreground" />
                     ) : (
-                      <Heart className="w-4 h-4 text-white" />
+                      <Heart className="w-4 h-4 text-primary-foreground" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -308,6 +310,36 @@ export default function Profile() {
                 </div>
               ))}
               <p className="text-[10px] text-muted-foreground py-2">Connected services allow the AI to provide personalized health insights based on your real-time data.</p>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* Data & Privacy */}
+        <motion.div {...fadeIn(9.5)} className="space-y-0.5">
+          <SectionHeader icon={Lock} label="Data & Privacy" section="privacy" badge="Your data is secure" />
+          {expandedSection === "privacy" && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="glass-card px-4 py-3 mt-1 space-y-3">
+              <div className="flex items-start gap-3">
+                <Shield className="w-4 h-4 text-health-good shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold">End-to-End Encryption</p>
+                  <p className="text-[10px] text-muted-foreground">All health data is encrypted at rest and in transit.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Lock className="w-4 h-4 text-health-good shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold">No Data Sharing</p>
+                  <p className="text-[10px] text-muted-foreground">We never share your health information with third parties without your explicit consent.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <User className="w-4 h-4 text-health-good shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-semibold">You Own Your Data</p>
+                  <p className="text-[10px] text-muted-foreground">Export or delete all your data at any time from the settings.</p>
+                </div>
+              </div>
             </motion.div>
           )}
         </motion.div>

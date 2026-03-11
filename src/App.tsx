@@ -1,13 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
-import Stats from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import AIChat from "./pages/AIChat";
-import Symptoms from "./pages/Symptoms";
-import Vault from "./pages/Records";
+import Track from "./pages/Track";
+import Records from "./pages/Records";
 import Reminders from "./pages/Reminders";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -18,18 +18,22 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const showNav = ["/chat", "/stats", "/symptoms", "/vault", "/reminders", "/profile"].includes(location.pathname);
+  const showNav = ["/chat", "/dashboard", "/track", "/records", "/reminders", "/profile"].includes(location.pathname);
 
   return (
     <>
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/chat" element={<AIChat />} />
-        <Route path="/stats" element={<Stats />} />
-        <Route path="/symptoms" element={<Symptoms />} />
-        <Route path="/vault" element={<Vault />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/track" element={<Track />} />
+        <Route path="/records" element={<Records />} />
         <Route path="/reminders" element={<Reminders />} />
         <Route path="/profile" element={<Profile />} />
+        {/* Legacy redirects */}
+        <Route path="/stats" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/symptoms" element={<Navigate to="/track" replace />} />
+        <Route path="/vault" element={<Navigate to="/records" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {showNav && <BottomNav />}
