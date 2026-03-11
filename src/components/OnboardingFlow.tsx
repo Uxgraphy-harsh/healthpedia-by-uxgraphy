@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Activity, FileText, MessageCircle, Smartphone, ChevronRight, Plus, Trash2 } from "lucide-react";
+import {
+  Activity, Plus, Trash2, Smartphone, ChevronRight, Bell,
+  Heart, Droplets, Moon, Zap, Smile, GlassWater, Weight,
+  Thermometer, Search, Check, X
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface OnboardingProps {
   onComplete: () => void;
 }
-
-const conditions = ["Diabetes", "Thyroid", "Hypertension", "PCOS", "Heart Conditions", "Other"];
 
 const slideVariants = {
   enter: { x: 100, opacity: 0 },
@@ -14,35 +17,105 @@ const slideVariants = {
   exit: { x: -100, opacity: 0 },
 };
 
+const TOTAL_STEPS = 8; // welcome, basic, conditions, meds, trackers, integrations, notifications, done
+
+const allConditions = [
+  "Diabetes", "Hypertension", "Thyroid Disorder", "Asthma",
+  "Heart Disease", "Migraine", "PCOS", "Arthritis",
+  "Anxiety", "Depression", "Anemia", "None",
+];
+
+const trackerOptions = [
+  { id: "blood_sugar", label: "Blood Sugar", icon: Droplets },
+  { id: "blood_pressure", label: "Blood Pressure", icon: Heart },
+  { id: "weight", label: "Weight", icon: Weight },
+  { id: "sleep", label: "Sleep", icon: Moon },
+  { id: "heart_rate", label: "Heart Rate", icon: Activity },
+  { id: "mood", label: "Mood", icon: Smile },
+  { id: "energy", label: "Energy Level", icon: Zap },
+  { id: "water", label: "Water Intake", icon: GlassWater },
+];
+
 export default function OnboardingFlow({ onComplete }: OnboardingProps) {
+  const { signInWithGoogle, user } = useAuth();
   const [step, setStep] = useState(0);
-  const [profile, setProfile] = useState({ age: "", gender: "", height: "", weight: "" });
+
+  // Step 1: Basic Profile
+  const [profile, setProfile] = useState({
+    name: user?.user_metadata?.full_name || "",
+    dob: "",
+    gender: "",
+    height: "",
+    weight: "",
+  });
+
+  // Step 2: Conditions
+  const [conditionSearch, setConditionSearch] = useState("");
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
-  const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "Daily" }]);
+  const [customCondition, setCustomCondition] = useState("");
+
+  // Step 3: Medications
+  const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "Daily", conditionLink: "" }]);
+  const [skipMeds, setSkipMeds] = useState(false);
+
+  // Step 4: Trackers
+  const [selectedTrackers, setSelectedTrackers] = useState<string[]>(["blood_sugar", "weight"]);
 
   const next = () => {
-    if (step < 5) setStep(step + 1);
+    if (step < TOTAL_STEPS - 1) setStep(step + 1);
     else onComplete();
   };
 
-  const toggleCondition = (c: string) =>
-    setSelectedConditions((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
+  const back = () => {
+    if (step > 0) setStep(step - 1);
+  };
+
+  const toggleCondition = (c: string) => {
+    if (c === "None") {
+      setSelectedConditions(["None"]);
+      return;
+    }
+    setSelectedConditions((prev) =>
+      prev.filter((x) => x !== "None").includes(c)
+        ? prev.filter((x) => x !== c)
+        : [...prev.filter((x) => x !== "None"), c]
+    );
+  };
+
+  const addCustomCondition = () => {
+    if (customCondition.trim() && !selectedConditions.includes(customCondition.trim())) {
+      setSelectedConditions((prev) => [...prev.filter((x) => x !== "None"), customCondition.trim()]);
+      setCustomCondition("");
+    }
+  };
+
+  const toggleTracker = (id: string) =>
+    setSelectedTrackers((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+
+  const filteredConditions = conditionSearch
+    ? allConditions.filter((c) => c.toLowerCase().includes(conditionSearch.toLowerCase()))
+    : allConditions;
+
+  const progressPercent = ((step) / (TOTAL_STEPS - 1)) * 100;
 
   return (
     <div className="mobile-container flex flex-col min-h-screen bg-background">
       {/* Progress */}
-      <div className="px-6 pt-6 pb-2">
-        <div className="flex gap-1.5">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                i <= step ? "gradient-primary" : "bg-muted"
-              }`}
+      {step > 0 && step < TOTAL_STEPS - 1 && (
+        <div className="px-6 pt-6 pb-1">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[10px] font-medium text-muted-foreground">Step {step} of {TOTAL_STEPS - 2}</p>
+            <p className="text-[10px] font-medium text-primary">{Math.round(progressPercent)}%</p>
+          </div>
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+            <motion.div
+              className="h-full gradient-primary rounded-full"
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             />
-          ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -54,61 +127,300 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           transition={{ duration: 0.35, ease: "easeInOut" }}
           className="flex-1 flex flex-col px-6 py-4"
         >
+          {/* ─── STEP 0: WELCOME ─── */}
           {step === 0 && (
             <div className="flex-1 flex flex-col justify-center items-center text-center">
               <div className="w-20 h-20 rounded-3xl gradient-primary flex items-center justify-center mb-8 shadow-lg">
                 <Activity className="w-10 h-10 text-primary-foreground" />
               </div>
-              <h1 className="text-3xl font-bold mb-4 font-serif">
-                Your Health.
-                <br />
-                Understood in Context.
-              </h1>
-              <p className="text-muted-foreground text-base leading-relaxed max-w-xs">
-                Healthpedia connects your reports, medications, symptoms, and habits into one intelligent health memory.
+              <h1 className="text-3xl font-bold mb-3 font-serif">Healthpedia</h1>
+              <p className="text-muted-foreground text-base leading-relaxed max-w-xs mb-10">
+                Your personal health companion. Track, understand, and manage your health — all in one place.
               </p>
+              <button
+                onClick={signInWithGoogle}
+                className="glass-card-elevated w-full py-4 flex items-center justify-center gap-3 rounded-2xl font-semibold text-sm"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Continue with Google
+              </button>
+              <button
+                onClick={next}
+                className="mt-4 text-sm text-muted-foreground underline"
+              >
+                Skip sign-in for now
+              </button>
             </div>
           )}
 
+          {/* ─── STEP 1: BASIC PROFILE ─── */}
           {step === 1 && (
-            <div className="flex-1 flex flex-col justify-center">
-              <h2 className="text-2xl font-bold font-serif mb-8 text-center">What Healthpedia Does</h2>
-              <div className="space-y-4">
-                {[
-                  { icon: FileText, title: "Organize Medical Records", desc: "All your reports in one place, auto-organized by AI." },
-                  { icon: Activity, title: "Understand Your Health Trends", desc: "Track patterns across vitals, symptoms, and habits." },
-                  { icon: MessageCircle, title: "Ask Questions Anytime", desc: "Get context-aware answers from your health data." },
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.15 }}
-                    className="glass-card p-5 flex items-start gap-4"
-                  >
-                    <div className="w-11 h-11 rounded-xl gradient-accent flex items-center justify-center shrink-0">
-                      <item.icon className="w-5 h-5 text-foreground" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold font-sans text-sm mb-1">{item.title}</h3>
-                      <p className="text-muted-foreground text-xs">{item.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
+            <div className="flex-1 flex flex-col">
+              <h2 className="text-2xl font-bold font-serif mb-2 text-center">Basic Profile</h2>
+              <p className="text-muted-foreground text-center text-sm mb-6">Tell us about yourself</p>
+              <div className="space-y-4 flex-1">
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Full Name</label>
+                  <input
+                    placeholder="Sarah Johnson"
+                    value={profile.name}
+                    onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                    className="w-full glass-card px-4 py-3 text-sm rounded-xl bg-card outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Date of Birth</label>
+                  <input
+                    type="date"
+                    value={profile.dob}
+                    onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
+                    className="w-full glass-card px-4 py-3 text-sm rounded-xl bg-card outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Gender</label>
+                  <div className="flex gap-2">
+                    {["Male", "Female", "Other"].map((g) => (
+                      <button
+                        key={g}
+                        onClick={() => setProfile({ ...profile, gender: g })}
+                        className={`flex-1 py-3 rounded-xl text-xs font-medium transition-all ${
+                          profile.gender === g ? "gradient-primary text-primary-foreground" : "glass-card"
+                        }`}
+                      >
+                        {g}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Height (cm)</label>
+                    <input
+                      type="number"
+                      placeholder="165"
+                      value={profile.height}
+                      onChange={(e) => setProfile({ ...profile, height: e.target.value })}
+                      className="w-full glass-card px-4 py-3 text-sm rounded-xl bg-card outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Weight (kg)</label>
+                    <input
+                      type="number"
+                      placeholder="62"
+                      value={profile.weight}
+                      onChange={(e) => setProfile({ ...profile, weight: e.target.value })}
+                      className="w-full glass-card px-4 py-3 text-sm rounded-xl bg-card outline-none focus:ring-2 focus:ring-primary/30"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
+          {/* ─── STEP 2: HEALTH CONDITIONS ─── */}
           {step === 2 && (
+            <div className="flex-1 flex flex-col">
+              <h2 className="text-2xl font-bold font-serif mb-2 text-center">Health Conditions</h2>
+              <p className="text-muted-foreground text-center text-sm mb-4">Select any known conditions</p>
+
+              {/* Search */}
+              <div className="glass-card flex items-center gap-2 px-3 py-2 mb-4">
+                <Search className="w-4 h-4 text-muted-foreground" />
+                <input
+                  placeholder="Search conditions..."
+                  value={conditionSearch}
+                  onChange={(e) => setConditionSearch(e.target.value)}
+                  className="flex-1 bg-transparent text-sm outline-none"
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-2 mb-4">
+                {filteredConditions.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => toggleCondition(c)}
+                    className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                      selectedConditions.includes(c)
+                        ? "gradient-primary text-primary-foreground"
+                        : "glass-card text-foreground"
+                    }`}
+                  >
+                    {selectedConditions.includes(c) && <Check className="w-3 h-3" />}
+                    {c}
+                  </button>
+                ))}
+              </div>
+
+              {/* Custom condition */}
+              <div className="flex gap-2">
+                <input
+                  placeholder="Add custom condition"
+                  value={customCondition}
+                  onChange={(e) => setCustomCondition(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && addCustomCondition()}
+                  className="flex-1 glass-card px-4 py-2.5 text-sm rounded-xl bg-card outline-none"
+                />
+                <button onClick={addCustomCondition} className="px-4 py-2.5 rounded-xl bg-primary/10 text-primary text-sm font-medium">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              {selectedConditions.length > 0 && !selectedConditions.includes("None") && (
+                <div className="mt-4">
+                  <p className="text-xs text-muted-foreground mb-2">Selected ({selectedConditions.length})</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedConditions.map((c) => (
+                      <span key={c} className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary flex items-center gap-1">
+                        {c}
+                        <button onClick={() => toggleCondition(c)}><X className="w-3 h-3" /></button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ─── STEP 3: MEDICATIONS ─── */}
+          {step === 3 && (
+            <div className="flex-1 flex flex-col">
+              <h2 className="text-2xl font-bold font-serif mb-2 text-center">Current Medications</h2>
+              <p className="text-muted-foreground text-center text-sm mb-6">Optional — you can add these later</p>
+
+              {!skipMeds ? (
+                <div className="space-y-3 flex-1">
+                  {medications.map((m, i) => (
+                    <div key={i} className="glass-card p-4 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-medium text-muted-foreground">Medication {i + 1}</span>
+                        {medications.length > 1 && (
+                          <button onClick={() => setMedications(medications.filter((_, j) => j !== i))}>
+                            <Trash2 className="w-4 h-4 text-muted-foreground" />
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        placeholder="Medicine name"
+                        value={m.name}
+                        onChange={(e) => {
+                          const updated = [...medications];
+                          updated[i].name = e.target.value;
+                          setMedications(updated);
+                        }}
+                        className="w-full bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
+                      />
+                      <div className="flex gap-2">
+                        <input
+                          placeholder="Dosage"
+                          value={m.dosage}
+                          onChange={(e) => {
+                            const updated = [...medications];
+                            updated[i].dosage = e.target.value;
+                            setMedications(updated);
+                          }}
+                          className="flex-1 bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
+                        />
+                        <select
+                          value={m.frequency}
+                          onChange={(e) => {
+                            const updated = [...medications];
+                            updated[i].frequency = e.target.value;
+                            setMedications(updated);
+                          }}
+                          className="bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
+                        >
+                          <option>Daily</option>
+                          <option>Twice Daily</option>
+                          <option>Weekly</option>
+                          <option>As Needed</option>
+                        </select>
+                      </div>
+                      {selectedConditions.length > 0 && !selectedConditions.includes("None") && (
+                        <select
+                          value={m.conditionLink}
+                          onChange={(e) => {
+                            const updated = [...medications];
+                            updated[i].conditionLink = e.target.value;
+                            setMedications(updated);
+                          }}
+                          className="w-full bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
+                        >
+                          <option value="">Link to condition (optional)</option>
+                          {selectedConditions.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setMedications([...medications, { name: "", dosage: "", frequency: "Daily", conditionLink: "" }])}
+                    className="w-full py-3 rounded-xl border-2 border-dashed border-border text-sm text-muted-foreground flex items-center justify-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" /> Add Medication
+                  </button>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center text-center">
+                  <p className="text-muted-foreground text-sm">No medications added.</p>
+                  <p className="text-xs text-muted-foreground mt-1">You can add them later from the Track tab.</p>
+                  <button onClick={() => setSkipMeds(false)} className="mt-4 text-sm text-primary font-medium">Add medications</button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ─── STEP 4: HEALTH TRACKERS ─── */}
+          {step === 4 && (
+            <div className="flex-1 flex flex-col">
+              <h2 className="text-2xl font-bold font-serif mb-2 text-center">Health Trackers</h2>
+              <p className="text-muted-foreground text-center text-sm mb-6">Choose what you want to track</p>
+              <div className="grid grid-cols-2 gap-3 flex-1">
+                {trackerOptions.map((t) => {
+                  const selected = selectedTrackers.includes(t.id);
+                  return (
+                    <motion.button
+                      key={t.id}
+                      onClick={() => toggleTracker(t.id)}
+                      whileTap={{ scale: 0.97 }}
+                      className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all ${
+                        selected ? "glass-card-elevated border-2 border-primary/30" : "glass-card"
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                        selected ? "gradient-primary" : "bg-muted/60"
+                      }`}>
+                        <t.icon className={`w-5 h-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                      </div>
+                      <span className={`text-xs font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}>
+                        {t.label}
+                      </span>
+                      {selected && <Check className="w-4 h-4 text-primary" />}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ─── STEP 5: INTEGRATIONS ─── */}
+          {step === 5 && (
             <div className="flex-1 flex flex-col justify-center">
-              <h2 className="text-2xl font-bold font-serif mb-3 text-center">Connect Your Devices</h2>
+              <h2 className="text-2xl font-bold font-serif mb-3 text-center">Health Integrations</h2>
               <p className="text-muted-foreground text-center text-sm mb-8">
-                Sync health metrics so the AI can give you better insights.
+                Connect external health sources to get automatic data imports.
               </p>
               <div className="space-y-4">
                 {[
-                  { name: "Google Fit", desc: "Steps, heart rate, workouts" },
-                  { name: "Apple Health", desc: "Sleep, vitals, activity" },
+                  { name: "Google Fit", desc: "Steps, heart rate, workouts", color: "bg-health-good" },
+                  { name: "Apple Health", desc: "Sleep, vitals, activity", color: "bg-health-alert" },
                 ].map((d, i) => (
                   <motion.button
                     key={i}
@@ -118,8 +430,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                     className="glass-card p-5 w-full flex items-center justify-between text-left"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-11 h-11 rounded-xl bg-muted flex items-center justify-center">
-                        <Smartphone className="w-5 h-5 text-primary" />
+                      <div className={`w-11 h-11 rounded-xl ${d.color} flex items-center justify-center`}>
+                        <Smartphone className="w-5 h-5 text-primary-foreground" />
                       </div>
                       <div>
                         <p className="font-semibold text-sm">{d.name}</p>
@@ -136,148 +448,83 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             </div>
           )}
 
-          {step === 3 && (
-            <div className="flex-1 flex flex-col">
-              <h2 className="text-2xl font-bold font-serif mb-6 text-center">Health Profile</h2>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                {[
-                  { label: "Age", key: "age", placeholder: "28", type: "number" },
-                  { label: "Gender", key: "gender", placeholder: "Female" },
-                  { label: "Height (cm)", key: "height", placeholder: "165", type: "number" },
-                  { label: "Weight (kg)", key: "weight", placeholder: "60", type: "number" },
-                ].map((f) => (
-                  <div key={f.key}>
-                    <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{f.label}</label>
-                    <input
-                      type={f.type || "text"}
-                      placeholder={f.placeholder}
-                      value={(profile as any)[f.key]}
-                      onChange={(e) => setProfile({ ...profile, [f.key]: e.target.value })}
-                      className="w-full glass-card px-4 py-3 text-sm rounded-xl bg-card outline-none focus:ring-2 focus:ring-primary/30"
-                    />
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm font-semibold mb-3">Do you manage any chronic conditions?</p>
-              <div className="flex flex-wrap gap-2">
-                {conditions.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => toggleCondition(c)}
-                    className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
-                      selectedConditions.includes(c)
-                        ? "gradient-primary text-primary-foreground"
-                        : "glass-card text-foreground"
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="flex-1 flex flex-col">
-              <h2 className="text-2xl font-bold font-serif mb-2 text-center">Current Medications</h2>
-              <p className="text-muted-foreground text-center text-sm mb-6">Optional — you can add later</p>
-              <div className="space-y-3 flex-1">
-                {medications.map((m, i) => (
-                  <div key={i} className="glass-card p-4 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-medium text-muted-foreground">Medication {i + 1}</span>
-                      {medications.length > 1 && (
-                        <button onClick={() => setMedications(medications.filter((_, j) => j !== i))}>
-                          <Trash2 className="w-4 h-4 text-muted-foreground" />
-                        </button>
-                      )}
-                    </div>
-                    <input
-                      placeholder="Medicine name"
-                      value={m.name}
-                      onChange={(e) => {
-                        const updated = [...medications];
-                        updated[i].name = e.target.value;
-                        setMedications(updated);
-                      }}
-                      className="w-full bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
-                    />
-                    <div className="flex gap-2">
-                      <input
-                        placeholder="Dosage"
-                        value={m.dosage}
-                        onChange={(e) => {
-                          const updated = [...medications];
-                          updated[i].dosage = e.target.value;
-                          setMedications(updated);
-                        }}
-                        className="flex-1 bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
-                      />
-                      <select
-                        value={m.frequency}
-                        onChange={(e) => {
-                          const updated = [...medications];
-                          updated[i].frequency = e.target.value;
-                          setMedications(updated);
-                        }}
-                        className="bg-muted/50 px-3 py-2.5 text-sm rounded-xl outline-none"
-                      >
-                        <option>Daily</option>
-                        <option>Twice Daily</option>
-                        <option>Weekly</option>
-                        <option>As Needed</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  onClick={() => setMedications([...medications, { name: "", dosage: "", frequency: "Daily" }])}
-                  className="w-full py-3 rounded-xl border-2 border-dashed border-border text-sm text-muted-foreground flex items-center justify-center gap-2"
-                >
-                  <Plus className="w-4 h-4" /> Add Medication
-                </button>
-              </div>
-            </div>
-          )}
-
-          {step === 5 && (
+          {/* ─── STEP 6: NOTIFICATIONS ─── */}
+          {step === 6 && (
             <div className="flex-1 flex flex-col justify-center items-center text-center">
-              <div className="w-20 h-20 rounded-3xl gradient-primary flex items-center justify-center mb-8 shadow-lg">
-                <Activity className="w-10 h-10 text-primary-foreground" />
+              <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mb-8">
+                <Bell className="w-10 h-10 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold font-serif mb-3">You're All Set!</h2>
-              <p className="text-muted-foreground text-sm mb-8 max-w-xs">
-                Sign in to save your health profile and access your personalized companion.
+              <h2 className="text-2xl font-bold font-serif mb-3">Stay On Track</h2>
+              <p className="text-muted-foreground text-sm max-w-xs mb-8 leading-relaxed">
+                Notifications help remind you about medications, health logs, and appointments. We'll only send what matters.
               </p>
               <button
-                onClick={onComplete}
-                className="glass-card-elevated w-full py-4 flex items-center justify-center gap-3 rounded-2xl font-semibold text-sm"
+                onClick={() => {
+                  if ("Notification" in window) {
+                    Notification.requestPermission();
+                  }
+                  next();
+                }}
+                className="btn-primary-gradient w-full text-sm"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>
-                Continue with Google
+                Enable Notifications
               </button>
+              <button onClick={next} className="mt-4 text-sm text-muted-foreground underline">
+                Not now
+              </button>
+            </div>
+          )}
+
+          {/* ─── STEP 7: DONE ─── */}
+          {step === 7 && (
+            <div className="flex-1 flex flex-col justify-center items-center text-center">
+              <div className="w-20 h-20 rounded-3xl gradient-primary flex items-center justify-center mb-8 shadow-lg">
+                <Check className="w-10 h-10 text-primary-foreground" />
+              </div>
+              <h2 className="text-2xl font-bold font-serif mb-3">Your Health Profile is Ready</h2>
+              <p className="text-muted-foreground text-sm max-w-xs mb-8 leading-relaxed">
+                You can now chat with the AI assistant, upload reports, and track your health daily.
+              </p>
+              <div className="glass-card p-4 w-full mb-6 space-y-3">
+                {[
+                  { icon: "💬", label: "Chat with your health assistant" },
+                  { icon: "📋", label: "Upload and organize reports" },
+                  { icon: "📊", label: "Track symptoms and measurements" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-3 text-left">
+                    <span className="text-lg">{item.icon}</span>
+                    <p className="text-sm text-foreground">{item.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </motion.div>
       </AnimatePresence>
 
       {/* Bottom CTA */}
-      {step !== 5 && step !== 2 && (
-        <div className="px-6 pb-8">
-          <button onClick={next} className="btn-primary-gradient w-full text-base">
-            {step === 0 ? "Get Started" : "Continue"}
-          </button>
-        </div>
-      )}
-      {step === 2 && (
-        <div className="px-6 pb-8">
+      {step > 0 && step < 7 && step !== 5 && step !== 6 && (
+        <div className="px-6 pb-8 space-y-2">
+          {step === 3 && !skipMeds && (
+            <button onClick={() => { setSkipMeds(true); next(); }} className="w-full text-sm text-muted-foreground text-center mb-2 underline">
+              Skip for now
+            </button>
+          )}
           <button onClick={next} className="btn-primary-gradient w-full text-base">
             Continue
+          </button>
+          {step > 1 && (
+            <button onClick={back} className="w-full text-sm text-muted-foreground text-center">
+              Back
+            </button>
+          )}
+        </div>
+      )}
+
+      {step === 7 && (
+        <div className="px-6 pb-8">
+          <button onClick={onComplete} className="btn-primary-gradient w-full text-base">
+            Start Using Healthpedia
           </button>
         </div>
       )}
