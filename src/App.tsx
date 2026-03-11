@@ -10,6 +10,7 @@ import AIChat from "./pages/AIChat";
 import Track from "./pages/Track";
 import Records from "./pages/Records";
 import Reminders from "./pages/Reminders";
+import Timeline from "./pages/Timeline";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
@@ -19,7 +20,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  const showNav = ["/chat", "/dashboard", "/track", "/records", "/reminders", "/profile"].includes(location.pathname);
+  const showNav = ["/chat", "/dashboard", "/track", "/records", "/reminders", "/profile", "/timeline"].includes(location.pathname);
 
   return (
     <>
@@ -30,6 +31,7 @@ function AppContent() {
         <Route path="/track" element={<Track />} />
         <Route path="/records" element={<Records />} />
         <Route path="/reminders" element={<Reminders />} />
+        <Route path="/timeline" element={<Timeline />} />
         <Route path="/profile" element={<Profile />} />
         {/* Legacy redirects */}
         <Route path="/stats" element={<Navigate to="/dashboard" replace />} />
