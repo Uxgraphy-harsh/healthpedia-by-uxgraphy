@@ -132,3 +132,12 @@ export const sampleEvents: HealthEvent[] = [
   { id: "ev6", type: "appointment", timestamp: "2026-03-10T14:30:00", title: "Dr. Sharma appointment", description: "Endocrinology checkup", tags: [{ id: "t4", type: "doctor", label: "Dr. Sharma" }] },
   { id: "ev7", type: "note_added", timestamp: "2026-03-09T20:00:00", title: "Health note added", description: "Feeling better after adjusting diet", tags: [] },
 ];
+
+// ─── Health Notes ───────────────────────────────────────────────────────────────
+
+export const sampleNotes: Note[] = [
+  { id: "note1", content: "Noticed improved energy after switching to low-GI meals for a week. Will continue this diet plan.", createdAt: "2026-03-10T20:00:00", conditionId: "cond1", tags: [{ id: "t1", type: "condition", label: "Diabetes" }] },
+  { id: "note2", content: "Mild nausea after taking Metformin on empty stomach. Must remember to eat first.", createdAt: "2026-03-08T09:30:00", symptomId: "sym1", tags: [{ id: "t3", type: "medication", label: "Metformin" }] },
+  { id: "note3", content: "Dr. Sharma advised increasing water intake to at least 3L daily and reducing salt.", createdAt: "2026-03-06T15:00:00", tags: [{ id: "t4", type: "doctor", label: "Dr. Sharma" }] },
+  { id: "note4", content: "Stressful week at work — sleep quality dropped. Headaches returning.", createdAt: "2026-03-04T22:00:00", tags: [{ id: "t2", type: "condition", label: "Migraine" }] },
+];
