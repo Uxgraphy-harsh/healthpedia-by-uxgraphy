@@ -1,6 +1,6 @@
 // Sample/mock data for the Healthpedia app
 
-import type { HealthEvent, Medication, Symptom, Report, Tracker, Reminder, Tag } from "@/types/health";
+import type { HealthEvent, Medication, Symptom, Report, Tracker, Reminder, Tag, Note } from "@/types/health";
 
 // ─── Sample Tags ────────────────────────────────────────────────────────────────
 
