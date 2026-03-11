@@ -31,6 +31,7 @@ function AppContent() {
         <Route path="/track" element={<Track />} />
         <Route path="/records" element={<Records />} />
         <Route path="/reminders" element={<Reminders />} />
+        <Route path="/timeline" element={<Timeline />} />
         <Route path="/profile" element={<Profile />} />
         {/* Legacy redirects */}
         <Route path="/stats" element={<Navigate to="/dashboard" replace />} />
