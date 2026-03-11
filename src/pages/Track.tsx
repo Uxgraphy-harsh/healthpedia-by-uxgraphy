@@ -70,7 +70,7 @@ function generateChartData(type: string, range: "daily" | "weekly" | "monthly") 
 
 // ─── Sub-components ─────────────────────────────────────────────────────────────
 
-function EmptyState({ message, suggestions, onAction }: {
+function EmptyState({ message, suggestions }: {
   message: string;
   suggestions: { label: string; onClick: () => void }[];
 }) {
