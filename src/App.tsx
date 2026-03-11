@@ -10,6 +10,7 @@ import AIChat from "./pages/AIChat";
 import Track from "./pages/Track";
 import Records from "./pages/Records";
 import Reminders from "./pages/Reminders";
+import Timeline from "./pages/Timeline";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
