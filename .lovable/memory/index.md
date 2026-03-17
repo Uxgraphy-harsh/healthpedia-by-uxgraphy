@@ -9,7 +9,7 @@ Healthpedia - Health App Design System and Architecture
 - Health status: good (green), watch (amber), alert (red)
 
 ## Typography
-- Headlines: Playfair Display (serif)
+- Headlines: Instrument Serif (serif)
 - Body: Inter (sans-serif)
 
 ## Logo

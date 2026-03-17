@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -67,7 +67,7 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
   h1, h2, h3 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Instrument Serif', Georgia, serif;
   }
 }
 
