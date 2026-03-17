@@ -43,7 +43,17 @@ const trackerOptions = [
 
 export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   const { signInWithGoogle, user } = useAuth();
-  const [step, setStep] = useState(0);
+  const [bgIndex, setBgIndex] = useState(0);
+
+  useEffect(() => {
+    if (step !== 0) return;
+    const interval = setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % welcomeImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [step]);
+
+
 
   // Step 1: Basic Profile
   const [profile, setProfile] = useState({
