@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity, Plus, Trash2, Smartphone, ChevronRight, Bell,
@@ -6,6 +6,11 @@ import {
   Thermometer, Search, Check, X
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import onboardingBg1 from "@/assets/onboarding-bg-1.jpg";
+import onboardingBg2 from "@/assets/onboarding-bg-2.jpg";
+import onboardingBg3 from "@/assets/onboarding-bg-3.jpg";
+
+const welcomeImages = [onboardingBg1, onboardingBg2, onboardingBg3];
 
 interface OnboardingProps {
   onComplete: () => void;
