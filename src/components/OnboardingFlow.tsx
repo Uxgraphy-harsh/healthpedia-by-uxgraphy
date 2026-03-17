@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import onboardingBg1 from "@/assets/onboarding-bg-1.png";
+import healthpediaLogo from "@/assets/healthpedia-logo.svg";
 import onboardingBg2 from "@/assets/onboarding-bg-2.png";
 import onboardingBg3 from "@/assets/onboarding-bg-3.png";
 import onboardingBg4 from "@/assets/onboarding-bg-4.png";
