@@ -134,18 +134,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/70" />
 
-          {/* Slide indicators */}
-          <div className="relative z-10 flex justify-center gap-2 pt-14">
-            {welcomeImages.map((_, i) => (
-              <div
-                key={i}
-                className={`h-1 rounded-full transition-all duration-500 ${
-                  i === bgIndex ? "w-8 bg-white" : "w-2 bg-white/40"
-                }`}
-              />
-            ))}
-          </div>
-
           {/* Center content */}
           <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-8">
             <motion.div
