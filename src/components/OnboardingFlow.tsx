@@ -42,6 +42,7 @@ const trackerOptions = [
 ];
 
 export default function OnboardingFlow({ onComplete }: OnboardingProps) {
+  const { signInWithGoogle, user } = useAuth();
   const [step, setStep] = useState(0);
   const [bgIndex, setBgIndex] = useState(0);
 
