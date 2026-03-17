@@ -6,13 +6,25 @@ import {
   Thermometer, Search, Check, X
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import onboardingBg1 from "@/assets/onboarding-bg-1.png";
-import healthpediaLogo from "@/assets/healthpedia-logo.svg";
-import onboardingBg2 from "@/assets/onboarding-bg-2.png";
-import onboardingBg3 from "@/assets/onboarding-bg-3.png";
-import onboardingBg4 from "@/assets/onboarding-bg-4.png";
+import healthpediaFlower from "@/assets/healthpedia-flower.svg";
+import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
+import onboardingSlide2 from "@/assets/onboarding-slide-2.png";
+import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
 
-const welcomeImages = [onboardingBg1, onboardingBg2, onboardingBg3, onboardingBg4];
+const onboardingSlides = [
+  {
+    image: onboardingSlide1,
+    title: "Track and manage your loved one's health with AI",
+  },
+  {
+    image: onboardingSlide2,
+    title: "Record symptoms for your next appointment",
+  },
+  {
+    image: onboardingSlide3,
+    title: "Timely reminders for those you love.",
+  },
+];
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -24,7 +36,7 @@ const slideVariants = {
   exit: { x: -100, opacity: 0 },
 };
 
-const TOTAL_STEPS = 8; // welcome, basic, conditions, meds, trackers, integrations, notifications, done
+const TOTAL_STEPS = 8; // splash(auto) + welcome slider, basic, conditions, meds, trackers, integrations, notifications, done
 
 const allConditions = [
   "Diabetes", "Hypertension", "Thyroid Disorder", "Asthma",
@@ -45,18 +57,17 @@ const trackerOptions = [
 
 export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   const { signInWithGoogle, user } = useAuth();
-  const [step, setStep] = useState(0);
-  const [bgIndex, setBgIndex] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
+  const [splashFading, setSplashFading] = useState(false);
+  const [step, setStep] = useState(0); // 0 = welcome slider, 1-7 = onboarding steps
+  const [slideIndex, setSlideIndex] = useState(0);
 
+  // Splash screen: show for 2s, then fade/blur out
   useEffect(() => {
-    if (step !== 0) return;
-    const interval = setInterval(() => {
-      setBgIndex((prev) => (prev + 1) % welcomeImages.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [step]);
-
-
+    const timer1 = setTimeout(() => setSplashFading(true), 1500);
+    const timer2 = setTimeout(() => setShowSplash(false), 2300);
+    return () => { clearTimeout(timer1); clearTimeout(timer2); };
+  }, []);
 
   // Step 1: Basic Profile
   const [profile, setProfile] = useState({
@@ -116,47 +127,81 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
 
   const progressPercent = ((step) / (TOTAL_STEPS - 1)) * 100;
 
+  // ─── SPLASH SCREEN ───
+  if (showSplash) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+        <motion.img
+          src={healthpediaFlower}
+          alt="Healthpedia"
+          className="w-20 h-20"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{
+            opacity: splashFading ? 0 : 1,
+            scale: splashFading ? 1.1 : 1,
+            filter: splashFading ? "blur(12px)" : "blur(0px)",
+          }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="mobile-container flex flex-col min-h-screen bg-background">
-      {/* ─── STEP 0: WELCOME (full-screen photo slideshow) ─── */}
+      {/* ─── STEP 0: WELCOME SLIDER ─── */}
       {step === 0 && (
-        <div className="fixed inset-0 z-50 flex flex-col">
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={bgIndex}
-              src={welcomeImages[bgIndex]}
-              alt="Health and wellness"
-              initial={{ opacity: 0, scale: 1.08 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1.2, ease: "easeInOut" }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </AnimatePresence>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/70" />
+        <div className="flex-1 flex flex-col">
+          {/* Slide illustration area */}
+          <div className="flex-1 flex flex-col items-center justify-center px-6 pt-8">
+            <div className="relative w-full max-w-[280px] aspect-square rounded-3xl overflow-hidden mb-8">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={slideIndex}
+                  src={onboardingSlides[slideIndex].image}
+                  alt={onboardingSlides[slideIndex].title}
+                  initial={{ opacity: 0, x: 60 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -60 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </AnimatePresence>
+            </div>
 
-          {/* Center content */}
-          <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-            >
-              <img src={healthpediaLogo} alt="Healthpedia" className="h-10 mx-auto mb-4 drop-shadow-lg" />
-              <p className="text-white/80 text-base mt-3 leading-relaxed max-w-[280px] mx-auto drop-shadow">
-                Your personal health companion
-              </p>
-            </motion.div>
+            {/* Title text */}
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={slideIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.35 }}
+                className="text-2xl font-serif font-bold text-foreground text-center leading-snug max-w-[300px]"
+              >
+                {onboardingSlides[slideIndex].title}
+              </motion.h1>
+            </AnimatePresence>
+
+            {/* Dot indicators */}
+            <div className="flex gap-2 mt-6">
+              {onboardingSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSlideIndex(i)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === slideIndex ? "w-6 bg-primary" : "w-2 bg-muted-foreground/30"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Bottom buttons */}
-          <div className="relative z-10 px-8 pb-10 space-y-3">
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+          {/* Fixed bottom CTAs */}
+          <div className="px-6 pb-8 pt-4 space-y-3">
+            <button
               onClick={signInWithGoogle}
-              className="w-full py-4 rounded-full bg-white text-foreground font-semibold text-base shadow-lg flex items-center justify-center gap-3"
+              className="w-full py-4 rounded-full bg-foreground text-background font-semibold text-base flex items-center justify-center gap-3"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -165,16 +210,13 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
               Sign in with Google
-            </motion.button>
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65, duration: 0.5 }}
+            </button>
+            <button
               onClick={next}
-              className="w-full py-4 rounded-full bg-transparent border border-white/40 text-white font-semibold text-base"
+              className="w-full py-4 rounded-full border border-border text-foreground font-semibold text-base"
             >
-              Skip sign-in for now
-            </motion.button>
+              Explore as Guest
+            </button>
           </div>
         </div>
       )}
@@ -280,7 +322,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               <h2 className="text-2xl font-bold font-serif mb-2 text-center">Health Conditions</h2>
               <p className="text-muted-foreground text-center text-sm mb-4">Select any known conditions</p>
 
-              {/* Search */}
               <div className="glass-card flex items-center gap-2 px-3 py-2 mb-4">
                 <Search className="w-4 h-4 text-muted-foreground" />
                 <input
@@ -308,7 +349,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 ))}
               </div>
 
-              {/* Custom condition */}
               <div className="flex gap-2">
                 <input
                   placeholder="Add custom condition"

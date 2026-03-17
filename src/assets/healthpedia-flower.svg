@@ -1,0 +1,32 @@
+<svg width="80" height="80" viewBox="-10 -5 55 45" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Repeat group 3_inner" data-figma-trr="r16u1-0f">
+<g style="mix-blend-mode:multiply" opacity="0.75">
+<path d="M15.3445 17.175C14.7922 16.7005 12.9408 14.078 12.6666 13.4525C11.9627 11.8465 9.61497 7.17434 13.5925 3.74934C18.4537 5.62757 17.5288 10.9714 17.7928 11.726C19.8347 15.9018 16.4792 15.8544 15.3445 17.175Z" fill="url(#paint0_linear_41_25)"/>
+</g>
+</g>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(7.70581 -4.38974) rotate(22.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(16.5049 -5.49645) rotate(45)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(25.0578 -3.15164) rotate(67.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(32.0623 2.28772) rotate(90)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(36.452 9.99353) rotate(112.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(37.5587 18.7927) rotate(135)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(35.2139 27.3455) rotate(157.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(29.7745 34.35) rotate(-180)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(22.0687 38.7397) rotate(-157.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(13.2696 39.8464) rotate(-135)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(4.71675 37.5016) rotate(-112.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(-2.28772 32.0623) rotate(-90)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(-6.67747 24.3565) rotate(-67.5)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(-7.78417 15.5573) rotate(-45)"/>
+<use xlink:href="#Repeat%20group%203_inner" transform="translate(-5.43936 7.00448) rotate(-22.5)"/>
+<defs>
+<linearGradient id="paint0_linear_41_25" x1="15.3324" y1="17.0151" x2="14.8527" y2="10.6784" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD7E6"/>
+<stop offset="0.26" stop-color="#FFD3E3"/>
+<stop offset="0.5" stop-color="#FFC7DC"/>
+<stop offset="0.74" stop-color="#FFB4D1"/>
+<stop offset="0.97" stop-color="#FF9AC0"/>
+<stop offset="1" stop-color="#FF96BE"/>
+</linearGradient>
+</defs>
+</svg>
