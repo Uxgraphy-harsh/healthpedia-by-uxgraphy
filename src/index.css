@@ -100,10 +100,10 @@
   .btn-primary-gradient {
     @apply text-primary-foreground font-semibold rounded-2xl px-8 py-4 transition-all duration-300;
     background: var(--gradient-primary);
-    box-shadow: 0 4px 16px -4px hsl(243 75% 59% / 0.4);
+    box-shadow: 0 4px 16px -4px hsl(340 100% 80% / 0.4);
   }
   .btn-primary-gradient:hover {
-    box-shadow: 0 6px 24px -4px hsl(243 75% 59% / 0.5);
+    box-shadow: 0 6px 24px -4px hsl(340 100% 80% / 0.5);
     transform: translateY(-1px);
   }
   .mobile-container {
