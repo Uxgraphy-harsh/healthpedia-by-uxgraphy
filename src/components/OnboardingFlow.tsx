@@ -51,7 +51,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     if (step !== 0) return;
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % welcomeImages.length);
-    }, 4000);
+    }, 2000);
     return () => clearInterval(interval);
   }, [step]);
 
