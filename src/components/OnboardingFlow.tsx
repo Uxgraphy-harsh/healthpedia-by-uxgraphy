@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import onboardingBg1 from "@/assets/onboarding-bg-1.png";
+import healthpediaLogo from "@/assets/healthpedia-logo.svg";
 import onboardingBg2 from "@/assets/onboarding-bg-2.png";
 import onboardingBg3 from "@/assets/onboarding-bg-3.png";
 import onboardingBg4 from "@/assets/onboarding-bg-4.png";
@@ -141,8 +142,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
-              <Activity className="w-12 h-12 text-white mx-auto mb-4 drop-shadow-lg" strokeWidth={1.5} />
-              <h1 className="text-4xl font-bold font-serif text-white drop-shadow-lg">Healthpedia</h1>
+              <img src={healthpediaLogo} alt="Healthpedia" className="h-10 mx-auto mb-4 drop-shadow-lg" />
               <p className="text-white/80 text-base mt-3 leading-relaxed max-w-[280px] mx-auto drop-shadow">
                 Your personal health companion
               </p>
