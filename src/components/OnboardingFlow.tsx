@@ -562,6 +562,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           )}
         </motion.div>
       </AnimatePresence>
+      )}
 
       {/* Bottom CTA */}
       {step > 0 && step < 7 && step !== 5 && step !== 6 && (
