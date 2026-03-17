@@ -177,7 +177,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.35 }}
-                className="text-2xl font-serif font-bold text-foreground text-center leading-snug max-w-[300px]"
+                className="text-3xl font-serif font-normal text-foreground text-center leading-snug max-w-[300px]"
               >
                 {onboardingSlides[slideIndex].title}
               </motion.h1>
