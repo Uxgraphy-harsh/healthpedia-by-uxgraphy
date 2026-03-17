@@ -6,11 +6,12 @@ import {
   Thermometer, Search, Check, X
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import onboardingBg1 from "@/assets/onboarding-bg-1.jpg";
-import onboardingBg2 from "@/assets/onboarding-bg-2.jpg";
-import onboardingBg3 from "@/assets/onboarding-bg-3.jpg";
+import onboardingBg1 from "@/assets/onboarding-bg-1.png";
+import onboardingBg2 from "@/assets/onboarding-bg-2.png";
+import onboardingBg3 from "@/assets/onboarding-bg-3.png";
+import onboardingBg4 from "@/assets/onboarding-bg-4.png";
 
-const welcomeImages = [onboardingBg1, onboardingBg2, onboardingBg3];
+const welcomeImages = [onboardingBg1, onboardingBg2, onboardingBg3, onboardingBg4];
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -50,7 +51,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     if (step !== 0) return;
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % welcomeImages.length);
-    }, 4000);
+    }, 2000);
     return () => clearInterval(interval);
   }, [step]);
 
@@ -132,18 +133,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             />
           </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/70" />
-
-          {/* Slide indicators */}
-          <div className="relative z-10 flex justify-center gap-2 pt-14">
-            {welcomeImages.map((_, i) => (
-              <div
-                key={i}
-                className={`h-1 rounded-full transition-all duration-500 ${
-                  i === bgIndex ? "w-8 bg-white" : "w-2 bg-white/40"
-                }`}
-              />
-            ))}
-          </div>
 
           {/* Center content */}
           <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-8">
