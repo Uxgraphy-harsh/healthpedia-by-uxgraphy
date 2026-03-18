@@ -180,7 +180,7 @@ export default function AIChat() {
               <img
                 src={askAiFlower}
                 alt=""
-                className="w-36 h-36 opacity-15"
+                className="w-36 h-36 opacity-15 grayscale"
               />
             </motion.div>
           </div>
