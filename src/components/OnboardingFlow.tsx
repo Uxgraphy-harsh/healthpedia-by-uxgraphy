@@ -36,7 +36,7 @@ const onboardingSlides = [
     title: "Record symptoms for your next appointment",
   },
   {
-    image: onboardingSlide3,
+    image: "custom-slide-3",
     title: "Timely reminders for those you love.",
   },
 ];
