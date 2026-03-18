@@ -358,7 +358,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               </button>
               <button
                 onClick={next}
-                className="w-full py-4 rounded-full border border-white/20 text-foreground font-semibold text-base backdrop-blur-lg bg-white/20 shadow-lg"
+                className="w-full py-4 rounded-full border border-white/20 text-foreground font-semibold text-base backdrop-blur-lg bg-white/20 shadow-lg flex items-center justify-center"
               >
                 Explore as Guest
               </button>
