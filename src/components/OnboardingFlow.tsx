@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity, Plus, Trash2, Smartphone, ChevronRight, Bell,
@@ -102,7 +102,36 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     });
   }, []);
 
-  // Step 1: Basic Profile
+  // Auto-advance slides every 4 seconds
+  useEffect(() => {
+    if (step !== 0) return;
+    const timer = setInterval(() => {
+      setSlideIndex((prev) => (prev + 1) % onboardingSlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [step]);
+
+  // Swipe gesture for slider
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  }, []);
+  const handleTouchEnd = useCallback(() => {
+    const diff = touchStartX.current - touchEndX.current;
+    const threshold = 50;
+    if (diff > threshold) {
+      // Swipe left → next slide
+      setSlideIndex((prev) => Math.min(prev + 1, onboardingSlides.length - 1));
+    } else if (diff < -threshold) {
+      // Swipe right → prev slide
+      setSlideIndex((prev) => Math.max(prev - 1, 0));
+    }
+  }, []);
+
   const [profile, setProfile] = useState({
     name: user?.user_metadata?.full_name || "",
     dob: "",
@@ -193,7 +222,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[160%] max-w-none pointer-events-none z-0"
           />
           {/* Illustration area - takes up most of the screen */}
-          <div className="flex-1 relative flex items-center justify-center px-6 pt-6 z-[1]">
+          <div className="flex-1 relative flex items-center justify-center px-6 pt-6 z-[1]" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             {/* Floating pill badges - only for slides 0 and 2 */}
             {slideBadges[slideIndex]?.length > 0 && (
               <AnimatePresence mode="wait">
