@@ -256,7 +256,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         alt="iPhone"
                         className="w-[70%] mx-auto scale-110 origin-top drop-shadow-2xl"
                       />
-                      />
                       {/* Bottom gradient fade to background */}
                       <div
                         className="absolute bottom-0 left-0 right-0 h-[120px] pointer-events-none"
