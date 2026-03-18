@@ -376,7 +376,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             className="absolute bottom-[-15%] left-1/2 -translate-x-1/2 w-[200%] max-w-none pointer-events-none z-0"
           />
           {/* Progress bar */}
-          <div className="px-4 pt-12 pb-2">
+          <div className="px-4 pt-12 pb-2 relative z-[1]">
             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full rounded-full"
