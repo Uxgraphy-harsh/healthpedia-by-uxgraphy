@@ -15,19 +15,19 @@ import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
 
 const slideBadges = [
   [
-    { label: "Reminders", icon: Calendar, position: "top-4 right-4" },
-    { label: "Reports", icon: Heart, position: "top-20 left-2" },
-    { label: "Notifications", icon: Bell, position: "bottom-24 right-2" },
+    { label: "Reminders", icon: Calendar, position: "top-[8%] right-[2%]" },
+    { label: "Reports", icon: Heart, position: "top-[35%] -left-[4%]" },
+    { label: "Notifications", icon: Bell, position: "bottom-[15%] right-[1%]" },
   ],
   [
-    { label: "Symptom Log", icon: ClipboardList, position: "top-4 left-2" },
-    { label: "Doctor Visit", icon: Stethoscope, position: "top-16 right-4" },
-    { label: "Health Score", icon: Activity, position: "bottom-24 left-4" },
+    { label: "Symptom Log", icon: ClipboardList, position: "top-[10%] -left-[2%]" },
+    { label: "Doctor Visit", icon: Stethoscope, position: "top-[25%] right-[1%]" },
+    { label: "Health Score", icon: Activity, position: "bottom-[18%] left-[2%]" },
   ],
   [
-    { label: "Medications", icon: Pill, position: "top-4 right-6" },
-    { label: "Timely Alerts", icon: Clock, position: "top-20 left-2" },
-    { label: "Family Care", icon: Heart, position: "bottom-24 right-4" },
+    { label: "Medications", icon: Pill, position: "top-[8%] right-[3%]" },
+    { label: "Timely Alerts", icon: Clock, position: "top-[38%] -left-[3%]" },
+    { label: "Family Care", icon: Heart, position: "bottom-[12%] right-[2%]" },
   ],
 ];
 
