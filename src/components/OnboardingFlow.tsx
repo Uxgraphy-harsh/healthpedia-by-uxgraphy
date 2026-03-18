@@ -23,11 +23,7 @@ const slideBadges = [
     { label: "Notifications", icon: Bell, position: "bottom-[15%] right-[1%]" },
   ],
   [], // Slide 2 has no pill badges — uses UI card overlays instead
-  [
-    { label: "Medications", icon: Pill, position: "top-[8%] right-[3%]" },
-    { label: "Timely Alerts", icon: Clock, position: "top-[38%] -left-[3%]" },
-    { label: "Family Care", icon: Heart, position: "bottom-[12%] right-[2%]" },
-  ],
+  [], // Slide 3 has no pill badges — uses floating notification on iPhone
 ];
 
 const onboardingSlides = [
