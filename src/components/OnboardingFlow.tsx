@@ -415,7 +415,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         value={profile.dob}
                         onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
                         placeholder="Date of Birth"
-                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors [&:not(:valid)]:text-white/40"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors [&:not(:valid)]:text-white/40 [color-scheme:dark]"
                       />
                     </div>
                     <div className="relative">
