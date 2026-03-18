@@ -205,7 +205,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             </AnimatePresence>
 
             {/* Main illustration */}
-            <div className="relative w-full max-w-[320px] aspect-[3/4] rounded-3xl overflow-hidden">
+            <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={slideIndex}
