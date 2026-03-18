@@ -223,23 +223,23 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    {/* Symptom card overlay - upper portion */}
+                    {/* Symptom card overlay - upper left */}
                     <motion.img
                       src={onboardingCardSymptoms}
                       alt="Symptom log card"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
-                      className="absolute top-[5%] -left-[5%] w-[75%] drop-shadow-xl"
+                      className="absolute top-[-6%] left-[-12%] w-[68%] drop-shadow-xl"
                     />
-                    {/* Doctor card overlay - lower portion */}
+                    {/* Doctor card overlay - lower right */}
                     <motion.img
                       src={onboardingCardDoctor}
                       alt="Doctor availability card"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 }}
-                      className="absolute bottom-[8%] -right-[5%] w-[70%] drop-shadow-xl"
+                      className="absolute bottom-[-10%] right-[-11%] w-[72%] drop-shadow-xl"
                     />
                   </motion.div>
                 </AnimatePresence>
