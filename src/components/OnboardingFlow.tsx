@@ -85,6 +85,23 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     return () => { clearTimeout(timer1); clearTimeout(timer2); };
   }, []);
 
+  // Preload all onboarding images so they're cached before slider transitions
+  useEffect(() => {
+    const imagesToPreload = [
+      onboardingSlide1,
+      onboardingSlide2Bg,
+      onboardingCardSymptoms,
+      onboardingCardDoctor,
+      onboardingIphoneOnly,
+      onboardingNotificationFloat,
+      onboardingFlowerWatermark,
+    ];
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   // Step 1: Basic Profile
   const [profile, setProfile] = useState({
     name: user?.user_metadata?.full_name || "",
