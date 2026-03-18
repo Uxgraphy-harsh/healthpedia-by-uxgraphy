@@ -85,6 +85,23 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     return () => { clearTimeout(timer1); clearTimeout(timer2); };
   }, []);
 
+  // Preload all onboarding images so they're cached before slider transitions
+  useEffect(() => {
+    const imagesToPreload = [
+      onboardingSlide1,
+      onboardingSlide2Bg,
+      onboardingCardSymptoms,
+      onboardingCardDoctor,
+      onboardingIphoneOnly,
+      onboardingNotificationFloat,
+      onboardingFlowerWatermark,
+    ];
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   // Step 1: Basic Profile
   const [profile, setProfile] = useState({
     name: user?.user_metadata?.full_name || "",
@@ -208,98 +225,62 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               </AnimatePresence>
             )}
 
-            {/* Main illustration - same max-w for all slides */}
-            <div className={`relative w-full ${slideIndex === 2 ? "max-w-none" : "max-w-[300px]"}`}>
-              <AnimatePresence mode="wait">
-                {slideIndex === 1 ? (
-                  <motion.div
-                    key="slide-2-custom"
-                    initial={{ opacity: 0, x: 60 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -60 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="relative w-full"
-                  >
-                    {/* Flower background image */}
-                    <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-xl">
-                      <img
-                        src={onboardingSlide2Bg}
-                        alt="Flower background"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    {/* Symptom card overlay - upper left */}
-                    <motion.img
-                      src={onboardingCardSymptoms}
-                      alt="Symptom log card"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      className="absolute top-[-8%] left-[0%] w-[65%] drop-shadow-xl"
-                    />
-                    {/* Doctor card overlay - lower right */}
-                    <motion.img
-                      src={onboardingCardDoctor}
-                      alt="Doctor availability card"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.5 }}
-                      className="absolute bottom-[-8%] right-[0%] w-[68%] drop-shadow-xl"
-                    />
-                  </motion.div>
-                ) : slideIndex === 2 ? (
-                  <motion.div
-                    key="slide-3-custom"
-                    initial={{ opacity: 0, x: 60 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -60 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="relative w-full"
-                  >
-                    {/* Inner container: clips only the iPhone from the bottom */}
-                    <div className="relative w-full overflow-hidden" style={{ maxHeight: '380px' }}>
-                      <img
-                        src={onboardingIphoneOnly}
-                        alt="iPhone"
-                        className="w-[68%] mx-auto scale-[1.35] origin-top drop-shadow-2xl"
-                      />
-                      {/* Bottom gradient fade to background */}
-                      <div
-                        className="absolute bottom-0 left-0 right-0 h-[120px] pointer-events-none"
-                        style={{
-                          background: 'linear-gradient(to bottom, hsl(40 33% 96% / 0), hsl(40 33% 96% / 1))',
-                        }}
-                      />
-                    </div>
-                    {/* Floating notification - centered to the full screen area */}
-                    <div className="absolute bottom-[22%] inset-x-0 flex justify-center z-10 pointer-events-none">
-                      <motion.img
-                        src={onboardingNotificationFloat}
-                        alt="Medication reminder notification"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.4 }}
-                        className="w-[88%] max-w-[340px] drop-shadow-xl"
-                      />
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key={slideIndex}
-                    initial={{ opacity: 0, x: 60 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -60 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="w-full aspect-[3/4] rounded-3xl overflow-hidden shadow-xl relative"
-                  >
-                    <img
-                      src={onboardingSlides[slideIndex].image}
-                      alt={onboardingSlides[slideIndex].title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            {/* Main illustration - all slides always mounted for instant switching */}
+            <div className="relative w-full" style={{ maxWidth: slideIndex === 2 ? 'none' : '300px' }}>
+              {/* Slide 0: Main photo */}
+              <motion.div
+                animate={{ opacity: slideIndex === 0 ? 1 : 0, x: slideIndex === 0 ? 0 : -60 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="w-full aspect-[3/4] rounded-3xl overflow-hidden shadow-xl relative"
+                style={{ pointerEvents: slideIndex === 0 ? "auto" : "none", position: slideIndex === 0 ? "relative" : "absolute", top: 0, left: 0, right: 0 }}
+              >
+                <img src={onboardingSlide1} alt={onboardingSlides[0].title} className="absolute inset-0 w-full h-full object-cover" />
+              </motion.div>
+
+              {/* Slide 1: Flower + cards */}
+              <motion.div
+                animate={{ opacity: slideIndex === 1 ? 1 : 0, x: slideIndex === 1 ? 0 : slideIndex > 1 ? -60 : 60 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="relative w-full"
+                style={{ pointerEvents: slideIndex === 1 ? "auto" : "none", position: slideIndex === 1 ? "relative" : "absolute", top: 0, left: 0, right: 0 }}
+              >
+                <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-xl">
+                  <img src={onboardingSlide2Bg} alt="Flower background" className="w-full h-full object-cover" />
+                </div>
+                <motion.img
+                  src={onboardingCardSymptoms} alt="Symptom log card"
+                  animate={{ opacity: slideIndex === 1 ? 1 : 0, y: slideIndex === 1 ? 0 : 20 }}
+                  transition={{ duration: 0.5, delay: slideIndex === 1 ? 0.3 : 0 }}
+                  className="absolute top-[-8%] left-[0%] w-[65%] drop-shadow-xl"
+                />
+                <motion.img
+                  src={onboardingCardDoctor} alt="Doctor availability card"
+                  animate={{ opacity: slideIndex === 1 ? 1 : 0, y: slideIndex === 1 ? 0 : 20 }}
+                  transition={{ duration: 0.5, delay: slideIndex === 1 ? 0.5 : 0 }}
+                  className="absolute bottom-[-8%] right-[0%] w-[68%] drop-shadow-xl"
+                />
+              </motion.div>
+
+              {/* Slide 2: iPhone + notification */}
+              <motion.div
+                animate={{ opacity: slideIndex === 2 ? 1 : 0, x: slideIndex === 2 ? 0 : 60 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="relative w-full"
+                style={{ pointerEvents: slideIndex === 2 ? "auto" : "none", position: slideIndex === 2 ? "relative" : "absolute", top: 0, left: 0, right: 0 }}
+              >
+                <div className="relative w-full overflow-hidden" style={{ maxHeight: '380px' }}>
+                  <img src={onboardingIphoneOnly} alt="iPhone" className="w-[68%] mx-auto scale-[1.35] origin-top drop-shadow-2xl" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[120px] pointer-events-none" style={{ background: 'linear-gradient(to bottom, hsl(40 33% 96% / 0), hsl(40 33% 96% / 1))' }} />
+                </div>
+                <div className="absolute bottom-[22%] inset-x-0 flex justify-center z-10 pointer-events-none">
+                  <motion.img
+                    src={onboardingNotificationFloat} alt="Medication reminder notification"
+                    animate={{ opacity: slideIndex === 2 ? 1 : 0, y: slideIndex === 2 ? 0 : 20 }}
+                    transition={{ duration: 0.5, delay: slideIndex === 2 ? 0.4 : 0 }}
+                    className="w-[88%] max-w-[340px] drop-shadow-xl"
+                  />
+                </div>
+              </motion.div>
             </div>
           </div>
 
