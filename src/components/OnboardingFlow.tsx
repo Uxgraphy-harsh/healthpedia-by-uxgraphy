@@ -18,6 +18,7 @@ import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.png"
 import onboardingFlowerDark from "@/assets/onboarding-flower-dark.png";
 import googleFitIcon from "@/assets/google-fit-icon.png";
 import appleHealthIcon from "@/assets/apple-health-icon.png";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const slideBadges = [
   [
