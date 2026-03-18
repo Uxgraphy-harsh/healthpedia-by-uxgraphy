@@ -368,7 +368,13 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
 
       {/* ─── ONBOARDING STEPS 1-4 (Dark Maroon Theme) ─── */}
       {step > 0 && (
-        <>
+        <div className="flex-1 flex flex-col relative">
+          {/* Flower watermark - spans full screen including behind CTA */}
+          <img
+            src={onboardingFlowerDark}
+            alt=""
+            className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[180%] max-w-none pointer-events-none opacity-40 z-0"
+          />
           {/* Progress bar */}
           <div className="px-4 pt-12 pb-2">
             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
@@ -389,17 +395,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.35, ease: "easeInOut" }}
-              className="flex-1 flex flex-col px-6 py-4 overflow-y-auto overflow-x-hidden"
+              className="flex-1 flex flex-col px-6 py-4 overflow-y-auto overflow-x-hidden relative z-[1]"
             >
               {/* ─── STEP 1: BASIC DETAILS ─── */}
               {step === 1 && (
-                <div className="flex-1 flex flex-col relative overflow-hidden">
-                  {/* Flower watermark from bottom */}
-                  <img
-                    src={onboardingFlowerDark}
-                    alt=""
-                    className="absolute bottom-[-30%] left-1/2 -translate-x-1/2 w-[120%] max-w-none pointer-events-none opacity-40"
-                  />
+                <div className="flex-1 flex flex-col relative">
                   <h2 className="text-4xl font-serif text-white leading-tight mb-8">Please enter<br />basic details</h2>
                   <div className="space-y-4 flex-1 relative z-10">
                     <input
@@ -610,7 +610,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               </button>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
