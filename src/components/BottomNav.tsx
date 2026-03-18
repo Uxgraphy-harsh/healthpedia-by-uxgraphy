@@ -5,7 +5,7 @@ import healthpediaFlower from "@/assets/healthpedia-flower.svg";
 
 const tabs = [
   { path: "/dashboard", icon: Stack, label: "Summary" },
-  { path: "/track", icon: HeartBeat, label: "Track" },
+  { path: "/track", icon: Heartbeat, label: "Track" },
   { path: "/chat", icon: null, label: "Ask AI", isCenter: true },
   { path: "/records", icon: FolderOpen, label: "Records" },
   { path: "/profile", icon: UserCircle, label: "Profile" },
