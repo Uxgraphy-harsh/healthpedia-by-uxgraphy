@@ -234,15 +234,15 @@ export default function AIChat() {
       {/* ─── QUICK CHIPS (only in empty state) ─── */}
       {isEmptyState && (
         <div className="px-5 pb-3">
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             {quickChips.map((chip) => (
               <button
                 key={chip.label}
                 onClick={() => sendMessage(chip.label)}
-                className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-card border border-border/40 flex-1"
+                className="flex flex-col items-start gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-border/30 flex-1 shadow-sm"
               >
-                <chip.icon size={20} className="text-muted-foreground" />
-                <span className="text-xs font-medium text-foreground">{chip.label}</span>
+                <chip.icon size={24} weight="light" className="text-muted-foreground/70" />
+                <span className="text-sm font-medium text-foreground">{chip.label}</span>
               </button>
             ))}
           </div>
@@ -251,10 +251,13 @@ export default function AIChat() {
 
       {/* ─── INPUT AREA ─── */}
       <div className="px-5 pb-8 pt-2">
-        <div className="flex items-end gap-2 bg-card border border-border/40 rounded-2xl p-2 pr-3">
-          <button className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0">
-            <Paperclip size={18} className="text-muted-foreground" />
-          </button>
+        <div
+          className="rounded-3xl p-4 pt-3"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,200,220,0.25) 100%)",
+            border: "1px solid rgba(255,255,255,0.5)",
+          }}
+        >
           <textarea
             ref={inputRef}
             value={input}
@@ -267,11 +270,16 @@ export default function AIChat() {
             }}
             placeholder="Ask anything about your health"
             rows={1}
-            className="flex-1 bg-transparent text-sm px-1 py-2 outline-none resize-none max-h-[120px] placeholder:text-muted-foreground/60"
+            className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
           />
-          <button className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0">
-            <Microphone size={18} className="text-muted-foreground" />
-          </button>
+          <div className="flex items-center justify-between mt-2">
+            <button className="w-10 h-10 rounded-full bg-white/60 border border-border/30 flex items-center justify-center">
+              <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
+            </button>
+            <button className="w-10 h-10 rounded-full bg-white/60 border border-border/30 flex items-center justify-center">
+              <Microphone size={18} weight="light" className="text-muted-foreground/70" />
+            </button>
+          </div>
         </div>
       </div>
 
