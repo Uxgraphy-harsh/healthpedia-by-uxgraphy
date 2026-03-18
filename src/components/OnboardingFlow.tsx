@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import healthpediaFlower from "@/assets/healthpedia-flower.svg";
+import splashScreen from "@/assets/splash-screen.svg";
 import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2 from "@/assets/onboarding-slide-2.png";
 import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
@@ -130,20 +131,21 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   // ─── SPLASH SCREEN ───
   if (showSplash) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
-        <motion.img
-          src={healthpediaFlower}
+      <motion.div
+        className="fixed inset-0 z-50 bg-background"
+        initial={{ opacity: 1 }}
+        animate={{
+          opacity: splashFading ? 0 : 1,
+          filter: splashFading ? "blur(12px)" : "blur(0px)",
+        }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+      >
+        <img
+          src={splashScreen}
           alt="Healthpedia"
-          className="w-20 h-20"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            opacity: splashFading ? 0 : 1,
-            scale: splashFading ? 1.1 : 1,
-            filter: splashFading ? "blur(12px)" : "blur(0px)",
-          }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="w-full h-full object-cover"
         />
-      </div>
+      </motion.div>
     );
   }
 
