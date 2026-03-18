@@ -39,7 +39,7 @@ const onboardingSlides = [
     title: "Track and manage your loved one's health with AI",
   },
   {
-    image: onboardingSlide2,
+    image: "custom-slide-2",
     title: "Record symptoms for your next appointment",
   },
   {
