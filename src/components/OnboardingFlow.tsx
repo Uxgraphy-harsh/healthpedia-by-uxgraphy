@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity, Plus, Trash2, Smartphone, ChevronRight, Bell,
   Heart, Droplets, Moon, Zap, Smile, GlassWater, Weight,
-  Thermometer, Search, Check, X
+  Thermometer, Search, Check, X, Calendar, FileText, BellRing,
+  ClipboardList, Stethoscope, Clock, Pill
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import healthpediaFlower from "@/assets/healthpedia-flower.svg";
@@ -11,6 +12,24 @@ import splashScreen from "@/assets/splash-screen.svg";
 import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2 from "@/assets/onboarding-slide-2.png";
 import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
+
+const slideBadges = [
+  [
+    { label: "Reminders", icon: Calendar, position: "top-4 right-4" },
+    { label: "Reports", icon: Heart, position: "top-20 left-2" },
+    { label: "Notifications", icon: Bell, position: "bottom-24 right-2" },
+  ],
+  [
+    { label: "Symptom Log", icon: ClipboardList, position: "top-4 left-2" },
+    { label: "Doctor Visit", icon: Stethoscope, position: "top-16 right-4" },
+    { label: "Health Score", icon: Activity, position: "bottom-24 left-4" },
+  ],
+  [
+    { label: "Medications", icon: Pill, position: "top-4 right-6" },
+    { label: "Timely Alerts", icon: Clock, position: "top-20 left-2" },
+    { label: "Family Care", icon: Heart, position: "bottom-24 right-4" },
+  ],
+];
 
 const onboardingSlides = [
   {
@@ -152,11 +171,41 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   return (
     <div className="mobile-container flex flex-col min-h-screen bg-background">
       {/* ─── STEP 0: WELCOME SLIDER ─── */}
-      {step === 0 && (
-        <div className="flex-1 flex flex-col">
-          {/* Slide illustration area */}
-          <div className="flex-1 flex flex-col items-center justify-center px-6 pt-8">
-            <div className="relative w-full max-w-[280px] aspect-square rounded-3xl overflow-hidden mb-8">
+       {step === 0 && (
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Illustration area - takes up most of the screen */}
+          <div className="flex-1 relative flex items-center justify-center px-4 pt-6">
+            {/* Floating pill badges */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`badges-${slideIndex}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 z-10 pointer-events-none"
+              >
+                {slideBadges[slideIndex].map((badge, i) => {
+                  const Icon = badge.icon;
+                  return (
+                    <motion.div
+                      key={badge.label}
+                      initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.15 + i * 0.1 }}
+                      className={`absolute ${badge.position} flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border/50 shadow-lg`}
+                      style={{ boxShadow: "0 4px 20px -4px hsl(340 100% 80% / 0.15)" }}
+                    >
+                      <Icon className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-medium text-foreground">{badge.label}</span>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Main illustration */}
+            <div className="relative w-full max-w-[320px] aspect-[3/4] rounded-3xl overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={slideIndex}
@@ -170,7 +219,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 />
               </AnimatePresence>
             </div>
+          </div>
 
+          {/* Bottom section: title, dots, CTAs */}
+          <div className="px-6 pb-8 pt-4">
             {/* Title text */}
             <AnimatePresence mode="wait">
               <motion.h1
@@ -179,14 +231,14 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.35 }}
-                className="text-3xl font-serif font-normal text-foreground text-center leading-snug max-w-[300px]"
+                className="text-3xl font-serif font-normal text-foreground text-center leading-snug max-w-[300px] mx-auto"
               >
                 {onboardingSlides[slideIndex].title}
               </motion.h1>
             </AnimatePresence>
 
             {/* Dot indicators */}
-            <div className="flex gap-2 mt-6">
+            <div className="flex gap-2 mt-5 justify-center">
               {onboardingSlides.map((_, i) => (
                 <button
                   key={i}
@@ -197,28 +249,28 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 />
               ))}
             </div>
-          </div>
 
-          {/* Fixed bottom CTAs */}
-          <div className="px-6 pb-8 pt-4 space-y-3">
-            <button
-              onClick={signInWithGoogle}
-              className="w-full py-4 rounded-full bg-foreground text-background font-semibold text-base flex items-center justify-center gap-3"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              Sign in with Google
-            </button>
-            <button
-              onClick={next}
-              className="w-full py-4 rounded-full border border-border/50 text-foreground font-semibold text-base backdrop-blur-md bg-card/70"
-            >
-              Explore as Guest
-            </button>
+            {/* CTAs */}
+            <div className="mt-6 space-y-3">
+              <button
+                onClick={signInWithGoogle}
+                className="w-full py-4 rounded-full bg-foreground text-background font-semibold text-base flex items-center justify-center gap-3"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Sign in with Google
+              </button>
+              <button
+                onClick={next}
+                className="w-full py-4 rounded-full border border-border/50 text-foreground font-semibold text-base backdrop-blur-md bg-card/70"
+              >
+                Explore as Guest
+              </button>
+            </div>
           </div>
         </div>
       )}
