@@ -13,8 +13,7 @@ import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2Bg from "@/assets/onboarding-slide-2-bg.png";
 import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
 import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
-import onboardingIphone from "@/assets/onboarding-iphone.png";
-import onboardingNotification from "@/assets/onboarding-notification.svg";
+import onboardingIphoneFull from "@/assets/onboarding-iphone-full.svg";
 
 const slideBadges = [
   [
@@ -247,22 +246,21 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -60 }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="relative w-full flex items-center justify-center"
+                    className="relative w-full overflow-hidden"
+                    style={{ maxHeight: '380px' }}
                   >
-                    {/* iPhone image */}
+                    {/* Scaled-up iPhone with notification - cropped from bottom */}
                     <img
-                      src={onboardingIphone}
-                      alt="iPhone"
-                      className="w-[70%] drop-shadow-2xl"
+                      src={onboardingIphoneFull}
+                      alt="iPhone with notification"
+                      className="w-full scale-110 origin-top drop-shadow-2xl"
                     />
-                    {/* Floating notification overlay */}
-                    <motion.img
-                      src={onboardingNotification}
-                      alt="Reminder notification"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.4 }}
-                      className="absolute bottom-[15%] left-[0%] w-[95%] drop-shadow-xl"
+                    {/* Bottom gradient fade to background */}
+                    <div
+                      className="absolute bottom-0 left-0 right-0 h-[120px] pointer-events-none"
+                      style={{
+                        background: 'linear-gradient(to bottom, hsl(40 33% 96% / 0), hsl(40 33% 96% / 1))',
+                      }}
                     />
                   </motion.div>
                 ) : (
