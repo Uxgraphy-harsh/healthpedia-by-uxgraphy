@@ -239,22 +239,21 @@ export default function AIChat() {
             />
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 px-5 pb-8 pt-3">
-            <div className="mb-3 grid grid-cols-2 gap-3">
+          <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-3">
+            <div className="mb-2.5 grid grid-cols-2 gap-2.5">
               {quickChips.map((chip) => (
                 <button
                   key={chip.label}
                   onClick={() => sendMessage(chip.label)}
-                  className="flex min-h-[92px] flex-col items-start justify-between rounded-[1.85rem] border p-5 text-left backdrop-blur-xl"
+                  className="flex flex-col items-start gap-3 rounded-2xl border px-4 py-3.5 text-left backdrop-blur-xl"
                   style={{
                     background: "hsl(var(--card) / 0.50)",
-                    borderColor: "hsl(var(--border) / 0.58)",
-                    boxShadow:
-                      "0 16px 35px -20px hsl(var(--foreground) / 0.16), inset 0 1px 0 hsl(var(--card) / 0.85)",
+                    borderColor: "hsl(var(--border) / 0.50)",
+                    boxShadow: "0 8px 24px -12px hsl(var(--foreground) / 0.10), inset 0 1px 0 hsl(var(--card) / 0.85)",
                   }}
                 >
-                  <chip.icon size={23} weight="light" className="text-muted-foreground" />
-                  <span className="text-[14px] font-medium text-foreground">{chip.label}</span>
+                  <chip.icon size={22} weight="light" className="text-muted-foreground/80" />
+                  <span className="text-[13px] font-medium text-foreground">{chip.label}</span>
                 </button>
               ))}
             </div>
