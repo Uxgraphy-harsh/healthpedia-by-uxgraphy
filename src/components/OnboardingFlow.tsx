@@ -514,8 +514,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 3: HEALTH TRACKERS ─── */}
               {step === 3 && (
                 <div className="flex-1 flex flex-col">
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Health Trackers</h2>
-                  <p className="text-white/50 text-sm mb-6">Choose what you want to track</p>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Choose health<br />trackers</h2>
                   <div className="grid grid-cols-2 gap-3 flex-1">
                     {trackerOptions.map((t) => {
                       const selected = selectedTrackers.includes(t.id);
