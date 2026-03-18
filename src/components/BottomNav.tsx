@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Stack, Heartbeat, FolderOpen, UserCircle } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
-import healthpediaFlower from "@/assets/healthpedia-flower.svg";
+import askAiFlower from "@/assets/ask-ai-flower.svg";
 
 const tabs = [
   { path: "/dashboard", icon: Stack, label: "Summary" },
@@ -18,9 +18,8 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="max-w-md mx-auto relative">
-        {/* Background bar */}
         <div className="bg-card/90 backdrop-blur-xl border-t border-border/30 px-2 pb-safe">
-          <div className="flex justify-around items-end py-2">
+          <div className="flex justify-around items-end pt-2 pb-2">
             {tabs.map((tab) => {
               const active = location.pathname === tab.path;
 
@@ -29,26 +28,25 @@ export default function BottomNav() {
                   <button
                     key={tab.path}
                     onClick={() => navigate(tab.path)}
-                    className="flex flex-col items-center gap-1 px-3 relative -mt-5"
+                    className="flex flex-col items-center px-3 relative"
+                    style={{ marginBottom: 0 }}
                   >
-                    {/* Elevated flower icon */}
+                    {/* Flower that overflows the navbar */}
                     <motion.div
                       whileTap={{ scale: 0.92 }}
-                      className="w-14 h-14 rounded-full flex items-center justify-center -mb-1"
+                      className="absolute -top-10 w-16 h-16 flex items-center justify-center"
                     >
                       <img
-                        src={healthpediaFlower}
+                        src={askAiFlower}
                         alt="Ask AI"
-                        className="w-12 h-12"
-                        style={{
-                          filter: active ? "none" : "grayscale(0.3) opacity(0.7)",
-                        }}
+                        className="w-14 h-14"
                       />
                     </motion.div>
+                    {/* Spacer to push label down to align with others */}
+                    <div className="h-6" />
                     <span
-                      className={`text-[10px] font-semibold ${
-                        active ? "text-primary" : "text-muted-foreground"
-                      }`}
+                      className="text-[10px] font-semibold"
+                      style={{ color: "#60A5FA" }}
                     >
                       {tab.label}
                     </span>
@@ -60,12 +58,12 @@ export default function BottomNav() {
                 <button
                   key={tab.path}
                   onClick={() => navigate(tab.path)}
-                  className="flex flex-col items-center gap-1 px-3 py-2 relative"
+                  className="flex flex-col items-center gap-1 px-3 relative"
                 >
                   {active && (
                     <motion.div
                       layoutId="activeTab"
-                      className="absolute -top-0.5 w-8 h-[2px] rounded-full bg-foreground"
+                      className="absolute -top-2 w-8 h-[2px] rounded-full bg-foreground"
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
