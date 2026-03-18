@@ -257,12 +257,13 @@ export default function AIChat() {
       )}
 
       {/* ─── INPUT AREA ─── */}
-      <div className="px-5 pb-8 pt-2">
+      <div className="px-5 pb-8 pt-2 relative z-10">
         <div
-          className="rounded-3xl p-4 pt-3"
+          className="rounded-3xl p-4 pt-3 backdrop-blur-xl"
           style={{
-            background: "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,200,220,0.25) 100%)",
-            border: "1px solid rgba(255,255,255,0.5)",
+            background: "rgba(255,255,255,0.15)",
+            border: "1px solid rgba(255,255,255,0.4)",
+            boxShadow: "0 4px 30px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
           }}
         >
           <textarea
@@ -280,10 +281,10 @@ export default function AIChat() {
             className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
           />
           <div className="flex items-center justify-between mt-2">
-            <button className="w-10 h-10 rounded-full bg-white/60 border border-border/30 flex items-center justify-center">
+            <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
               <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
             </button>
-            <button className="w-10 h-10 rounded-full bg-white/60 border border-border/30 flex items-center justify-center">
+            <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
               <Microphone size={18} weight="light" className="text-muted-foreground/70" />
             </button>
           </div>
