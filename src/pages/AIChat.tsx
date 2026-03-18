@@ -210,7 +210,7 @@ export default function AIChat() {
       />
 
       <header className="relative z-10 flex items-center justify-between px-5 pb-3 pt-4">
-        <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-full">
+        <button onClick={() => navigate("/dashboard")} className="flex h-10 w-10 items-center justify-center rounded-full">
           <XIcon size={24} weight="bold" className="text-foreground" />
         </button>
 
