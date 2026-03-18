@@ -254,7 +254,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       <img
                         src={onboardingIphoneOnly}
                         alt="iPhone"
-                        className="w-[70%] mx-auto scale-110 origin-top drop-shadow-2xl"
+                        className="w-[80%] mx-auto scale-125 origin-top drop-shadow-2xl"
                       />
                       {/* Bottom gradient fade to background */}
                       <div
@@ -264,14 +264,14 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         }}
                       />
                     </div>
-                    {/* Floating notification - outside clip container */}
+                    {/* Floating notification - outside clip container, centered */}
                     <motion.img
                       src={onboardingNotificationFloat}
                       alt="Medication reminder notification"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.4 }}
-                      className="absolute bottom-[25%] left-[-5%] w-[100%] drop-shadow-xl z-10"
+                      className="absolute bottom-[22%] left-1/2 -translate-x-1/2 w-[95%] drop-shadow-xl z-10"
                     />
                   </motion.div>
                 ) : (
