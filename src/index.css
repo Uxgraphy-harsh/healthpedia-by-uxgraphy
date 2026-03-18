@@ -5,6 +5,18 @@
 @tailwind utilities;
 
 @layer base {
+  /* Hide all scrollbars for mobile app feel */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  html, body {
+    overflow-x: hidden;
+  }
+
   :root {
     --background: 40 33% 97%;
     --foreground: 25 63% 11%;
