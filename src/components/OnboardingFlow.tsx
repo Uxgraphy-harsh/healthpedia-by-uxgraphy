@@ -19,9 +19,9 @@ import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.png"
 
 const slideBadges = [
   [
-    { label: "Reminders", icon: Calendar, position: "top-[8%] right-[2%]" },
-    { label: "Reports", icon: Heart, position: "top-[35%] -left-[4%]" },
-    { label: "Notifications", icon: Bell, position: "bottom-[15%] right-[1%]" },
+    { label: "Reminders", icon: Calendar, position: "top-[8%] right-[5%]" },
+    { label: "Reports", icon: Heart, position: "top-[35%] left-[2%]" },
+    { label: "Notifications", icon: Bell, position: "bottom-[15%] right-[3%]" },
   ],
   [], // Slide 2 has no pill badges — uses UI card overlays instead
   [], // Slide 3 has no pill badges — uses floating notification on iPhone
