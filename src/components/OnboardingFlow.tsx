@@ -217,7 +217,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   }
 
   return (
-    <div className="mobile-container flex flex-col min-h-screen" style={{ background: step === 0 ? 'hsl(var(--background))' : '#49001E' }}>
+    <div className="mobile-container flex flex-col min-h-screen overflow-hidden" style={{ background: step === 0 ? 'hsl(var(--background))' : '#49001E' }}>
       {/* ─── STEP 0: WELCOME SLIDER ─── */}
       {step === 0 && (
         <div className="flex-1 flex flex-col overflow-hidden relative">
@@ -389,16 +389,17 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.35, ease: "easeInOut" }}
-              className="flex-1 flex flex-col px-6 py-4 overflow-y-auto"
+              className="flex-1 flex flex-col px-6 py-4 overflow-y-auto overflow-x-hidden"
             >
               {/* ─── STEP 1: BASIC DETAILS ─── */}
               {step === 1 && (
-                <div className="flex-1 flex flex-col relative">
+                <div className="flex-1 flex flex-col relative overflow-hidden">
                   {/* Flower watermark from bottom */}
                   <img
-                    src={onboardingFlowerDark}
+                    src={onboardingFlowerWatermark}
                     alt=""
-                    className="absolute bottom-[-20%] left-1/2 -translate-x-1/2 w-[140%] max-w-none pointer-events-none opacity-20"
+                    className="absolute bottom-[-30%] left-1/2 -translate-x-1/2 w-[120%] max-w-none pointer-events-none opacity-30"
+                    style={{ filter: 'brightness(0.5)' }}
                   />
                   <h2 className="text-4xl font-serif text-white leading-tight mb-8">Please enter<br />basic details</h2>
                   <div className="space-y-4 flex-1 relative z-10">
@@ -414,7 +415,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         value={profile.dob}
                         onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
                         placeholder="Date of Birth"
-                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors [&:not(:valid)]:text-white/40"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors [&:not(:valid)]:text-white/40 [color-scheme:dark]"
                       />
                     </div>
                     <div className="relative">
