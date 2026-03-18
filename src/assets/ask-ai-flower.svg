@@ -1,0 +1,28 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Repeat group 4_inner" data-figma-trr="r16u1-0f">
+<g style="mix-blend-mode:multiply" opacity="0.75">
+<path d="M25.8227 25C24.8284 24.1458 21.4955 19.4248 21.0019 18.2988C19.7347 15.4076 15.5084 6.99677 22.6687 0.831055C31.4199 4.21226 29.7549 13.8323 30.2301 15.1907C33.906 22.708 27.8654 22.6227 25.8227 25Z" fill="url(#paint0_linear_98_4569)"/>
+</g>
+</g>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(11.4701 -7.66408) rotate(22.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(25 -10.3553) rotate(45)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(38.5299 -7.66408) rotate(67.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(50) rotate(90)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(57.6641 11.4701) rotate(112.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(60.3553 25) rotate(135)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(57.6641 38.5299) rotate(157.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(50 50) rotate(-180)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(38.5299 57.6641) rotate(-157.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(25 60.3553) rotate(-135)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(11.4701 57.6641) rotate(-112.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(0 50) rotate(-90)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(-7.66408 38.5299) rotate(-67.5)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(-10.3553 25) rotate(-45)"/>
+<use xlink:href="#Repeat%20group%204_inner" transform="translate(-7.66407 11.4701) rotate(-22.5)"/>
+<defs>
+<linearGradient id="paint0_linear_98_4569" x1="25.8009" y1="24.7122" x2="24.9373" y2="13.3048" gradientUnits="userSpaceOnUse">
+<stop stop-color="#BDDBFF"/>
+<stop offset="1" stop-color="#ADD3FF"/>
+</linearGradient>
+</defs>
+</svg>
