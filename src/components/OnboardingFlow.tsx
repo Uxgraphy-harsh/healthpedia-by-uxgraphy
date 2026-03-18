@@ -153,7 +153,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   const [customCondition, setCustomCondition] = useState("");
 
   // Trackers
-  const [selectedTrackers, setSelectedTrackers] = useState<string[]>(["blood_sugar", "weight"]);
+  const [selectedTrackers, setSelectedTrackers] = useState<string[]>([]);
 
   // Permissions
   const [permissions, setPermissions] = useState<Record<string, boolean>>({
