@@ -501,60 +501,36 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 <div className="flex-1 flex flex-col">
                   <h2 className="text-4xl font-serif text-white leading-tight mb-8">Connect health<br />trackers</h2>
                   <div className="space-y-4">
-                    {/* Google Fit */}
-                    <motion.button
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => toggleTracker("google_fit")}
-                      className={`w-full p-5 rounded-2xl flex items-center gap-4 text-left transition-all border ${
-                        selectedTrackers.includes("google_fit")
-                          ? "bg-white/15 border-[#F66B9A]/40"
-                          : "bg-white/10 border-white/10"
-                      }`}
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                        <svg viewBox="0 0 24 24" className="w-6 h-6">
-                          <path d="M12 2L8 6l4 4-4 4 4 4 4-4-4-4 4-4z" fill="#4285F4"/>
-                          <path d="M8 6L4 10l4 4 4-4z" fill="#EA4335"/>
-                          <path d="M12 14l-4 4 4 4 4-4z" fill="#34A853"/>
-                          <path d="M16 6l-4 4 4 4 4-4z" fill="#FBBC05"/>
-                        </svg>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-white">Google Fit</p>
-                        <p className="text-white/40 text-xs mt-0.5">
-                          {selectedTrackers.includes("google_fit") ? "Connected" : "Sync your fitness data"}
-                        </p>
-                      </div>
-                      {selectedTrackers.includes("google_fit") && (
-                        <span className="text-xs font-medium text-green-400">Connected ●</span>
-                      )}
-                    </motion.button>
-
-                    {/* Apple Health */}
-                    <motion.button
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => toggleTracker("apple_health")}
-                      className={`w-full p-5 rounded-2xl flex items-center gap-4 text-left transition-all border ${
-                        selectedTrackers.includes("apple_health")
-                          ? "bg-white/15 border-[#F66B9A]/40"
-                          : "bg-white/10 border-white/10"
-                      }`}
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shrink-0">
-                        <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
-                          <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z" fill="#FF2D55"/>
-                        </svg>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-white">Apple Health</p>
-                        <p className="text-white/40 text-xs mt-0.5">
-                          {selectedTrackers.includes("apple_health") ? "Connected" : "Sync your health data"}
-                        </p>
-                      </div>
-                      {selectedTrackers.includes("apple_health") && (
-                        <span className="text-xs font-medium text-green-400">Connected ●</span>
-                      )}
-                    </motion.button>
+                    {[
+                      { id: "google_fit", name: "Google Fit", icon: googleFitIcon },
+                      { id: "apple_health", name: "Apple health", icon: appleHealthIcon },
+                    ].map((tracker) => {
+                      const connected = selectedTrackers.includes(tracker.id);
+                      return (
+                        <motion.button
+                          key={tracker.id}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => toggleTracker(tracker.id)}
+                          className="w-full p-5 rounded-2xl flex items-center gap-4 text-left transition-all border bg-white/10 border-white/10"
+                        >
+                          <img src={tracker.icon} alt={tracker.name} className="w-10 h-10 rounded-xl shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-base text-white">{tracker.name}</p>
+                            <p className="text-xs mt-0.5">
+                              {connected ? (
+                                <>
+                                  <span className="text-green-400">Connected</span>
+                                  <span className="text-white/40">  •  Syncing...</span>
+                                </>
+                              ) : (
+                                <span className="text-white/40">Not connected</span>
+                              )}
+                            </p>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-white/40 shrink-0" />
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
