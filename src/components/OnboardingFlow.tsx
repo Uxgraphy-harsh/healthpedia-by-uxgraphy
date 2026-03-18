@@ -57,7 +57,7 @@ const TOTAL_ONBOARDING_STEPS = 4; // basic=1, conditions=2, trackers=3, permissi
 const allConditions = [
   "Diabetes", "Hypertension", "Thyroid Disorder", "Asthma",
   "Heart Disease", "Migraine", "PCOS", "Arthritis",
-  "Anxiety", "Depression", "Anemia", "None",
+  "Anxiety", "Depression", "Anemia",
 ];
 
 const trackerOptions = [
@@ -466,7 +466,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                     />
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-2">
                     {filteredConditions.map((c) => (
                       <button
                         key={c}
@@ -481,34 +481,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         {c}
                       </button>
                     ))}
-                  </div>
-
-                  <div className="flex gap-2">
-                    <input
-                      placeholder="Add custom condition"
-                      value={customCondition}
-                      onChange={(e) => setCustomCondition(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addCustomCondition()}
-                      className="flex-1 px-4 py-3 text-sm rounded-2xl bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10"
-                    />
-                    <button onClick={addCustomCondition} className="px-4 py-3 rounded-2xl bg-[#F66B9A]/20 text-[#F66B9A]">
-                      <Plus className="w-4 h-4" />
+                    <button
+                      onClick={() => {
+                        const custom = prompt("Enter custom condition:");
+                        if (custom?.trim()) {
+                          setSelectedConditions((prev) => [...prev, custom.trim()]);
+                        }
+                      }}
+                      className="px-4 py-2.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 border border-dashed border-white/30 bg-white/5 text-white/70"
+                    >
+                      <Plus className="w-3 h-3" />
+                      Custom
                     </button>
                   </div>
-
-                  {selectedConditions.length > 0 && !selectedConditions.includes("None") && (
-                    <div className="mt-4">
-                      <p className="text-xs text-white/40 mb-2">Selected ({selectedConditions.length})</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {selectedConditions.map((c) => (
-                          <span key={c} className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#F66B9A]/20 text-[#F66B9A] flex items-center gap-1">
-                            {c}
-                            <button onClick={() => toggleCondition(c)}><X className="w-3 h-3" /></button>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
 
