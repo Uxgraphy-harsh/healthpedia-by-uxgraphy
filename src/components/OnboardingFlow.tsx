@@ -374,7 +374,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: '#FF96BE' }}
+                style={{ background: '#F66B9A' }}
                 animate={{ width: `${progressPercent}%` }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
               />
@@ -406,7 +406,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       placeholder="Name"
                       value={profile.name}
                       onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                      className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors"
+                      className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#F66B9A]/50 transition-colors"
                     />
                     <div className="relative">
                       <input
@@ -414,14 +414,14 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         value={profile.dob}
                         onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
                         placeholder="Date of Birth"
-                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors [&:not(:valid)]:text-white/40 [color-scheme:dark]"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#F66B9A]/50 transition-colors [&:not(:valid)]:text-white/40 [color-scheme:dark]"
                       />
                     </div>
                     <div className="relative">
                       <select
                         value={profile.gender}
                         onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
-                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors appearance-none"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#F66B9A]/50 transition-colors appearance-none"
                       >
                         <option value="" disabled className="text-gray-900">Gender</option>
                         <option value="Male" className="text-gray-900">Male</option>
@@ -436,14 +436,14 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         placeholder="Height (cm)"
                         value={profile.height}
                         onChange={(e) => setProfile({ ...profile, height: e.target.value })}
-                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#F66B9A]/50 transition-colors"
                       />
                       <input
                         type="number"
                         placeholder="Weight (kg)"
                         value={profile.weight}
                         onChange={(e) => setProfile({ ...profile, weight: e.target.value })}
-                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#F66B9A]/50 transition-colors"
                       />
                     </div>
                   </div>
@@ -473,7 +473,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         onClick={() => toggleCondition(c)}
                         className={`px-4 py-2.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 border ${
                           selectedConditions.includes(c)
-                            ? "bg-[#FF96BE] text-[#49001E] border-[#FF96BE]"
+                            ? "bg-[#F66B9A] text-[#49001E] border-[#F66B9A]"
                             : "bg-white/10 text-white/70 border-white/10"
                         }`}
                       >
@@ -491,7 +491,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       onKeyDown={(e) => e.key === "Enter" && addCustomCondition()}
                       className="flex-1 px-4 py-3 text-sm rounded-2xl bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10"
                     />
-                    <button onClick={addCustomCondition} className="px-4 py-3 rounded-2xl bg-[#FF96BE]/20 text-[#FF96BE]">
+                    <button onClick={addCustomCondition} className="px-4 py-3 rounded-2xl bg-[#F66B9A]/20 text-[#F66B9A]">
                       <Plus className="w-4 h-4" />
                     </button>
                   </div>
@@ -501,7 +501,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       <p className="text-xs text-white/40 mb-2">Selected ({selectedConditions.length})</p>
                       <div className="flex flex-wrap gap-1.5">
                         {selectedConditions.map((c) => (
-                          <span key={c} className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#FF96BE]/20 text-[#FF96BE] flex items-center gap-1">
+                          <span key={c} className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-[#F66B9A]/20 text-[#F66B9A] flex items-center gap-1">
                             {c}
                             <button onClick={() => toggleCondition(c)}><X className="w-3 h-3" /></button>
                           </span>
@@ -527,19 +527,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                           whileTap={{ scale: 0.97 }}
                           className={`p-4 rounded-2xl flex flex-col items-center gap-2 transition-all border ${
                             selected
-                              ? "bg-[#FF96BE]/15 border-[#FF96BE]/40"
+                              ? "bg-[#F66B9A]/15 border-[#F66B9A]/40"
                               : "bg-white/5 border-white/10"
                           }`}
                         >
                           <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                            selected ? "bg-[#FF96BE]" : "bg-white/10"
+                            selected ? "bg-[#F66B9A]" : "bg-white/10"
                           }`}>
                             <t.icon className={`w-5 h-5 ${selected ? "text-[#49001E]" : "text-white/50"}`} />
                           </div>
                           <span className={`text-xs font-medium ${selected ? "text-white" : "text-white/50"}`}>
                             {t.label}
                           </span>
-                          {selected && <Check className="w-4 h-4 text-[#FF96BE]" />}
+                          {selected && <Check className="w-4 h-4 text-[#F66B9A]" />}
                         </motion.button>
                       );
                     })}
@@ -575,7 +575,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                             <p className="text-white/40 text-xs mt-0.5 leading-relaxed">{item.desc}</p>
                           </div>
                           <div className={`w-12 h-7 rounded-full flex items-center px-0.5 transition-colors shrink-0 ${
-                            enabled ? "bg-[#FF96BE]" : "bg-white/20"
+                            enabled ? "bg-[#F66B9A]" : "bg-white/20"
                           }`}>
                             <motion.div
                               className="w-6 h-6 rounded-full bg-white shadow-sm"
@@ -604,7 +604,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               <button
                 onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
                 className="flex-1 py-4 rounded-full font-semibold text-base transition-all"
-                style={{ background: '#FF96BE', color: '#49001E' }}
+                style={{ background: '#F66B9A', color: '#49001E' }}
               >
                 {step === TOTAL_ONBOARDING_STEPS ? "Get Started" : "Continue"}
               </button>
