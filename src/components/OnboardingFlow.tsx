@@ -13,7 +13,8 @@ import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2Bg from "@/assets/onboarding-slide-2-bg.png";
 import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
 import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
-import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
+import onboardingIphone from "@/assets/onboarding-iphone.png";
+import onboardingNotification from "@/assets/onboarding-notification.svg";
 
 const slideBadges = [
   [
@@ -22,11 +23,7 @@ const slideBadges = [
     { label: "Notifications", icon: Bell, position: "bottom-[15%] right-[1%]" },
   ],
   [], // Slide 2 has no pill badges — uses UI card overlays instead
-  [
-    { label: "Medications", icon: Pill, position: "top-[8%] right-[3%]" },
-    { label: "Timely Alerts", icon: Clock, position: "top-[38%] -left-[3%]" },
-    { label: "Family Care", icon: Heart, position: "bottom-[12%] right-[2%]" },
-  ],
+  [], // Slide 3 has no pill badges — uses floating notification on iPhone
 ];
 
 const onboardingSlides = [
@@ -39,7 +36,7 @@ const onboardingSlides = [
     title: "Record symptoms for your next appointment",
   },
   {
-    image: onboardingSlide3,
+    image: "custom-slide-3",
     title: "Timely reminders for those you love.",
   },
 ];
@@ -241,6 +238,31 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 }}
                       className="absolute bottom-[-8%] right-[0%] w-[68%] drop-shadow-xl"
+                    />
+                  </motion.div>
+                ) : slideIndex === 2 ? (
+                  <motion.div
+                    key="slide-3-custom"
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -60 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="relative w-full flex items-center justify-center"
+                  >
+                    {/* iPhone image */}
+                    <img
+                      src={onboardingIphone}
+                      alt="iPhone"
+                      className="w-[70%] drop-shadow-2xl"
+                    />
+                    {/* Floating notification overlay */}
+                    <motion.img
+                      src={onboardingNotification}
+                      alt="Reminder notification"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
+                      className="absolute bottom-[15%] left-[0%] w-[95%] drop-shadow-xl"
                     />
                   </motion.div>
                 ) : (
