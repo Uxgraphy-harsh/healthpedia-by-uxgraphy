@@ -15,6 +15,7 @@ import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
 import onboardingIphoneOnly from "@/assets/onboarding-iphone-only.png";
 import onboardingNotificationFloat from "@/assets/onboarding-notification-float.svg";
 import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.png";
+import onboardingFlowerDark from "@/assets/onboarding-flower-watermark-dark.png";
 
 const slideBadges = [
   [
@@ -392,67 +393,58 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             >
               {/* ─── STEP 1: BASIC DETAILS ─── */}
               {step === 1 && (
-                <div className="flex-1 flex flex-col">
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Basic Details</h2>
-                  <p className="text-white/50 text-sm mb-6">Tell us about yourself</p>
-                  <div className="space-y-4 flex-1">
-                    <div>
-                      <label className="text-xs font-medium text-white/60 mb-1.5 block">Full Name</label>
-                      <input
-                        placeholder="Sarah Johnson"
-                        value={profile.name}
-                        onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                        className="w-full px-4 py-3.5 text-sm rounded-2xl bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#FF96BE]/50 transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-medium text-white/60 mb-1.5 block">Date of Birth</label>
+                <div className="flex-1 flex flex-col relative">
+                  {/* Flower watermark from bottom */}
+                  <img
+                    src={onboardingFlowerDark}
+                    alt=""
+                    className="absolute bottom-[-20%] left-1/2 -translate-x-1/2 w-[140%] max-w-none pointer-events-none opacity-20"
+                  />
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Please enter<br />basic details</h2>
+                  <div className="space-y-4 flex-1 relative z-10">
+                    <input
+                      placeholder="Name"
+                      value={profile.name}
+                      onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                      className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors"
+                    />
+                    <div className="relative">
                       <input
                         type="date"
                         value={profile.dob}
                         onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
-                        className="w-full px-4 py-3.5 text-sm rounded-2xl bg-white/10 text-white outline-none border border-white/10 focus:border-[#FF96BE]/50 transition-colors"
+                        placeholder="Date of Birth"
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors [&:not(:valid)]:text-white/40"
                       />
                     </div>
-                    <div>
-                      <label className="text-xs font-medium text-white/60 mb-1.5 block">Gender</label>
-                      <div className="flex gap-2">
-                        {["Male", "Female", "Other"].map((g) => (
-                          <button
-                            key={g}
-                            onClick={() => setProfile({ ...profile, gender: g })}
-                            className={`flex-1 py-3.5 rounded-2xl text-xs font-medium transition-all border ${
-                              profile.gender === g
-                                ? "bg-[#FF96BE] text-[#49001E] border-[#FF96BE]"
-                                : "bg-white/10 text-white/70 border-white/10"
-                            }`}
-                          >
-                            {g}
-                          </button>
-                        ))}
-                      </div>
+                    <div className="relative">
+                      <select
+                        value={profile.gender}
+                        onChange={(e) => setProfile({ ...profile, gender: e.target.value })}
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors appearance-none"
+                      >
+                        <option value="" disabled className="text-gray-900">Gender</option>
+                        <option value="Male" className="text-gray-900">Male</option>
+                        <option value="Female" className="text-gray-900">Female</option>
+                        <option value="Other" className="text-gray-900">Other</option>
+                      </select>
+                      <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 rotate-90" />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs font-medium text-white/60 mb-1.5 block">Height (cm)</label>
-                        <input
-                          type="number"
-                          placeholder="165"
-                          value={profile.height}
-                          onChange={(e) => setProfile({ ...profile, height: e.target.value })}
-                          className="w-full px-4 py-3.5 text-sm rounded-2xl bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#FF96BE]/50 transition-colors"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-white/60 mb-1.5 block">Weight (kg)</label>
-                        <input
-                          type="number"
-                          placeholder="62"
-                          value={profile.weight}
-                          onChange={(e) => setProfile({ ...profile, weight: e.target.value })}
-                          className="w-full px-4 py-3.5 text-sm rounded-2xl bg-white/10 text-white placeholder:text-white/30 outline-none border border-white/10 focus:border-[#FF96BE]/50 transition-colors"
-                        />
-                      </div>
+                      <input
+                        type="number"
+                        placeholder="Height (cm)"
+                        value={profile.height}
+                        onChange={(e) => setProfile({ ...profile, height: e.target.value })}
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Weight (kg)"
+                        value={profile.weight}
+                        onChange={(e) => setProfile({ ...profile, weight: e.target.value })}
+                        className="w-full px-5 py-4 text-sm rounded-lg bg-white/10 text-white placeholder:text-white/40 outline-none border border-white/15 focus:border-[#FF96BE]/50 transition-colors"
+                      />
                     </div>
                   </div>
                 </div>
@@ -601,19 +593,22 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           </AnimatePresence>
 
           {/* Bottom CTA for steps 1-4 */}
-          <div className="px-6 pb-8 space-y-2">
-            <button
-              onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
-              className="w-full py-4 rounded-full font-semibold text-base transition-all"
-              style={{ background: '#FF96BE', color: '#49001E' }}
-            >
-              {step === TOTAL_ONBOARDING_STEPS ? "Get Started" : "Continue"}
-            </button>
-            {step > 1 && (
-              <button onClick={back} className="w-full text-sm text-white/50 text-center py-2">
-                Back
+          <div className="px-6 pb-8">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={back}
+                className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center shrink-0"
+              >
+                <ChevronRight className="w-5 h-5 text-white rotate-180" />
               </button>
-            )}
+              <button
+                onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
+                className="flex-1 py-4 rounded-full font-semibold text-base transition-all"
+                style={{ background: '#FF96BE', color: '#49001E' }}
+              >
+                {step === TOTAL_ONBOARDING_STEPS ? "Get Started" : "Continue"}
+              </button>
+            </div>
           </div>
         </>
       )}
