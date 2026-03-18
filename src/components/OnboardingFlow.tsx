@@ -166,9 +166,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     location: false,
   });
 
+  const handleComplete = () => setShowLoading(true);
+
   const next = () => {
     if (step < TOTAL_ONBOARDING_STEPS) setStep(step + 1);
-    else onComplete();
+    else handleComplete();
   };
 
   const back = () => {
