@@ -368,16 +368,15 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
 
       {/* ─── ONBOARDING STEPS 1-4 (Dark Maroon Theme) ─── */}
       {step > 0 && (
-        <div className="flex-1 flex flex-col relative">
+        <div className="flex-1 flex flex-col relative overflow-hidden">
           {/* Flower watermark - spans full screen including behind CTA */}
           <img
             src={onboardingFlowerDark}
             alt=""
-            className="absolute bottom-[-20%] left-1/2 -translate-x-1/2 w-[200%] max-w-none pointer-events-none opacity-80"
-            style={{ zIndex: -1 }}
+            className="absolute bottom-[-15%] left-1/2 -translate-x-1/2 w-[200%] max-w-none pointer-events-none z-0"
           />
           {/* Progress bar */}
-          <div className="px-4 pt-12 pb-2">
+          <div className="px-4 pt-12 pb-2 relative z-[1]">
             <div className="h-1 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full rounded-full"
@@ -575,7 +574,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           </AnimatePresence>
 
           {/* Bottom CTA for steps 1-4 */}
-          <div className="px-6 pb-8">
+          <div className="px-6 pb-8 relative z-[1]">
             <div className="flex items-center gap-3">
               <button
                 onClick={back}
@@ -585,7 +584,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               </button>
               <button
                 onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
-                className="flex-1 py-4 rounded-full font-semibold text-base transition-all"
+                disabled={step === 1 && (!profile.name.trim() || !profile.dob)}
+                className="flex-1 py-4 rounded-full font-semibold text-base transition-all disabled:opacity-40"
                 style={{ background: '#F66B9A', color: '#49001E' }}
               >
                 {step === TOTAL_ONBOARDING_STEPS ? "Get Started" : "Continue"}
