@@ -205,7 +205,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             {/* Main illustration */}
             {slideIndex === 1 ? (
               /* Slide 2: wider container with flower bg + floating UI cards */
-              <div className="relative w-full max-w-[340px] aspect-[3/5] rounded-3xl overflow-visible">
+              <div className="relative w-full max-w-[340px] aspect-[4/3] rounded-3xl overflow-visible">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key="slide-2-custom"
