@@ -240,6 +240,31 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       className="absolute bottom-[-8%] right-[0%] w-[68%] drop-shadow-xl"
                     />
                   </motion.div>
+                ) : slideIndex === 2 ? (
+                  <motion.div
+                    key="slide-3-custom"
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -60 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="relative w-full flex items-center justify-center"
+                  >
+                    {/* iPhone image */}
+                    <img
+                      src={onboardingIphone}
+                      alt="iPhone"
+                      className="w-[70%] drop-shadow-2xl"
+                    />
+                    {/* Floating notification overlay */}
+                    <motion.img
+                      src={onboardingNotification}
+                      alt="Reminder notification"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
+                      className="absolute bottom-[15%] left-[0%] w-[95%] drop-shadow-xl"
+                    />
+                  </motion.div>
                 ) : (
                   <motion.div
                     key={slideIndex}
