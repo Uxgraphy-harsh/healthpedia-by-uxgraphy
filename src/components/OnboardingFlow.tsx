@@ -18,6 +18,7 @@ import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.png"
 import onboardingFlowerDark from "@/assets/onboarding-flower-dark.png";
 import googleFitIcon from "@/assets/google-fit-icon.png";
 import appleHealthIcon from "@/assets/apple-health-icon.png";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const slideBadges = [
   [
@@ -98,6 +99,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   const { signInWithGoogle, user } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
   const [splashFading, setSplashFading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [step, setStep] = useState(0); // 0 = welcome slider, 1-4 = onboarding steps
   const [slideIndex, setSlideIndex] = useState(0);
 
@@ -164,9 +166,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
     location: false,
   });
 
+  const handleComplete = () => setShowLoading(true);
+
   const next = () => {
     if (step < TOTAL_ONBOARDING_STEPS) setStep(step + 1);
-    else onComplete();
+    else handleComplete();
   };
 
   const back = () => {
@@ -588,7 +592,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 <ChevronRight className="w-5 h-5 text-white rotate-180" />
               </button>
               <button
-                onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
+                onClick={step === TOTAL_ONBOARDING_STEPS ? handleComplete : next}
                 disabled={step === 1 && (!profile.name.trim() || !profile.dob)}
                 className="flex-1 py-4 rounded-full font-semibold text-base transition-all disabled:opacity-40"
                 style={{ background: '#F66B9A', color: '#49001E' }}
@@ -599,6 +603,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           </div>
         </div>
       )}
+
+      {showLoading && <LoadingScreen onFinish={onComplete} />}
     </div>
   );
 }
