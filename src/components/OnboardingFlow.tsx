@@ -15,6 +15,7 @@ import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
 import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
 import onboardingIphoneOnly from "@/assets/onboarding-iphone-only.png";
 import onboardingNotificationFloat from "@/assets/onboarding-notification-float.svg";
+import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.svg";
 
 const slideBadges = [
   [
