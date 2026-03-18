@@ -76,6 +76,68 @@ function formatRelativeTime(date: Date): string {
   return date.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
 }
 
+function GlassComposer({
+  input,
+  inputRef,
+  onChange,
+  onSend,
+}: {
+  input: string;
+  inputRef: React.RefObject<HTMLTextAreaElement>;
+  onChange: (value: string) => void;
+  onSend: () => void;
+}) {
+  return (
+    <div
+      className="rounded-[2rem] border p-5 backdrop-blur-2xl"
+      style={{
+        background: "hsl(var(--card) / 0.22)",
+        borderColor: "hsl(var(--border) / 0.55)",
+        boxShadow:
+          "0 20px 50px -18px hsl(var(--foreground) / 0.10), inset 0 1px 0 hsl(var(--card) / 0.70)",
+      }}
+    >
+      <textarea
+        ref={inputRef}
+        value={input}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            onSend();
+          }
+        }}
+        placeholder="Ask anything about your health"
+        rows={2}
+        className="min-h-[64px] w-full resize-none bg-transparent px-1 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground/75"
+      />
+
+      <div className="mt-3 flex items-center justify-between">
+        <button
+          className="flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl"
+          style={{
+            background: "hsl(var(--card) / 0.42)",
+            borderColor: "hsl(var(--border) / 0.6)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+          }}
+        >
+          <Paperclip size={19} weight="light" className="text-muted-foreground" />
+        </button>
+        <button
+          className="flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl"
+          style={{
+            background: "hsl(var(--card) / 0.42)",
+            borderColor: "hsl(var(--border) / 0.6)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+          }}
+        >
+          <Microphone size={19} weight="light" className="text-muted-foreground" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AIChat() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -86,9 +148,8 @@ export default function AIChat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isTyping]);
 
   useEffect(() => {
@@ -141,10 +202,10 @@ export default function AIChat() {
   return (
     <div className="fixed inset-0 z-50 mx-auto flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-background">
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[46%]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[34%]"
         style={{
           background:
-            "linear-gradient(180deg, hsl(var(--primary) / 0) 0%, hsl(var(--primary) / 0.12) 58%, hsl(var(--primary) / 0.24) 100%)",
+            "linear-gradient(180deg, hsl(var(--primary) / 0) 0%, hsl(var(--primary) / 0.10) 55%, hsl(var(--primary) / 0.20) 100%)",
         }}
       />
 
@@ -155,7 +216,12 @@ export default function AIChat() {
 
         <button
           onClick={() => setShowHistory(true)}
-          className="flex items-center gap-2 rounded-full border border-border/70 bg-card/80 px-4 py-2 backdrop-blur-md"
+          className="flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-xl"
+          style={{
+            background: "hsl(var(--card) / 0.45)",
+            borderColor: "hsl(var(--border) / 0.65)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.8)",
+          }}
         >
           <ClockCounterClockwise size={18} className="text-muted-foreground" />
           <span className="text-sm font-medium text-muted-foreground">Chat history</span>
@@ -163,64 +229,49 @@ export default function AIChat() {
       </header>
 
       {isEmptyState ? (
-        <>
-          <main className="relative flex-1 px-5">
-            <div className="pointer-events-none absolute inset-x-0 top-[28%] flex justify-center">
-              <motion.img
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                src={askAiFlower}
-                alt=""
-                className="h-36 w-36 grayscale opacity-[0.14]"
-              />
-            </div>
-          </main>
+        <main className="relative flex-1 overflow-hidden">
+          <div className="pointer-events-none absolute inset-x-0 top-[34%] flex -translate-y-1/2 justify-center">
+            <motion.img
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              src={askAiFlower}
+              alt=""
+              className="h-32 w-32 grayscale opacity-[0.10]"
+            />
+          </div>
 
-          <section className="relative z-10 mt-auto px-5 pb-8 pt-3">
+          <div className="absolute inset-x-0 bottom-0 px-5 pb-8 pt-3">
             <div className="mb-3 grid grid-cols-2 gap-3">
               {quickChips.map((chip) => (
                 <button
                   key={chip.label}
                   onClick={() => sendMessage(chip.label)}
-                  className="flex min-h-32 flex-col items-start justify-between rounded-[2rem] border border-border/40 bg-card/70 p-5 text-left shadow-[0_10px_30px_hsl(var(--foreground)/0.04)] backdrop-blur-md"
+                  className="flex min-h-[92px] flex-col items-start justify-between rounded-[1.85rem] border p-5 text-left backdrop-blur-xl"
+                  style={{
+                    background: "hsl(var(--card) / 0.50)",
+                    borderColor: "hsl(var(--border) / 0.58)",
+                    boxShadow:
+                      "0 16px 35px -20px hsl(var(--foreground) / 0.16), inset 0 1px 0 hsl(var(--card) / 0.85)",
+                  }}
                 >
-                  <chip.icon size={24} weight="light" className="text-muted-foreground" />
-                  <span className="text-[15px] font-medium text-foreground">{chip.label}</span>
+                  <chip.icon size={23} weight="light" className="text-muted-foreground" />
+                  <span className="text-[14px] font-medium text-foreground">{chip.label}</span>
                 </button>
               ))}
             </div>
 
-            <div className="rounded-[2rem] border border-border/40 bg-card/25 p-5 shadow-[0_10px_40px_hsl(var(--foreground)/0.04)] backdrop-blur-xl">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage(input);
-                  }
-                }}
-                placeholder="Ask anything about your health"
-                rows={2}
-                className="min-h-16 w-full resize-none bg-transparent px-1 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
-              />
-
-              <div className="mt-3 flex items-center justify-between">
-                <button className="flex h-12 w-12 items-center justify-center rounded-full border border-border/40 bg-card/50 backdrop-blur-md">
-                  <Paperclip size={20} weight="light" className="text-muted-foreground" />
-                </button>
-                <button className="flex h-12 w-12 items-center justify-center rounded-full border border-border/40 bg-card/50 backdrop-blur-md">
-                  <Microphone size={20} weight="light" className="text-muted-foreground" />
-                </button>
-              </div>
-            </div>
-          </section>
-        </>
+            <GlassComposer
+              input={input}
+              inputRef={inputRef}
+              onChange={setInput}
+              onSend={() => sendMessage(input)}
+            />
+          </div>
+        </main>
       ) : (
-        <>
-          <main ref={scrollRef} className="relative z-10 min-h-0 flex-1 overflow-y-auto px-5">
+        <main className="relative flex-1 overflow-hidden">
+          <div ref={scrollRef} className="h-full overflow-y-auto px-5 pb-44 pt-2">
             <div className="space-y-4 py-4">
               <AnimatePresence>
                 {messages.map((msg) => (
@@ -269,36 +320,17 @@ export default function AIChat() {
                 </motion.div>
               )}
             </div>
-          </main>
+          </div>
 
-          <section className="relative z-10 px-5 pb-8 pt-3">
-            <div className="rounded-[2rem] border border-border/40 bg-card/25 p-5 shadow-[0_10px_40px_hsl(var(--foreground)/0.04)] backdrop-blur-xl">
-              <textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage(input);
-                  }
-                }}
-                placeholder="Ask anything about your health"
-                rows={2}
-                className="min-h-16 w-full resize-none bg-transparent px-1 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground/60"
-              />
-
-              <div className="mt-3 flex items-center justify-between">
-                <button className="flex h-12 w-12 items-center justify-center rounded-full border border-border/40 bg-card/50 backdrop-blur-md">
-                  <Paperclip size={20} weight="light" className="text-muted-foreground" />
-                </button>
-                <button className="flex h-12 w-12 items-center justify-center rounded-full border border-border/40 bg-card/50 backdrop-blur-md">
-                  <Microphone size={20} weight="light" className="text-muted-foreground" />
-                </button>
-              </div>
-            </div>
-          </section>
-        </>
+          <div className="absolute inset-x-0 bottom-0 px-5 pb-8 pt-3">
+            <GlassComposer
+              input={input}
+              inputRef={inputRef}
+              onChange={setInput}
+              onSend={() => sendMessage(input)}
+            />
+          </div>
+        </main>
       )}
 
       <AnimatePresence>
