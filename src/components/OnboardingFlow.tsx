@@ -222,7 +222,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[160%] max-w-none pointer-events-none z-0"
           />
           {/* Illustration area - takes up most of the screen */}
-          <div className="flex-1 relative flex items-center justify-center px-6 pt-6 z-[1]">
+          <div className="flex-1 relative flex items-center justify-center px-6 pt-6 z-[1]" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             {/* Floating pill badges - only for slides 0 and 2 */}
             {slideBadges[slideIndex]?.length > 0 && (
               <AnimatePresence mode="wait">
