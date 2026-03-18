@@ -209,7 +209,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             )}
 
             {/* Main illustration - same max-w for all slides */}
-            <div className="relative w-full max-w-[300px]">
+            <div className={`relative w-full ${slideIndex === 2 ? "max-w-none" : "max-w-[300px]"}`}>
               <AnimatePresence mode="wait">
                 {slideIndex === 1 ? (
                   <motion.div
@@ -261,7 +261,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       <img
                         src={onboardingIphoneOnly}
                         alt="iPhone"
-                        className="w-[80%] mx-auto scale-125 origin-top drop-shadow-2xl"
+                        className="w-[68%] mx-auto scale-[1.35] origin-top drop-shadow-2xl"
                       />
                       {/* Bottom gradient fade to background */}
                       <div
@@ -271,14 +271,14 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                         }}
                       />
                     </div>
-                    {/* Floating notification - outside clip container, centered */}
+                    {/* Floating notification - centered to the full screen area */}
                     <motion.img
                       src={onboardingNotificationFloat}
                       alt="Medication reminder notification"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.4 }}
-                      className="absolute bottom-[22%] left-1/2 -translate-x-1/2 w-[95%] drop-shadow-xl z-10"
+                      className="absolute bottom-[22%] left-1/2 -translate-x-1/2 w-[88%] max-w-[340px] drop-shadow-xl z-10"
                     />
                   </motion.div>
                 ) : (
