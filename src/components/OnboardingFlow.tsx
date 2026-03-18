@@ -203,43 +203,51 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             </AnimatePresence>
 
             {/* Main illustration */}
-            <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
-              <AnimatePresence mode="wait">
-                {slideIndex === 1 ? (
+            {slideIndex === 1 ? (
+              /* Slide 2: wider container with flower bg + floating UI cards */
+              <div className="relative w-full max-w-[340px] aspect-[3/5] rounded-3xl overflow-visible">
+                <AnimatePresence mode="wait">
                   <motion.div
                     key="slide-2-custom"
                     initial={{ opacity: 0, x: 60 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -60 }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full"
+                    className="relative w-full h-full"
                   >
-                    {/* Flower background */}
-                    <img
-                      src={onboardingSlide2Bg}
-                      alt="Flower background"
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    {/* Symptom card overlay - top area */}
+                    {/* Flower background image */}
+                    <div className="w-full h-full rounded-3xl overflow-hidden">
+                      <img
+                        src={onboardingSlide2Bg}
+                        alt="Flower background"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    {/* Symptom card overlay - upper portion */}
                     <motion.img
                       src={onboardingCardSymptoms}
                       alt="Symptom log card"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
-                      className="absolute top-[12%] left-[8%] w-[85%] drop-shadow-lg"
+                      className="absolute top-[5%] -left-[5%] w-[75%] drop-shadow-xl"
                     />
-                    {/* Doctor card overlay - bottom area */}
+                    {/* Doctor card overlay - lower portion */}
                     <motion.img
                       src={onboardingCardDoctor}
                       alt="Doctor availability card"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 }}
-                      className="absolute bottom-[10%] left-[10%] w-[80%] drop-shadow-lg"
+                      className="absolute bottom-[8%] -right-[5%] w-[70%] drop-shadow-xl"
                     />
                   </motion.div>
-                ) : (
+                </AnimatePresence>
+              </div>
+            ) : (
+              /* Slides 1 & 3: standard 3:4 card */
+              <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
+                <AnimatePresence mode="wait">
                   <motion.img
                     key={slideIndex}
                     src={onboardingSlides[slideIndex].image}
@@ -250,9 +258,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                     transition={{ duration: 0.4, ease: "easeInOut" }}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                )}
-              </AnimatePresence>
-            </div>
+                </AnimatePresence>
+              </div>
+            )}
           </div>
 
           {/* Bottom section: title, dots, CTAs */}
