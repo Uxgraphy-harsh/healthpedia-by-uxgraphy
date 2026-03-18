@@ -77,20 +77,20 @@ const permissionItems = [
   {
     id: "camera",
     icon: Camera,
-    title: "Camera Access",
-    desc: "Scan prescriptions & upload medical reports easily",
+    title: "Check contacts access",
+    desc: "Add family & caregivers to your health circle for shared tracking and alerts.",
   },
   {
     id: "notifications",
     icon: Bell,
-    title: "Notifications",
-    desc: "Medication reminders, health alerts & appointment updates",
+    title: "Check notification access",
+    desc: "Get timely medication reminders, health alerts & appointment updates.",
   },
   {
     id: "location",
     icon: MapPin,
-    title: "Location Services",
-    desc: "Find nearby pharmacies, hospitals & health services",
+    title: "Check location access",
+    desc: "Find nearby pharmacies, hospitals & health services when needed.",
   },
 ];
 
@@ -540,10 +540,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 4: PERMISSIONS ─── */}
               {step === 4 && (
                 <div className="flex-1 flex flex-col">
+                  <p className="text-[#FFE0E9] text-sm font-medium tracking-wider uppercase mb-2">Last steps!</p>
                   <h2 className="text-4xl font-serif text-white leading-tight mb-8">Enable<br />permissions</h2>
 
-                  <div className="space-y-3 flex-1">
-                    {permissionItems.map((item) => {
+                  <div className="space-y-4 flex-1">
+                    {permissionItems.map((item, idx) => {
                       const Icon = item.icon;
                       const enabled = permissions[item.id];
                       return (
@@ -552,21 +553,19 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                           onClick={() => togglePermission(item.id)}
                           initial={{ opacity: 0, y: 15 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: permissionItems.indexOf(item) * 0.1 }}
-                          className="w-full p-5 rounded-3xl bg-white/10 border border-white/10 flex items-center gap-4 text-left"
+                          transition={{ delay: idx * 0.1 }}
+                          className="w-full px-5 py-6 rounded-2xl bg-white/20 border border-white/10 flex items-start gap-4 text-left"
                         >
-                          <div className="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-                            <Icon className="w-5 h-5 text-white/70" />
-                          </div>
+                          <Icon className="w-6 h-6 text-white shrink-0 mt-0.5" />
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm text-white">{item.title}</p>
-                            <p className="text-white/40 text-xs mt-0.5 leading-relaxed">{item.desc}</p>
+                            <p className="font-semibold text-[15px] text-white leading-snug">{item.title}</p>
+                            <p className="text-white/50 text-xs mt-1.5 leading-relaxed">{item.desc}</p>
                           </div>
-                          <div className={`w-12 h-7 rounded-full flex items-center px-0.5 transition-colors shrink-0 ${
+                          <div className={`w-[44px] h-[26px] rounded-full flex items-center px-[2px] transition-colors shrink-0 mt-0.5 ${
                             enabled ? "bg-[#F66B9A]" : "bg-white/20"
                           }`}>
                             <motion.div
-                              className="w-6 h-6 rounded-full bg-white shadow-sm"
+                              className="w-[22px] h-[22px] rounded-full bg-white shadow-sm"
                               animate={{ x: enabled ? 18 : 0 }}
                               transition={{ type: "spring", stiffness: 500, damping: 30 }}
                             />
