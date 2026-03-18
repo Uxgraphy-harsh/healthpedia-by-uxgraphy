@@ -89,7 +89,7 @@ function GlassComposer({
 }) {
   return (
     <div
-      className="rounded-[2rem] border p-5 backdrop-blur-2xl"
+      className="rounded-2xl border px-4 py-3 backdrop-blur-2xl"
       style={{
         background: "hsl(var(--card) / 0.22)",
         borderColor: "hsl(var(--border) / 0.55)",
@@ -108,30 +108,28 @@ function GlassComposer({
           }
         }}
         placeholder="Ask anything about your health"
-        rows={2}
-        className="min-h-[64px] w-full resize-none bg-transparent px-1 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground/75"
+        rows={1}
+        className="w-full resize-none bg-transparent px-0 py-1 text-[15px] text-foreground outline-none placeholder:text-muted-foreground/60"
       />
 
-      <div className="mt-3 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between">
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl"
+          className="flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-xl"
           style={{
             background: "hsl(var(--card) / 0.42)",
-            borderColor: "hsl(var(--border) / 0.6)",
-            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+            borderColor: "hsl(var(--border) / 0.5)",
           }}
         >
-          <Paperclip size={19} weight="light" className="text-muted-foreground" />
+          <Paperclip size={17} weight="light" className="text-muted-foreground" />
         </button>
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl"
+          className="flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-xl"
           style={{
             background: "hsl(var(--card) / 0.42)",
-            borderColor: "hsl(var(--border) / 0.6)",
-            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+            borderColor: "hsl(var(--border) / 0.5)",
           }}
         >
-          <Microphone size={19} weight="light" className="text-muted-foreground" />
+          <Microphone size={17} weight="light" className="text-muted-foreground" />
         </button>
       </div>
     </div>
