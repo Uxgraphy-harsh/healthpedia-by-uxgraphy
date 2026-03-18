@@ -373,7 +373,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           <img
             src={onboardingFlowerDark}
             alt=""
-            className="absolute bottom-[-25%] left-1/2 -translate-x-1/2 w-[180%] max-w-none pointer-events-none opacity-40 z-0"
+            className="absolute bottom-[-20%] left-1/2 -translate-x-1/2 w-[200%] max-w-none pointer-events-none opacity-80"
+            style={{ zIndex: -1 }}
           />
           {/* Progress bar */}
           <div className="px-4 pt-12 pb-2">
