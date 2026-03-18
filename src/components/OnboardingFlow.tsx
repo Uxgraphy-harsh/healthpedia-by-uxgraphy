@@ -10,7 +10,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import healthpediaFlower from "@/assets/healthpedia-flower.svg";
 import splashScreen from "@/assets/splash-screen.svg";
 import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
-import onboardingSlide2 from "@/assets/onboarding-slide-2.png";
+import onboardingSlide2Bg from "@/assets/onboarding-slide-2-bg.png";
+import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
+import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
 import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
 
 const slideBadges = [
