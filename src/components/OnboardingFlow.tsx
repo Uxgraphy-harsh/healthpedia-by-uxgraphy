@@ -548,9 +548,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 4: PERMISSIONS ─── */}
               {step === 4 && (
                 <div className="flex-1 flex flex-col">
-                  <p className="text-[#FFE0E9] text-sm font-medium mb-1">Last step!</p>
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Permissions</h2>
-                  <p className="text-white/50 text-sm mb-6">Allow access to get the most out of Healthpedia</p>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Enable<br />permissions</h2>
 
                   <div className="space-y-3 flex-1">
                     {permissionItems.map((item) => {
