@@ -540,8 +540,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 4: PERMISSIONS ─── */}
               {step === 4 && (
                 <div className="flex-1 flex flex-col">
-                  <p className="text-[#FFE0E9] text-sm font-medium tracking-wider uppercase mb-2">Last steps!</p>
-                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Enable<br />permissions</h2>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Last Step!</h2>
 
                   <div className="space-y-4 flex-1">
                     {permissionItems.map((item, idx) => {
