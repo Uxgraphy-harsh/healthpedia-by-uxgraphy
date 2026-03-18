@@ -395,7 +395,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.35, ease: "easeInOut" }}
-              className="flex-1 flex flex-col px-6 py-4 overflow-y-auto overflow-x-hidden"
+              className="flex-1 flex flex-col px-6 py-4 overflow-y-auto overflow-x-hidden relative z-[1]"
             >
               {/* ─── STEP 1: BASIC DETAILS ─── */}
               {step === 1 && (
