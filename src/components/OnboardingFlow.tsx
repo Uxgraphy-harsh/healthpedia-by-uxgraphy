@@ -592,7 +592,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 <ChevronRight className="w-5 h-5 text-white rotate-180" />
               </button>
               <button
-                onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
+                onClick={step === TOTAL_ONBOARDING_STEPS ? handleComplete : next}
                 disabled={step === 1 && (!profile.name.trim() || !profile.dob)}
                 className="flex-1 py-4 rounded-full font-semibold text-base transition-all disabled:opacity-40"
                 style={{ background: '#F66B9A', color: '#49001E' }}
@@ -603,6 +603,8 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           </div>
         </div>
       )}
+
+      {showLoading && <LoadingScreen onFinish={onComplete} />}
     </div>
   );
 }
