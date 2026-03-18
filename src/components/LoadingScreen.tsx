@@ -62,11 +62,12 @@ export default function LoadingScreen({ onFinish }: LoadingScreenProps) {
               className="absolute pointer-events-none"
               style={{
                 left: `${petal.startX}%`,
+                top: 0,
                 width: petal.size,
                 height: petal.size * 0.6,
               }}
-              initial={{ y: -40 }}
-              animate={{ y: "100vh" }}
+              initial={{ y: "-100px" }}
+              animate={{ y: "calc(100vh + 100px)" }}
               transition={{
                 y: {
                   duration: petal.fallDuration,
