@@ -605,6 +605,6 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
       )}
 
       {showLoading && <LoadingScreen onFinish={onComplete} />}
-    </>
+    </div>
   );
 }
