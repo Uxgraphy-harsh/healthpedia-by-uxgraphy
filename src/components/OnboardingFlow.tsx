@@ -172,51 +172,52 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
        {step === 0 && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Illustration area - takes up most of the screen */}
-          <div className="flex-1 relative flex items-center justify-center px-4 pt-6">
-            {/* Floating pill badges */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`badges-${slideIndex}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 z-10 pointer-events-none"
-              >
-                {slideBadges[slideIndex].map((badge, i) => {
-                  const Icon = badge.icon;
-                  return (
-                    <motion.div
-                      key={badge.label}
-                      initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.15 + i * 0.1 }}
-                      className={`absolute ${badge.position} flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border/50 shadow-lg`}
-                      style={{ boxShadow: "0 4px 20px -4px hsl(340 100% 80% / 0.15)" }}
-                    >
-                      <Icon className="w-4 h-4 text-primary" />
-                      <span className="text-xs font-medium text-foreground">{badge.label}</span>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            </AnimatePresence>
+          <div className="flex-1 relative flex items-center justify-center px-6 pt-6 overflow-hidden">
+            {/* Floating pill badges - only for slides 0 and 2 */}
+            {slideBadges[slideIndex]?.length > 0 && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`badges-${slideIndex}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 z-10 pointer-events-none"
+                >
+                  {slideBadges[slideIndex].map((badge, i) => {
+                    const Icon = badge.icon;
+                    return (
+                      <motion.div
+                        key={badge.label}
+                        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.15 + i * 0.1 }}
+                        className={`absolute ${badge.position} flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border/50 shadow-lg`}
+                        style={{ boxShadow: "0 4px 20px -4px hsl(340 100% 80% / 0.15)" }}
+                      >
+                        <Icon className="w-4 h-4 text-primary" />
+                        <span className="text-xs font-medium text-foreground">{badge.label}</span>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              </AnimatePresence>
+            )}
 
-            {/* Main illustration */}
-            {slideIndex === 1 ? (
-              /* Slide 2: wider container with flower bg + floating UI cards */
-              <div className="relative w-full max-w-[340px] aspect-[4/3] rounded-3xl overflow-visible">
-                <AnimatePresence mode="wait">
+            {/* Main illustration - same max-w for all slides */}
+            <div className="relative w-full max-w-[300px]">
+              <AnimatePresence mode="wait">
+                {slideIndex === 1 ? (
                   <motion.div
                     key="slide-2-custom"
                     initial={{ opacity: 0, x: 60 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -60 }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="relative w-full h-full"
+                    className="relative w-full"
                   >
                     {/* Flower background image */}
-                    <div className="w-full h-full rounded-3xl overflow-hidden">
+                    <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-xl">
                       <img
                         src={onboardingSlide2Bg}
                         alt="Flower background"
@@ -230,7 +231,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
-                      className="absolute top-[-6%] left-[-12%] w-[68%] drop-shadow-xl"
+                      className="absolute top-[-8%] left-[0%] w-[65%] drop-shadow-xl"
                     />
                     {/* Doctor card overlay - lower right */}
                     <motion.img
@@ -239,28 +240,27 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.5 }}
-                      className="absolute bottom-[-10%] right-[-11%] w-[72%] drop-shadow-xl"
+                      className="absolute bottom-[-8%] right-[0%] w-[68%] drop-shadow-xl"
                     />
                   </motion.div>
-                </AnimatePresence>
-              </div>
-            ) : (
-              /* Slides 1 & 3: standard 3:4 card */
-              <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
-                <AnimatePresence mode="wait">
-                  <motion.img
+                ) : (
+                  <motion.div
                     key={slideIndex}
-                    src={onboardingSlides[slideIndex].image}
-                    alt={onboardingSlides[slideIndex].title}
                     initial={{ opacity: 0, x: 60 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -60 }}
                     transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                </AnimatePresence>
-              </div>
-            )}
+                    className="w-full aspect-[3/4] rounded-3xl overflow-hidden shadow-xl relative"
+                  >
+                    <img
+                      src={onboardingSlides[slideIndex].image}
+                      alt={onboardingSlides[slideIndex].title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Bottom section: title, dots, CTAs */}
