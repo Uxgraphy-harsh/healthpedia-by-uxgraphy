@@ -142,7 +142,14 @@ export default function AIChat() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background">
+    <div className="fixed inset-0 z-50 flex flex-col bg-background relative overflow-hidden">
+      {/* Pink gradient at the bottom of the page */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[40%] pointer-events-none"
+        style={{
+          background: "linear-gradient(180deg, transparent 0%, rgba(255,200,220,0.25) 60%, rgba(255,180,210,0.35) 100%)",
+        }}
+      />
       {/* ─── HEADER ─── */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <button
