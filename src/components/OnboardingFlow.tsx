@@ -368,13 +368,12 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
 
       {/* ─── ONBOARDING STEPS 1-4 (Dark Maroon Theme) ─── */}
       {step > 0 && (
-        <div className="flex-1 flex flex-col relative">
+        <div className="flex-1 flex flex-col relative overflow-hidden">
           {/* Flower watermark - spans full screen including behind CTA */}
           <img
             src={onboardingFlowerDark}
             alt=""
-            className="absolute bottom-[-20%] left-1/2 -translate-x-1/2 w-[200%] max-w-none pointer-events-none opacity-80"
-            style={{ zIndex: -1 }}
+            className="absolute bottom-[-15%] left-1/2 -translate-x-1/2 w-[200%] max-w-none pointer-events-none z-0"
           />
           {/* Progress bar */}
           <div className="px-4 pt-12 pb-2">
