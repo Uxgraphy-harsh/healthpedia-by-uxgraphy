@@ -245,11 +245,11 @@ export default function AIChat() {
                 <button
                   key={chip.label}
                   onClick={() => sendMessage(chip.label)}
-                  className="flex flex-col items-start gap-3 rounded-2xl border px-4 py-3.5 text-left backdrop-blur-xl"
+                  className="flex flex-col items-start gap-3 rounded-2xl border px-4 py-3.5 text-left backdrop-blur-2xl"
                   style={{
-                    background: "hsl(var(--card) / 0.50)",
-                    borderColor: "hsl(var(--border) / 0.50)",
-                    boxShadow: "0 8px 24px -12px hsl(var(--foreground) / 0.10), inset 0 1px 0 hsl(var(--card) / 0.85)",
+                    background: "hsl(var(--card) / 0.18)",
+                    borderColor: "hsl(var(--border) / 0.35)",
+                    boxShadow: "0 8px 32px -12px hsl(var(--foreground) / 0.08), inset 0 1px 0 hsl(255 255 255 / 0.12), inset 0 -1px 0 hsl(var(--foreground) / 0.04)",
                   }}
                 >
                   <chip.icon size={22} weight="light" className="text-muted-foreground/80" />
