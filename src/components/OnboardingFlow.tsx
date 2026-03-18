@@ -209,16 +209,52 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             {/* Main illustration */}
             <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={slideIndex}
-                  src={onboardingSlides[slideIndex].image}
-                  alt={onboardingSlides[slideIndex].title}
-                  initial={{ opacity: 0, x: 60 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -60 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                {slideIndex === 1 ? (
+                  <motion.div
+                    key="slide-2-custom"
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -60 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    {/* Flower background */}
+                    <img
+                      src={onboardingSlide2Bg}
+                      alt="Flower background"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    {/* Symptom card overlay - top area */}
+                    <motion.img
+                      src={onboardingCardSymptoms}
+                      alt="Symptom log card"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                      className="absolute top-[12%] left-[8%] w-[85%] drop-shadow-lg"
+                    />
+                    {/* Doctor card overlay - bottom area */}
+                    <motion.img
+                      src={onboardingCardDoctor}
+                      alt="Doctor availability card"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.5 }}
+                      className="absolute bottom-[10%] left-[10%] w-[80%] drop-shadow-lg"
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.img
+                    key={slideIndex}
+                    src={onboardingSlides[slideIndex].image}
+                    alt={onboardingSlides[slideIndex].title}
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -60 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
               </AnimatePresence>
             </div>
           </div>
