@@ -272,14 +272,16 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                       />
                     </div>
                     {/* Floating notification - centered to the full screen area */}
-                    <motion.img
-                      src={onboardingNotificationFloat}
-                      alt="Medication reminder notification"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.4 }}
-                      className="absolute bottom-[22%] left-1/2 -translate-x-1/2 w-[88%] max-w-[340px] drop-shadow-xl z-10"
-                    />
+                    <div className="absolute bottom-[22%] inset-x-0 flex justify-center z-10 pointer-events-none">
+                      <motion.img
+                        src={onboardingNotificationFloat}
+                        alt="Medication reminder notification"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="w-[88%] max-w-[340px] drop-shadow-xl"
+                      />
+                    </div>
                   </motion.div>
                 ) : (
                   <motion.div
