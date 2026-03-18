@@ -453,8 +453,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 2: HEALTH CONDITIONS ─── */}
               {step === 2 && (
                 <div className="flex-1 flex flex-col">
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Health Conditions</h2>
-                  <p className="text-white/50 text-sm mb-4">Select any known conditions</p>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Select health<br />conditions</h2>
 
                   <div className="flex items-center gap-2 px-4 py-3 mb-4 rounded-2xl bg-white/10 border border-white/10">
                     <Search className="w-4 h-4 text-white/40" />
