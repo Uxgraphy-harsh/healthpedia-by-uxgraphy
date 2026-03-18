@@ -562,7 +562,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                             <p className="text-white/50 text-xs mt-1.5 leading-relaxed">{item.desc}</p>
                           </div>
                           <div className={`w-[44px] h-[26px] rounded-full flex items-center px-[2px] transition-colors shrink-0 mt-0.5 ${
-                            enabled ? "bg-[#F66B9A]" : "bg-white/20"
+                            enabled ? "bg-[#60A5FA]" : "bg-white/20"
                           }`}>
                             <motion.div
                               className="w-[22px] h-[22px] rounded-full bg-white shadow-sm"
