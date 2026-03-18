@@ -5,14 +5,15 @@ import loadingPetal from "@/assets/loading-petal.png";
 
 interface Petal {
   id: number;
-  x: number;
+  startX: number;
   delay: number;
-  duration: number;
+  fallDuration: number;
   size: number;
   blur: boolean;
-  rotation: number;
-  swayAmount: number;
+  startRotation: number;
   opacity: number;
+  drift: number;
+  wobbleSpeed: number;
 }
 
 interface LoadingScreenProps {
@@ -23,16 +24,17 @@ export default function LoadingScreen({ onFinish }: LoadingScreenProps) {
   const [visible, setVisible] = useState(true);
 
   const petals = useMemo<Petal[]>(() => {
-    return Array.from({ length: 12 }, (_, i) => ({
+    return Array.from({ length: 14 }, (_, i) => ({
       id: i,
-      x: Math.random() * 100,
-      delay: Math.random() * 4,
-      duration: 5 + Math.random() * 4,
-      size: 20 + Math.random() * 30,
-      blur: i % 3 === 0,
-      rotation: Math.random() * 360,
-      swayAmount: 30 + Math.random() * 60,
-      opacity: 0.3 + Math.random() * 0.5,
+      startX: 5 + Math.random() * 90,
+      delay: Math.random() * 2.5,
+      fallDuration: 6 + Math.random() * 5,
+      size: 18 + Math.random() * 28,
+      blur: i % 4 === 0,
+      startRotation: Math.random() * 360,
+      opacity: 0.25 + Math.random() * 0.5,
+      drift: 20 + Math.random() * 40,
+      wobbleSpeed: 2 + Math.random() * 2,
     }));
   }, []);
 
@@ -40,7 +42,7 @@ export default function LoadingScreen({ onFinish }: LoadingScreenProps) {
     const timer = setTimeout(() => {
       setVisible(false);
       setTimeout(onFinish, 800);
-    }, 3500);
+    }, 4500);
     return () => clearTimeout(timer);
   }, [onFinish]);
 
@@ -53,51 +55,77 @@ export default function LoadingScreen({ onFinish }: LoadingScreenProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Falling petals */}
+          {/* Falling petals with natural physics */}
           {petals.map((petal) => (
-            <motion.img
+            <motion.div
               key={petal.id}
-              src={loadingPetal}
-              alt=""
               className="absolute pointer-events-none"
               style={{
+                left: `${petal.startX}%`,
                 width: petal.size,
                 height: petal.size * 0.6,
-                left: `${petal.x}%`,
-                filter: petal.blur ? "blur(3px)" : "blur(0.5px)",
-                opacity: petal.opacity,
               }}
-              initial={{
-                top: "-10%",
-                rotate: petal.rotation,
-                x: 0,
-              }}
-              animate={{
-                top: "110%",
-                rotate: petal.rotation + 360,
-                x: [0, petal.swayAmount, -petal.swayAmount / 2, petal.swayAmount / 3, 0],
-              }}
+              initial={{ y: -40 }}
+              animate={{ y: "100vh" }}
               transition={{
-                top: {
-                  duration: petal.duration,
+                y: {
+                  duration: petal.fallDuration,
                   delay: petal.delay,
                   repeat: Infinity,
-                  ease: "linear",
-                },
-                rotate: {
-                  duration: petal.duration * 1.5,
-                  delay: petal.delay,
-                  repeat: Infinity,
-                  ease: "linear",
-                },
-                x: {
-                  duration: petal.duration * 0.8,
-                  delay: petal.delay,
-                  repeat: Infinity,
-                  ease: "easeInOut",
+                  ease: [0.25, 0.1, 0.25, 1],
                 },
               }}
-            />
+            >
+              {/* Horizontal sway — sinusoidal drift */}
+              <motion.div
+                animate={{ x: [0, petal.drift, -petal.drift * 0.6, petal.drift * 0.3, 0] }}
+                transition={{
+                  x: {
+                    duration: petal.wobbleSpeed * 2,
+                    delay: petal.delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+              >
+                {/* Tumble rotation — petals flip and spin as they fall */}
+                <motion.img
+                  src={loadingPetal}
+                  alt=""
+                  className="w-full h-full"
+                  style={{
+                    filter: petal.blur ? "blur(3px)" : "blur(0.5px)",
+                    opacity: petal.opacity,
+                  }}
+                  initial={{ rotate: petal.startRotation, rotateX: 0 }}
+                  animate={{
+                    rotate: petal.startRotation + 180 + Math.random() * 180,
+                    rotateX: [0, 180, 360],
+                    rotateY: [0, 40, -40, 0],
+                  }}
+                  transition={{
+                    rotate: {
+                      duration: petal.fallDuration,
+                      delay: petal.delay,
+                      repeat: Infinity,
+                      ease: "linear",
+                    },
+                    rotateX: {
+                      duration: petal.wobbleSpeed * 1.5,
+                      delay: petal.delay,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                    rotateY: {
+                      duration: petal.wobbleSpeed,
+                      delay: petal.delay,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  }}
+                />
+              </motion.div>
+            </motion.div>
           ))}
 
           {/* Center flower */}
