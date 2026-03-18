@@ -396,10 +396,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                 <div className="flex-1 flex flex-col relative overflow-hidden">
                   {/* Flower watermark from bottom */}
                   <img
-                    src={onboardingFlowerWatermark}
+                    src={onboardingFlowerDark}
                     alt=""
-                    className="absolute bottom-[-30%] left-1/2 -translate-x-1/2 w-[120%] max-w-none pointer-events-none opacity-30"
-                    style={{ filter: 'brightness(0.5)' }}
+                    className="absolute bottom-[-30%] left-1/2 -translate-x-1/2 w-[120%] max-w-none pointer-events-none opacity-40"
                   />
                   <h2 className="text-4xl font-serif text-white leading-tight mb-8">Please enter<br />basic details</h2>
                   <div className="space-y-4 flex-1 relative z-10">
