@@ -167,128 +167,165 @@ export default function AIChat() {
         </button>
       </div>
 
-      {/* ─── CONVERSATION AREA ─── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5">
-        {isEmptyState ? (
-          <div className="h-full flex items-center justify-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-            >
-              <img
-                src={askAiFlower}
-                alt=""
-                className="w-36 h-36 opacity-15 grayscale"
-              />
-            </motion.div>
-          </div>
-        ) : (
-          <div className="space-y-4 py-4">
-            <AnimatePresence>
-              {messages.map((msg) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div className="max-w-[88%] space-y-1">
-                    {msg.text && (
-                      <div
-                        className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                          msg.role === "user"
-                            ? "bg-primary text-primary-foreground rounded-br-md"
-                            : "bg-card border border-border/40 rounded-bl-md"
-                        }`}
-                      >
-                        {msg.role === "ai" ? renderMessageText(msg.text) : msg.text}
-                      </div>
-                    )}
-                    <div className={`flex items-center gap-1.5 px-1 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <span className="text-[9px] text-muted-foreground">{formatRelativeTime(msg.timestamp)}</span>
-                      {msg.status === "error" && (
-                        <button
-                          onClick={() => retryMessage(msg.id)}
-                          className="flex items-center gap-1 text-[9px] text-health-alert font-medium"
-                        >
-                          <AlertCircle className="w-3 h-3" />
-                          Failed · <RefreshCw className="w-2.5 h-2.5" /> Retry
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-
-            {isTyping && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
-                <div className="bg-card border border-border/40 rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
+      {isEmptyState ? (
+        <>
+          {/* ─── EMPTY STATE BODY ─── */}
+          <div className="flex-1 relative min-h-0">
+            <div className="absolute inset-x-0 top-[34%] flex justify-center -translate-y-1/2 pointer-events-none">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <img
+                  src={askAiFlower}
+                  alt=""
+                  className="w-36 h-36 opacity-15 grayscale"
+                />
               </motion.div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* ─── BOTTOM SECTION (pinned) ─── */}
-      <div className="relative z-10 px-5 pb-8">
-        {/* Quick chips */}
-        {isEmptyState && (
-          <div className="pb-3">
-            <div className="flex gap-3">
-              {quickChips.map((chip) => (
-                <button
-                  key={chip.label}
-                  onClick={() => sendMessage(chip.label)}
-                  className="flex flex-col items-start gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-border/30 flex-1 shadow-sm"
-                >
-                  <chip.icon size={24} weight="light" className="text-muted-foreground/70" />
-                  <span className="text-sm font-medium text-foreground">{chip.label}</span>
-                </button>
-              ))}
             </div>
           </div>
-        )}
 
-        {/* Input */}
-        <div
-          className="rounded-3xl p-4 pt-3 backdrop-blur-xl"
-          style={{
-            background: "rgba(255,255,255,0.15)",
-            border: "1px solid rgba(255,255,255,0.4)",
-            boxShadow: "0 4px 30px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
-          }}
-        >
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(input);
-              }
-            }}
-            placeholder="Ask anything about your health"
-            rows={1}
-            className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
-          />
-          <div className="flex items-center justify-between mt-2">
-            <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
-              <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
-            </button>
-            <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
-              <Microphone size={18} weight="light" className="text-muted-foreground/70" />
-            </button>
+          {/* ─── BOTTOM SECTION (PINNED) ─── */}
+          <div className="relative z-10 px-5 pb-8 pt-3 mt-auto">
+            <div className="pb-3">
+              <div className="flex gap-3">
+                {quickChips.map((chip) => (
+                  <button
+                    key={chip.label}
+                    onClick={() => sendMessage(chip.label)}
+                    className="flex flex-col items-start justify-between min-h-32 p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-border/30 flex-1 shadow-sm"
+                  >
+                    <chip.icon size={24} weight="light" className="text-muted-foreground/70" />
+                    <span className="text-sm font-medium text-foreground">{chip.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div
+              className="rounded-3xl p-5 pt-4 backdrop-blur-xl"
+              style={{
+                background: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(255,255,255,0.48)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.55)",
+              }}
+            >
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(input);
+                  }
+                }}
+                placeholder="Ask anything about your health"
+                rows={2}
+                className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none min-h-16 max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
+              />
+              <div className="flex items-center justify-between mt-3">
+                <button className="w-11 h-11 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.32)", border: "1px solid rgba(255,255,255,0.45)" }}>
+                  <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
+                </button>
+                <button className="w-11 h-11 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.32)", border: "1px solid rgba(255,255,255,0.45)" }}>
+                  <Microphone size={18} weight="light" className="text-muted-foreground/70" />
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <>
+          {/* ─── CONVERSATION AREA ─── */}
+          <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto px-5">
+            <div className="space-y-4 py-4">
+              <AnimatePresence>
+                {messages.map((msg) => (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    <div className="max-w-[88%] space-y-1">
+                      {msg.text && (
+                        <div
+                          className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                            msg.role === "user"
+                              ? "bg-primary text-primary-foreground rounded-br-md"
+                              : "bg-card border border-border/40 rounded-bl-md"
+                          }`}
+                        >
+                          {msg.role === "ai" ? renderMessageText(msg.text) : msg.text}
+                        </div>
+                      )}
+                      <div className={`flex items-center gap-1.5 px-1 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                        <span className="text-[9px] text-muted-foreground">{formatRelativeTime(msg.timestamp)}</span>
+                        {msg.status === "error" && (
+                          <button
+                            onClick={() => retryMessage(msg.id)}
+                            className="flex items-center gap-1 text-[9px] text-health-alert font-medium"
+                          >
+                            <AlertCircle className="w-3 h-3" />
+                            Failed · <RefreshCw className="w-2.5 h-2.5" /> Retry
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {isTyping && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                  <div className="bg-card border border-border/40 rounded-2xl rounded-bl-md px-4 py-3 flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+
+          <div className="relative z-10 px-5 pb-8 pt-3 mt-auto">
+            <div
+              className="rounded-3xl p-5 pt-4 backdrop-blur-xl"
+              style={{
+                background: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(255,255,255,0.48)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.55)",
+              }}
+            >
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(input);
+                  }
+                }}
+                placeholder="Ask anything about your health"
+                rows={2}
+                className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none min-h-16 max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
+              />
+              <div className="flex items-center justify-between mt-3">
+                <button className="w-11 h-11 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.32)", border: "1px solid rgba(255,255,255,0.45)" }}>
+                  <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
+                </button>
+                <button className="w-11 h-11 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.32)", border: "1px solid rgba(255,255,255,0.45)" }}>
+                  <Microphone size={18} weight="light" className="text-muted-foreground/70" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* ─── CHAT HISTORY DRAWER ─── */}
       <AnimatePresence>
