@@ -168,10 +168,9 @@ export default function AIChat() {
       </div>
 
       {/* ─── CONVERSATION AREA ─── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 flex flex-col">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-5">
         {isEmptyState ? (
-          <div className="flex-1 flex items-center justify-center">
-            {/* Faded flower watermark */}
+          <div className="h-full flex items-center justify-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -185,7 +184,7 @@ export default function AIChat() {
             </motion.div>
           </div>
         ) : (
-          <div className="space-y-4 py-4 mt-auto">
+          <div className="space-y-4 py-4">
             <AnimatePresence>
               {messages.map((msg) => (
                 <motion.div
@@ -235,10 +234,13 @@ export default function AIChat() {
             )}
           </div>
         )}
+      </div>
 
-        {/* ─── QUICK CHIPS (only in empty state) ─── */}
+      {/* ─── BOTTOM SECTION (pinned) ─── */}
+      <div className="relative z-10 px-5 pb-8">
+        {/* Quick chips */}
         {isEmptyState && (
-          <div className="pb-3 pt-2">
+          <div className="pb-3">
             <div className="flex gap-3">
               {quickChips.map((chip) => (
                 <button
@@ -254,38 +256,36 @@ export default function AIChat() {
           </div>
         )}
 
-        {/* ─── INPUT AREA ─── */}
-        <div className="pb-6 pt-2 relative z-10">
-          <div
-            className="rounded-3xl p-4 pt-3 backdrop-blur-xl"
-            style={{
-              background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.4)",
-              boxShadow: "0 4px 30px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
+        {/* Input */}
+        <div
+          className="rounded-3xl p-4 pt-3 backdrop-blur-xl"
+          style={{
+            background: "rgba(255,255,255,0.15)",
+            border: "1px solid rgba(255,255,255,0.4)",
+            boxShadow: "0 4px 30px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.5)",
+          }}
+        >
+          <textarea
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(input);
+              }
             }}
-          >
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage(input);
-                }
-              }}
-              placeholder="Ask anything about your health"
-              rows={1}
-              className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
-            />
-            <div className="flex items-center justify-between mt-2">
-              <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
-                <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
-              </button>
-              <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
-                <Microphone size={18} weight="light" className="text-muted-foreground/70" />
-              </button>
-            </div>
+            placeholder="Ask anything about your health"
+            rows={1}
+            className="w-full bg-transparent text-sm px-1 py-1 outline-none resize-none max-h-[120px] placeholder:text-muted-foreground/50 text-foreground"
+          />
+          <div className="flex items-center justify-between mt-2">
+            <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
+              <Paperclip size={18} weight="light" className="text-muted-foreground/70" />
+            </button>
+            <button className="w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center" style={{ background: "rgba(255,255,255,0.3)", border: "1px solid rgba(255,255,255,0.4)" }}>
+              <Microphone size={18} weight="light" className="text-muted-foreground/70" />
+            </button>
           </div>
         </div>
       </div>
