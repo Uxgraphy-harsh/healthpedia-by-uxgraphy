@@ -40,6 +40,9 @@ export default function BottomNav() {
                         src={askAiFlower}
                         alt="Ask AI"
                         className="w-14 h-14"
+                        loading="eager"
+                        decoding="sync"
+                        fetchPriority="high"
                       />
                     </motion.div>
                     {/* Spacer to push label down to align with others */}
