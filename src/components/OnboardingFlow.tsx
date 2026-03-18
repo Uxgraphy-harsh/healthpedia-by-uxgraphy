@@ -21,11 +21,7 @@ const slideBadges = [
     { label: "Reports", icon: Heart, position: "top-[35%] -left-[4%]" },
     { label: "Notifications", icon: Bell, position: "bottom-[15%] right-[1%]" },
   ],
-  [
-    { label: "Symptom Log", icon: ClipboardList, position: "top-[10%] -left-[2%]" },
-    { label: "Doctor Visit", icon: Stethoscope, position: "top-[25%] right-[1%]" },
-    { label: "Health Score", icon: Activity, position: "bottom-[18%] left-[2%]" },
-  ],
+  [], // Slide 2 has no pill badges — uses UI card overlays instead
   [
     { label: "Medications", icon: Pill, position: "top-[8%] right-[3%]" },
     { label: "Timely Alerts", icon: Clock, position: "top-[38%] -left-[3%]" },
