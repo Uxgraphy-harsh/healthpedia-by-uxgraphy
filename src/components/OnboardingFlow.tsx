@@ -10,7 +10,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import healthpediaFlower from "@/assets/healthpedia-flower.svg";
 import splashScreen from "@/assets/splash-screen.svg";
 import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
-import onboardingSlide2 from "@/assets/onboarding-slide-2.png";
+import onboardingSlide2Bg from "@/assets/onboarding-slide-2-bg.png";
+import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
+import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
 import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
 
 const slideBadges = [
@@ -37,7 +39,7 @@ const onboardingSlides = [
     title: "Track and manage your loved one's health with AI",
   },
   {
-    image: onboardingSlide2,
+    image: "custom-slide-2",
     title: "Record symptoms for your next appointment",
   },
   {
@@ -207,16 +209,52 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
             {/* Main illustration */}
             <div className="relative w-full max-w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-xl">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={slideIndex}
-                  src={onboardingSlides[slideIndex].image}
-                  alt={onboardingSlides[slideIndex].title}
-                  initial={{ opacity: 0, x: 60 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -60 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                {slideIndex === 1 ? (
+                  <motion.div
+                    key="slide-2-custom"
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -60 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    {/* Flower background */}
+                    <img
+                      src={onboardingSlide2Bg}
+                      alt="Flower background"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    {/* Symptom card overlay - top area */}
+                    <motion.img
+                      src={onboardingCardSymptoms}
+                      alt="Symptom log card"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.3 }}
+                      className="absolute top-[12%] left-[8%] w-[85%] drop-shadow-lg"
+                    />
+                    {/* Doctor card overlay - bottom area */}
+                    <motion.img
+                      src={onboardingCardDoctor}
+                      alt="Doctor availability card"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.5 }}
+                      className="absolute bottom-[10%] left-[10%] w-[80%] drop-shadow-lg"
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.img
+                    key={slideIndex}
+                    src={onboardingSlides[slideIndex].image}
+                    alt={onboardingSlides[slideIndex].title}
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -60 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
               </AnimatePresence>
             </div>
           </div>
