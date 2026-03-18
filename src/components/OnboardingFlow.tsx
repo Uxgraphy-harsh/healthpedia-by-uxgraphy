@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity, Plus, Trash2, Smartphone, ChevronRight, Bell,
   Heart, Droplets, Moon, Zap, Smile, GlassWater, Weight,
-  Thermometer, Search, Check, X
+  Thermometer, Search, Check, X, Calendar, FileText, BellRing,
+  ClipboardList, Stethoscope, Clock, Pill
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import healthpediaFlower from "@/assets/healthpedia-flower.svg";
@@ -11,6 +12,24 @@ import splashScreen from "@/assets/splash-screen.svg";
 import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2 from "@/assets/onboarding-slide-2.png";
 import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
+
+const slideBadges = [
+  [
+    { label: "Reminders", icon: Calendar, position: "top-4 right-4" },
+    { label: "Reports", icon: Heart, position: "top-20 left-2" },
+    { label: "Notifications", icon: Bell, position: "bottom-24 right-2" },
+  ],
+  [
+    { label: "Symptom Log", icon: ClipboardList, position: "top-4 left-2" },
+    { label: "Doctor Visit", icon: Stethoscope, position: "top-16 right-4" },
+    { label: "Health Score", icon: Activity, position: "bottom-24 left-4" },
+  ],
+  [
+    { label: "Medications", icon: Pill, position: "top-4 right-6" },
+    { label: "Timely Alerts", icon: Clock, position: "top-20 left-2" },
+    { label: "Family Care", icon: Heart, position: "bottom-24 right-4" },
+  ],
+];
 
 const onboardingSlides = [
   {
