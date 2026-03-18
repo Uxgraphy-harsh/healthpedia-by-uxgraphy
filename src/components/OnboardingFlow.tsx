@@ -57,7 +57,7 @@ const TOTAL_ONBOARDING_STEPS = 4; // basic=1, conditions=2, trackers=3, permissi
 const allConditions = [
   "Diabetes", "Hypertension", "Thyroid Disorder", "Asthma",
   "Heart Disease", "Migraine", "PCOS", "Arthritis",
-  "Anxiety", "Depression", "Anemia", "None",
+  "Anxiety", "Depression", "Anemia",
 ];
 
 const trackerOptions = [
