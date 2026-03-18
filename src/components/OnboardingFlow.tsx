@@ -252,9 +252,10 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                     {/* Inner container: clips only the iPhone from the bottom */}
                     <div className="relative w-full overflow-hidden" style={{ maxHeight: '380px' }}>
                       <img
-                        src={onboardingIphoneBody}
+                        src={onboardingIphoneOnly}
                         alt="iPhone"
-                        className="w-full scale-110 origin-top"
+                        className="w-[70%] mx-auto scale-110 origin-top drop-shadow-2xl"
+                      />
                       />
                       {/* Bottom gradient fade to background */}
                       <div
