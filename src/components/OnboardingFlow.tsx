@@ -99,6 +99,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   const { signInWithGoogle, user } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
   const [splashFading, setSplashFading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [step, setStep] = useState(0); // 0 = welcome slider, 1-4 = onboarding steps
   const [slideIndex, setSlideIndex] = useState(0);
 
