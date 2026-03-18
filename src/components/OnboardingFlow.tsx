@@ -610,7 +610,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               </button>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
