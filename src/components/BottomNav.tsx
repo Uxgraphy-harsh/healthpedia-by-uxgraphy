@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Stack, HeartBeat, FolderOpen, UserCircle } from "@phosphor-icons/react";
+import { Stack, Heartbeat, FolderOpen, UserCircle } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import healthpediaFlower from "@/assets/healthpedia-flower.svg";
 
