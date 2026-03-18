@@ -1,0 +1,34 @@
+<svg width="1482" height="1482" viewBox="0 0 1482 1482" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g opacity="0.12">
+<g id="Flower_inner" data-figma-trr="r16u1-0f">
+<g style="mix-blend-mode:multiply" opacity="0.75">
+<path d="M765.394 740.999C735.925 715.681 637.137 575.749 622.506 542.374C584.948 456.68 459.679 207.383 671.911 24.6309C931.296 124.85 881.945 409.986 896.031 450.251C1004.98 673.064 825.94 670.535 765.394 740.999Z" fill="url(#paint0_linear_86_4003)"/>
+</g>
+</g>
+<use xlink:href="#Flower_inner" transform="translate(339.974 -227.163) rotate(22.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(741 -306.932) rotate(45)"/>
+<use xlink:href="#Flower_inner" transform="translate(1142.03 -227.163) rotate(67.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(1482 5.9093e-05) rotate(90)"/>
+<use xlink:href="#Flower_inner" transform="translate(1709.16 339.974) rotate(112.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(1788.93 741) rotate(135)"/>
+<use xlink:href="#Flower_inner" transform="translate(1709.16 1142.03) rotate(157.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(1482 1482) rotate(-180)"/>
+<use xlink:href="#Flower_inner" transform="translate(1142.03 1709.16) rotate(-157.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(741 1788.93) rotate(-135)"/>
+<use xlink:href="#Flower_inner" transform="translate(339.973 1709.16) rotate(-112.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(-3.55392e-05 1482) rotate(-90)"/>
+<use xlink:href="#Flower_inner" transform="translate(-227.163 1142.03) rotate(-67.5)"/>
+<use xlink:href="#Flower_inner" transform="translate(-306.932 741) rotate(-45)"/>
+<use xlink:href="#Flower_inner" transform="translate(-227.163 339.974) rotate(-22.5)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_86_4003" x1="764.749" y1="732.467" x2="739.153" y2="394.352" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD7E6"/>
+<stop offset="0.26" stop-color="#FFD3E3"/>
+<stop offset="0.5" stop-color="#FFC7DC"/>
+<stop offset="0.74" stop-color="#FFB4D1"/>
+<stop offset="0.97" stop-color="#FF9AC0"/>
+<stop offset="1" stop-color="#FF96BE"/>
+</linearGradient>
+</defs>
+</svg>
