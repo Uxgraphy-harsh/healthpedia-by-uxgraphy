@@ -592,19 +592,22 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
           </AnimatePresence>
 
           {/* Bottom CTA for steps 1-4 */}
-          <div className="px-6 pb-8 space-y-2">
-            <button
-              onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
-              className="w-full py-4 rounded-full font-semibold text-base transition-all"
-              style={{ background: '#FF96BE', color: '#49001E' }}
-            >
-              {step === TOTAL_ONBOARDING_STEPS ? "Get Started" : "Continue"}
-            </button>
-            {step > 1 && (
-              <button onClick={back} className="w-full text-sm text-white/50 text-center py-2">
-                Back
+          <div className="px-6 pb-8">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={back}
+                className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center shrink-0"
+              >
+                <ChevronRight className="w-5 h-5 text-white rotate-180" />
               </button>
-            )}
+              <button
+                onClick={step === TOTAL_ONBOARDING_STEPS ? onComplete : next}
+                className="flex-1 py-4 rounded-full font-semibold text-base transition-all"
+                style={{ background: '#FF96BE', color: '#49001E' }}
+              >
+                {step === TOTAL_ONBOARDING_STEPS ? "Get Started" : "Continue"}
+              </button>
+            </div>
           </div>
         </>
       )}
