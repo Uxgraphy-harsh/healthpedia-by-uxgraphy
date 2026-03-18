@@ -13,7 +13,8 @@ import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2Bg from "@/assets/onboarding-slide-2-bg.png";
 import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
 import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
-import onboardingSlide3 from "@/assets/onboarding-slide-3.png";
+import onboardingIphone from "@/assets/onboarding-iphone.png";
+import onboardingNotification from "@/assets/onboarding-notification.svg";
 
 const slideBadges = [
   [
