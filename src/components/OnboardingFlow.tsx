@@ -453,8 +453,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 2: HEALTH CONDITIONS ─── */}
               {step === 2 && (
                 <div className="flex-1 flex flex-col">
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Health Conditions</h2>
-                  <p className="text-white/50 text-sm mb-4">Select any known conditions</p>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Select health<br />conditions</h2>
 
                   <div className="flex items-center gap-2 px-4 py-3 mb-4 rounded-2xl bg-white/10 border border-white/10">
                     <Search className="w-4 h-4 text-white/40" />
@@ -515,8 +514,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 3: HEALTH TRACKERS ─── */}
               {step === 3 && (
                 <div className="flex-1 flex flex-col">
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Health Trackers</h2>
-                  <p className="text-white/50 text-sm mb-6">Choose what you want to track</p>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Choose health<br />trackers</h2>
                   <div className="grid grid-cols-2 gap-3 flex-1">
                     {trackerOptions.map((t) => {
                       const selected = selectedTrackers.includes(t.id);
@@ -550,9 +548,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               {/* ─── STEP 4: PERMISSIONS ─── */}
               {step === 4 && (
                 <div className="flex-1 flex flex-col">
-                  <p className="text-[#FFE0E9] text-sm font-medium mb-1">Last step!</p>
-                  <h2 className="text-2xl font-bold font-serif mb-1 text-white">Permissions</h2>
-                  <p className="text-white/50 text-sm mb-6">Allow access to get the most out of Healthpedia</p>
+                  <h2 className="text-4xl font-serif text-white leading-tight mb-8">Enable<br />permissions</h2>
 
                   <div className="space-y-3 flex-1">
                     {permissionItems.map((item) => {
