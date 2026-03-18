@@ -15,7 +15,7 @@ import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
 import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
 import onboardingIphoneOnly from "@/assets/onboarding-iphone-only.png";
 import onboardingNotificationFloat from "@/assets/onboarding-notification-float.svg";
-import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.svg";
+import onboardingFlowerWatermark from "@/assets/onboarding-flower-watermark.png";
 
 const slideBadges = [
   [
@@ -169,11 +169,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
       {/* ─── STEP 0: WELCOME SLIDER ─── */}
        {step === 0 && (
         <div className="flex-1 flex flex-col overflow-hidden relative">
-          {/* Flower watermark background */}
+          {/* Flower watermark background - large, centered at top */}
           <img
             src={onboardingFlowerWatermark}
             alt=""
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] max-w-none opacity-[0.08] pointer-events-none z-0"
+            className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[160%] max-w-none pointer-events-none z-0"
           />
           {/* Illustration area - takes up most of the screen */}
           <div className="flex-1 relative flex items-center justify-center px-6 pt-6 z-[1]">
