@@ -529,7 +529,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                               )}
                             </p>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-white/40 shrink-0" />
+                          
                         </motion.button>
                       );
                     })}
