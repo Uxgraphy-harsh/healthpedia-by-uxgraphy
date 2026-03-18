@@ -77,20 +77,20 @@ const permissionItems = [
   {
     id: "camera",
     icon: Camera,
-    title: "Camera Access",
-    desc: "Scan prescriptions & upload medical reports easily",
+    title: "Check contacts access",
+    desc: "Add family & caregivers to your health circle for shared tracking and alerts.",
   },
   {
     id: "notifications",
     icon: Bell,
-    title: "Notifications",
-    desc: "Medication reminders, health alerts & appointment updates",
+    title: "Check notification access",
+    desc: "Get timely medication reminders, health alerts & appointment updates.",
   },
   {
     id: "location",
     icon: MapPin,
-    title: "Location Services",
-    desc: "Find nearby pharmacies, hospitals & health services",
+    title: "Check location access",
+    desc: "Find nearby pharmacies, hospitals & health services when needed.",
   },
 ];
 
