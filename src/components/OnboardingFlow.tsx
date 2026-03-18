@@ -172,7 +172,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
        {step === 0 && (
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Illustration area - takes up most of the screen */}
-          <div className="flex-1 relative flex items-center justify-center px-6 pt-6 overflow-hidden">
+          <div className="flex-1 relative flex items-center justify-center px-6 pt-6">
             {/* Floating pill badges - only for slides 0 and 2 */}
             {slideBadges[slideIndex]?.length > 0 && (
               <AnimatePresence mode="wait">
