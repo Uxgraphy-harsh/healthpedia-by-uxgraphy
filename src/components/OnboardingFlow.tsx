@@ -13,7 +13,7 @@ import onboardingSlide1 from "@/assets/onboarding-slide-1.png";
 import onboardingSlide2Bg from "@/assets/onboarding-slide-2-bg.png";
 import onboardingCardSymptoms from "@/assets/onboarding-card-symptoms.svg";
 import onboardingCardDoctor from "@/assets/onboarding-card-doctor.svg";
-import onboardingIphoneBody from "@/assets/onboarding-iphone-body.svg";
+import onboardingIphoneOnly from "@/assets/onboarding-iphone-only.png";
 import onboardingNotificationFloat from "@/assets/onboarding-notification-float.svg";
 
 const slideBadges = [
@@ -252,9 +252,9 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
                     {/* Inner container: clips only the iPhone from the bottom */}
                     <div className="relative w-full overflow-hidden" style={{ maxHeight: '380px' }}>
                       <img
-                        src={onboardingIphoneBody}
+                        src={onboardingIphoneOnly}
                         alt="iPhone"
-                        className="w-full scale-110 origin-top"
+                        className="w-[70%] mx-auto scale-110 origin-top drop-shadow-2xl"
                       />
                       {/* Bottom gradient fade to background */}
                       <div
@@ -339,7 +339,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
               </button>
               <button
                 onClick={next}
-                className="w-full py-4 rounded-full border border-border/50 text-foreground font-semibold text-base backdrop-blur-md bg-card/70"
+                className="w-full py-4 rounded-full border border-white/20 text-foreground font-semibold text-base backdrop-blur-lg bg-white/20 shadow-lg"
               >
                 Explore as Guest
               </button>
