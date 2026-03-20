@@ -227,7 +227,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingProps) {
   }
 
   return (
-    <div className="mobile-container flex flex-col min-h-screen overflow-hidden" style={{ background: step === 0 ? 'hsl(var(--background))' : '#49001E' }}>
+    <div className="mobile-container flex flex-col h-[100dvh] overflow-hidden" style={{ background: step === 0 ? 'hsl(var(--background))' : '#49001E' }}>
       {/* ─── STEP 0: WELCOME SLIDER ─── */}
       {step === 0 && (
         <div className="flex-1 flex flex-col overflow-hidden relative">
