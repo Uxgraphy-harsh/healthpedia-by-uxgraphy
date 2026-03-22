@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
-  Heart, Footprints, Moon, ChevronRight, Plus, Check,
+  Heart, Footprints, Moon, Flame, ChevronRight, Plus, Check,
   Pencil, Upload, TrendingUp
 } from "lucide-react";
 
