@@ -2,285 +2,277 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
-  Footprints, Heart, Moon, Flame, TrendingUp, TrendingDown,
-  MessageCircle, Activity, Upload, Bell, User, Clock, Check,
-  Droplets, Weight, Smile, Zap, Ruler, FileText, Pill,
-  ChevronRight, Calendar, AlertCircle
+  Heart, Footprints, Moon, ChevronRight, Plus, Check,
+  Pencil, Upload, TrendingUp
 } from "lucide-react";
-import HealthTimeline from "@/components/HealthTimeline";
-import { sampleEvents, sampleReminders } from "@/data/sampleData";
 
-// ─── Greeting ───────────────────────────────────────────────────────────────────
+// ─── Data ───────────────────────────────────────────────────────────────────────
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning";
-  if (hour < 17) return "Good Afternoon";
-  return "Good Evening";
-}
-
-function getFormattedDate(): string {
-  return new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-// ─── Health Metric Cards ────────────────────────────────────────────────────────
-
-const healthMetrics = [
-  { icon: Footprints, label: "Steps", value: "8,432", unit: "", trend: "up" as const, change: "+12%", color: "text-primary" },
-  { icon: Heart, label: "Heart Rate", value: "72", unit: "bpm", trend: "stable" as const, change: "Normal", color: "text-health-alert" },
-  { icon: Moon, label: "Sleep", value: "7h 23m", unit: "", trend: "down" as const, change: "-8%", color: "text-secondary" },
-  { icon: Flame, label: "Calories", value: "1,847", unit: "kcal", trend: "up" as const, change: "+5%", color: "text-health-watch" },
-  { icon: Droplets, label: "Blood Sugar", value: "118", unit: "mg/dL", trend: "up" as const, change: "Pre-meal", color: "text-accent-foreground" },
-  { icon: Weight, label: "Weight", value: "62", unit: "kg", trend: "stable" as const, change: "Stable", color: "text-health-good" },
-];
-
-// ─── Quick Trackers ─────────────────────────────────────────────────────────────
-
-const quickTrackers = [
-  { icon: Droplets, label: "Blood Sugar", color: "bg-accent/10 text-accent-foreground" },
-  { icon: Heart, label: "Blood Pressure", color: "bg-health-alert/10 text-health-alert" },
-  { icon: Weight, label: "Weight", color: "bg-health-good/10 text-health-good" },
-  { icon: Smile, label: "Mood", color: "bg-health-watch/10 text-health-watch" },
-  { icon: Activity, label: "Symptom", color: "bg-primary/10 text-primary" },
-  { icon: Zap, label: "Energy", color: "bg-secondary/10 text-secondary" },
-];
-
-// ─── Quick Actions ──────────────────────────────────────────────────────────────
-
-const quickActions = [
-  { icon: Upload, label: "Upload Report", path: "/records" },
-  { icon: Bell, label: "Add Reminder", path: "/reminders" },
-  { icon: Activity, label: "Log Symptom", path: "/track" },
-  { icon: FileText, label: "View Records", path: "/records" },
-];
-
-// ─── Reminder category icons ────────────────────────────────────────────────────
-
-const categoryIcons: Record<string, typeof Pill> = {
-  medication: Pill,
-  appointment: Calendar,
-  measurement: Ruler,
-  food: Flame,
-  custom: Bell,
+const healthScore = {
+  score: 74,
+  change: "+3 from last week",
+  syncedAgo: "Synced 4 mins ago",
 };
+
+const vitals = [
+  { icon: Heart, label: "Heart Rate", value: "72", unit: "bpm", status: "Normal", statusColor: "text-health-good", iconBg: "bg-health-alert/20", iconColor: "text-health-alert" },
+  { icon: Footprints, label: "Steps", value: "6,240", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-health-watch/20", iconColor: "text-health-watch" },
+  { icon: Moon, label: "Sleep", value: "7", valueSuffix: "hr", value2: "23", value2Suffix: "min", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-secondary/20", iconColor: "text-secondary" },
+];
+
+const remindersData = [
+  {
+    id: "r1",
+    title: "Dr. Meena Sharma – Apollo Clinic Pune",
+    subtitle: "Tomorrow • 11:30 AM",
+    badge: "Appointment",
+    badgeColor: "bg-secondary/10 text-secondary",
+    borderColor: "border-l-secondary",
+    done: false,
+  },
+  {
+    id: "r2",
+    title: "Collect TSH Report – SRL Diagnostics…",
+    subtitle: "Wed, 26 • After 5 PM",
+    badge: "Report collection",
+    badgeColor: "bg-health-alert/10 text-health-alert",
+    borderColor: "border-l-health-alert",
+    done: false,
+  },
+  {
+    id: "r3",
+    title: "Eltroxin 50mcg",
+    subtitle: "Daily • After Dinner",
+    badge: "Medicine",
+    badgeColor: "bg-health-good/10 text-health-good",
+    borderColor: "border-l-health-good",
+    done: true,
+  },
+];
+
+const familyMembers = [
+  { id: "f1", name: "Dad", age: 72, image: "https://images.unsplash.com/photo-1566753323558-f4e0952af115?w=200&h=200&fit=crop&crop=face" },
+  { id: "f2", name: "Brother", age: 72, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" },
+];
+
+const watchlistData = [
+  { name: "TSH (Thyroid)", date: "14 Jan 2025", value: "6.2", unit: "mIU/L", status: "Above range", statusColor: "text-health-alert" },
+  { name: "Fasting Blood Sugar", date: "14 Jan 2025", value: "98", unit: "mg/dL", status: "Normal", statusColor: "text-health-good" },
+  { name: "Blood Pressure", date: "14 Jan 2025", value: "122/80", unit: "", status: "Normal", statusColor: "text-health-good" },
+  { name: "Total Cholesterol", date: "2 Nov 2024", value: "194", unit: "mg/dL", status: "Normal", statusColor: "text-health-good" },
+  { name: "HbA1c", date: "2 Nov 2024", value: "5.4", unit: "%", status: "Normal", statusColor: "text-health-good" },
+];
 
 // ─── Component ──────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const userName = "Sarah";
-
-  // Reminders state
-  const [reminders, setReminders] = useState(
-    sampleReminders.map((r) => ({
-      ...r,
-      displayTime: formatTime(r.time),
-      status: r.done ? ("completed" as const) : isPast(r.time) ? ("missed" as const) : ("upcoming" as const),
-    }))
-  );
+  const [reminders, setReminders] = useState(remindersData);
 
   const toggleReminder = (id: string) => {
     setReminders((prev) =>
-      prev.map((r) =>
-        r.id === id ? { ...r, done: !r.done, status: !r.done ? "completed" as const : "upcoming" as const } : r
-      )
+      prev.map((r) => (r.id === id ? { ...r, done: !r.done } : r))
     );
   };
 
-  // Recent events (limit to 4)
-  const recentEvents = sampleEvents.slice(0, 4);
-
   return (
     <div className="mobile-container pb-24">
-      {/* ─── GREETING ─── */}
-      <div className="px-5 pt-6 pb-1">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold font-serif">{getGreeting()}, {userName}</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">{getFormattedDate()}</p>
-          </div>
-          <button
-            onClick={() => navigate("/profile")}
-            className="w-10 h-10 rounded-full gradient-primary flex items-center justify-center shadow-sm"
-          >
-            <User className="w-5 h-5 text-primary-foreground" />
+      {/* ─── DARK HEADER ─── */}
+      <div className="bg-[#2C0011] text-white px-5 pt-6 pb-8 rounded-b-[2rem]">
+        {/* Top row */}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-[11px] font-medium tracking-widest uppercase opacity-70">Today's Summary</p>
+          <button className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
+            <Pencil className="w-3 h-3" />
+            <span className="text-[11px] font-medium">Customise</span>
           </button>
+        </div>
+
+        {/* Health Score */}
+        <div className="mb-3">
+          <h1 className="text-6xl font-bold font-serif leading-none">{healthScore.score}</h1>
+          <p className="text-sm opacity-80 mt-1">Health score</p>
+        </div>
+
+        {/* Change pill */}
+        <div className="inline-flex items-center gap-1.5 bg-health-good/20 text-health-good rounded-full px-3 py-1 mb-4">
+          <TrendingUp className="w-3.5 h-3.5" />
+          <span className="text-xs font-medium">{healthScore.change}</span>
+        </div>
+
+        {/* Synced */}
+        <div className="flex items-center gap-1.5 mb-5">
+          <div className="w-1.5 h-1.5 rounded-full bg-health-good" />
+          <span className="text-[11px] opacity-60">{healthScore.syncedAgo}</span>
+        </div>
+
+        {/* Vital cards */}
+        <div className="grid grid-cols-3 gap-2.5">
+          {vitals.map((v, i) => (
+            <motion.div
+              key={v.label}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-3.5"
+            >
+              <div className={`w-8 h-8 rounded-xl ${v.iconBg} flex items-center justify-center mb-3`}>
+                <v.icon className={`w-4 h-4 ${v.iconColor}`} />
+              </div>
+              <div className="mb-1">
+                {v.value2 ? (
+                  <p className="text-xl font-bold leading-tight">
+                    {v.value}<span className="text-xs font-normal opacity-60">{v.valueSuffix} </span>
+                    {v.value2}<span className="text-xs font-normal opacity-60">{v.value2Suffix}</span>
+                  </p>
+                ) : (
+                  <p className="text-xl font-bold leading-tight">
+                    {v.value}
+                    {v.unit && <span className="text-xs font-normal opacity-60 ml-0.5">{v.unit}</span>}
+                  </p>
+                )}
+              </div>
+              <p className="text-[10px] opacity-60 mb-1.5">{v.label}</p>
+              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                v.status === "Normal" 
+                  ? "bg-health-good/20 text-health-good" 
+                  : "bg-health-watch/20 text-health-watch"
+              }`}>
+                {v.status}
+              </span>
+            </motion.div>
+          ))}
         </div>
       </div>
 
-      <div className="space-y-5 mt-4">
-        {/* ─── HEALTH SUMMARY CARDS ─── */}
-        <div className="px-5">
-          <h2 className="text-sm font-semibold mb-3 font-sans">Health Summary</h2>
-        </div>
-        <div className="pl-5">
-          <div className="flex gap-3 overflow-x-auto pb-1 pr-5 scrollbar-hide">
-            {healthMetrics.map((m, i) => (
+      {/* ─── WHITE CONTENT AREA ─── */}
+      <div className="px-5 mt-6 space-y-7">
+
+        {/* ─── REMINDERS ─── */}
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold font-sans uppercase tracking-wide text-muted-foreground">Reminders</h2>
+            <button onClick={() => navigate("/reminders")} className="text-xs text-muted-foreground font-medium flex items-center gap-0.5">
+              View all <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="space-y-2.5">
+            {reminders.map((r) => (
               <motion.div
-                key={m.label}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.06 }}
-                className="shrink-0 glass-card p-4 w-[140px]"
+                key={r.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`bg-card rounded-2xl p-4 border-l-[3px] ${r.borderColor} ${r.done ? "opacity-50" : ""}`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <m.icon className={`w-4.5 h-4.5 ${m.color}`} />
-                  {m.trend === "up" ? (
-                    <TrendingUp className="w-3.5 h-3.5 text-health-good" />
-                  ) : m.trend === "down" ? (
-                    <TrendingDown className="w-3.5 h-3.5 text-health-alert" />
-                  ) : null}
-                </div>
-                <p className="text-lg font-bold leading-tight">
-                  {m.value}
-                  {m.unit && <span className="text-[10px] font-normal text-muted-foreground ml-1">{m.unit}</span>}
-                </p>
-                <div className="flex items-center justify-between mt-1">
-                  <p className="text-[10px] text-muted-foreground">{m.label}</p>
-                  <p className={`text-[9px] font-medium ${
-                    m.trend === "up" ? "text-health-good" :
-                    m.trend === "down" ? "text-health-alert" :
-                    "text-muted-foreground"
-                  }`}>
-                    {m.change}
-                  </p>
+                <div className="flex items-start gap-3">
+                  {r.done ? (
+                    <button
+                      onClick={() => toggleReminder(r.id)}
+                      className="w-6 h-6 rounded-full bg-health-good/10 flex items-center justify-center mt-0.5 shrink-0"
+                    >
+                      <Check className="w-3.5 h-3.5 text-health-good" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => toggleReminder(r.id)}
+                      className="w-6 h-6 rounded-full border-2 border-border mt-0.5 shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-semibold leading-tight ${r.done ? "line-through text-muted-foreground" : ""}`}>
+                      {r.title}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-1">{r.subtitle}</p>
+                    <span className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full mt-1.5 ${r.badgeColor}`}>
+                      {r.badge}
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
-        </div>
 
-        {/* ─── TODAY'S REMINDERS ─── */}
-        <div className="px-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold font-sans">Today's Reminders</h2>
-            <button onClick={() => navigate("/reminders")} className="text-[10px] text-primary font-medium flex items-center gap-0.5">
-              View All <ChevronRight className="w-3 h-3" />
+          {/* Add reminder button */}
+          <button
+            onClick={() => navigate("/reminders")}
+            className="w-full flex items-center justify-center gap-2 mt-3 py-3 rounded-2xl border-2 border-dashed border-primary/30 text-primary font-semibold text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add a reminder
+          </button>
+        </section>
+
+        {/* ─── FAMILY ─── */}
+        <section>
+          <h2 className="text-sm font-bold font-sans uppercase tracking-wide text-muted-foreground mb-3">Family</h2>
+          <div className="flex gap-3 items-start">
+            {familyMembers.map((member) => (
+              <div key={member.id} className="flex flex-col items-center">
+                <div className="w-[100px] h-[100px] rounded-2xl overflow-hidden mb-2">
+                  <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-semibold">{member.name}</span>
+                  <span className="bg-secondary/10 text-secondary text-[10px] font-bold px-1.5 py-0.5 rounded-md">{member.age}</span>
+                </div>
+              </div>
+            ))}
+            {/* Add member */}
+            <button className="flex flex-col items-center justify-center w-[100px]">
+              <div className="w-[100px] h-[100px] rounded-2xl border-2 border-dashed border-primary/30 flex items-center justify-center mb-2">
+                <Plus className="w-6 h-6 text-primary/50" />
+              </div>
+              <span className="text-xs font-medium text-primary">Add a member</span>
             </button>
           </div>
-          <div className="space-y-2">
-            {reminders.slice(0, 4).map((r, i) => {
-              const Icon = categoryIcons[r.category] || Bell;
-              return (
-                <motion.div
-                  key={r.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06 }}
-                  className={`glass-card p-3.5 flex items-center gap-3 ${r.status === "completed" ? "opacity-60" : ""}`}
-                >
-                  <button
-                    onClick={() => toggleReminder(r.id)}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 border-2 transition-all ${
-                      r.status === "completed"
-                        ? "border-health-good bg-health-good/10"
-                        : r.status === "missed"
-                        ? "border-health-alert bg-health-alert/10"
-                        : "border-border"
-                    }`}
-                  >
-                    {r.status === "completed" && <Check className="w-4 h-4 text-health-good" />}
-                    {r.status === "missed" && <AlertCircle className="w-3.5 h-3.5 text-health-alert" />}
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-semibold ${r.status === "completed" ? "line-through" : ""}`}>
-                      {r.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <Clock className="w-3 h-3 text-muted-foreground" />
-                      <span className="text-[10px] text-muted-foreground">{r.displayTime}</span>
-                      <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-full ${
-                        r.status === "completed" ? "bg-health-good/10 text-health-good" :
-                        r.status === "missed" ? "bg-health-alert/10 text-health-alert" :
-                        "bg-primary/10 text-primary"
-                      }`}>
-                        {r.status === "completed" ? "Done" : r.status === "missed" ? "Missed" : "Upcoming"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-primary" />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+        </section>
 
-        {/* ─── QUICK TRACKERS ─── */}
-        <div className="px-5">
-          <h2 className="text-sm font-semibold mb-3 font-sans">Quick Log</h2>
-          <div className="grid grid-cols-3 gap-2">
-            {quickTrackers.map((t, i) => (
-              <motion.button
-                key={t.label}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 + i * 0.04 }}
-                onClick={() => navigate("/track")}
-                className="glass-card p-3 flex flex-col items-center gap-2"
-              >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${t.color}`}>
-                  <t.icon className="w-5 h-5" />
-                </div>
-                <span className="text-[10px] font-medium text-muted-foreground">{t.label}</span>
-              </motion.button>
-            ))}
-          </div>
-        </div>
-
-        {/* ─── RECENT ACTIVITY ─── */}
-        <div className="px-5">
+        {/* ─── WATCHLIST ─── */}
+        <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold font-sans">Recent Activity</h2>
-            <button onClick={() => navigate("/timeline")} className="text-[10px] text-primary font-medium flex items-center gap-0.5">
-              Full Timeline <ChevronRight className="w-3 h-3" />
+            <h2 className="text-sm font-bold font-sans uppercase tracking-wide text-muted-foreground">Watchlist</h2>
+            <button className="flex items-center gap-1.5 bg-muted rounded-full px-3 py-1.5">
+              <Pencil className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[11px] font-medium text-muted-foreground">Customise</span>
             </button>
           </div>
-          <HealthTimeline events={recentEvents} />
-        </div>
 
-        {/* ─── QUICK ACTIONS ─── */}
-        <div className="px-5">
-          <h2 className="text-sm font-semibold mb-3 font-sans">Quick Actions</h2>
-          <div className="grid grid-cols-4 gap-2">
-            {quickActions.map((a, i) => (
-              <motion.button
-                key={a.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3 + i * 0.05 }}
-                onClick={() => navigate(a.path)}
-                className="glass-card p-3 flex flex-col items-center gap-2"
-              >
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <a.icon className="w-5 h-5 text-primary" />
+          <div className="bg-card rounded-2xl overflow-hidden divide-y divide-border/50">
+            {watchlistData.map((item, i) => (
+              <div key={i} className="flex items-center justify-between px-4 py-3.5">
+                <div>
+                  <p className="text-sm font-semibold">{item.name}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{item.date}</p>
                 </div>
-                <span className="text-[10px] font-medium text-muted-foreground text-center leading-tight">{a.label}</span>
-              </motion.button>
+                <div className="text-right">
+                  <p className="text-sm font-bold">
+                    {item.value}
+                    {item.unit && <span className="text-[10px] font-normal text-muted-foreground ml-1">{item.unit}</span>}
+                  </p>
+                  <p className={`text-[11px] font-medium ${item.statusColor}`}>{item.status}</p>
+                </div>
+              </div>
             ))}
           </div>
-        </div>
+        </section>
+
+        {/* ─── UPLOAD CTA ─── */}
+        <section className="pb-2">
+          <div className="bg-health-good/10 rounded-2xl p-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">Upload your latest report</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Some values are over 60 days old</p>
+            </div>
+            <button
+              onClick={() => navigate("/records")}
+              className="bg-health-good text-white font-semibold text-sm px-4 py-2 rounded-xl"
+            >
+              Upload
+            </button>
+          </div>
+        </section>
       </div>
     </div>
   );
-}
-
-// ─── Helpers ────────────────────────────────────────────────────────────────────
-
-function formatTime(time: string): string {
-  const [h, m] = time.split(":").map(Number);
-  const ampm = h >= 12 ? "PM" : "AM";
-  const hour12 = h % 12 || 12;
-  return `${hour12}:${m.toString().padStart(2, "0")} ${ampm}`;
-}
-
-function isPast(time: string): boolean {
-  const [h, m] = time.split(":").map(Number);
-  const now = new Date();
-  return now.getHours() > h || (now.getHours() === h && now.getMinutes() > m);
 }
