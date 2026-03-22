@@ -63,23 +63,32 @@ function DashedCircle() {
 
 // ─── Reminder Card ──────────────────────────────────────────────────────────────
 
-function ReminderCard({ item, isHistory }: { item: ReminderItem; isHistory?: boolean }) {
+function ReminderCard({ item, isHistory, onToggle }: { item: ReminderItem; isHistory?: boolean; onToggle?: (id: number) => void }) {
   const metaLine = [item.repeat || item.date, item.time].filter(Boolean).join(" • ");
 
   return (
     <div className={`bg-white rounded-2xl p-4 flex items-start gap-3 ${isHistory ? "opacity-70" : ""}`}>
       {/* Status icon */}
-      <div className="pt-1 shrink-0">
-        {isHistory ? (
-          item.status === "completed" ? (
-            <CheckCircle size={28} weight="regular" className="text-blue-500" />
-          ) : (
-            <WarningCircle size={28} weight="regular" className="text-orange-500" />
-          )
+      <button
+        className="pt-1 shrink-0"
+        onClick={() => onToggle?.(item.id)}
+        disabled={isHistory}
+      >
+        {item.status === "completed" ? (
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="15" stroke="#3B82F6" strokeWidth="2" fill="#DBEAFE" />
+            <path d="M12 18l4 4 8-8" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </svg>
+        ) : item.status === "missed" ? (
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="15" stroke="#C2410C" strokeWidth="2" fill="#FED7AA" />
+            <path d="M18 13v6" stroke="#C2410C" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="18" cy="23" r="1.2" fill="#C2410C" />
+          </svg>
         ) : (
           <DashedCircle />
         )}
-      </div>
+      </button>
 
       <div className="flex-1 min-w-0">
         {/* Meta line */}
@@ -363,6 +372,14 @@ export default function Reminders() {
     setReminders((prev) => [...prev, r]);
   };
 
+  const handleToggle = (id: number) => {
+    setReminders((prev) =>
+      prev.map((r) =>
+        r.id === id ? { ...r, status: r.status === "completed" ? "pending" as const : "completed" as const } : r
+      )
+    );
+  };
+
   // ─── History View ─────────────────────────────────────────────────────────
   if (showHistory) {
     const filtered = filterReminders(history);
@@ -463,7 +480,7 @@ export default function Reminders() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
             >
-              <ReminderCard item={r} />
+              <ReminderCard item={r} onToggle={handleToggle} />
             </motion.div>
           ))}
         </div>
@@ -478,7 +495,7 @@ export default function Reminders() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
             >
-              <ReminderCard item={r} />
+              <ReminderCard item={r} onToggle={handleToggle} />
             </motion.div>
           ))}
         </div>
