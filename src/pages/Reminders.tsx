@@ -372,6 +372,14 @@ export default function Reminders() {
     setReminders((prev) => [...prev, r]);
   };
 
+  const handleToggle = (id: number) => {
+    setReminders((prev) =>
+      prev.map((r) =>
+        r.id === id ? { ...r, status: r.status === "completed" ? "pending" as const : "completed" as const } : r
+      )
+    );
+  };
+
   // ─── History View ─────────────────────────────────────────────────────────
   if (showHistory) {
     const filtered = filterReminders(history);
