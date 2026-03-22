@@ -495,7 +495,7 @@ export default function Reminders() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
             >
-              <ReminderCard item={r} />
+              <ReminderCard item={r} onToggle={handleToggle} />
             </motion.div>
           ))}
         </div>
