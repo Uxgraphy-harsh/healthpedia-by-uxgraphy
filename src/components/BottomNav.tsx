@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Stack, Heartbeat, FolderOpen, UserCircle } from "@phosphor-icons/react";
+import { Stack, Bell, FolderOpen, UserCircle } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import askAiFlower from "@/assets/ask-ai-flower.svg";
 
 const tabs = [
   { path: "/dashboard", icon: Stack, label: "Summary" },
-  { path: "/track", icon: Heartbeat, label: "Track" },
+  { path: "/reminders", icon: Bell, label: "Reminders" },
   { path: "/chat", icon: null, label: "Ask AI", isCenter: true },
   { path: "/records", icon: FolderOpen, label: "Records" },
   { path: "/profile", icon: UserCircle, label: "Profile" },
