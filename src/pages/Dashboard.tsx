@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
-  Heart, Footprints, Moon, ChevronRight, Plus, Check,
+  Heart, Footprints, Moon, Flame, ChevronRight, Plus, Check,
   Pencil, Upload, TrendingUp
 } from "lucide-react";
 
@@ -16,8 +16,9 @@ const healthScore = {
 
 const vitals = [
   { icon: Heart, label: "Heart Rate", value: "72", unit: "bpm", status: "Normal", statusColor: "text-health-good", iconBg: "bg-health-alert/20", iconColor: "text-health-alert" },
-  { icon: Footprints, label: "Steps", value: "6,240", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-health-watch/20", iconColor: "text-health-watch" },
+  { icon: Footprints, label: "Steps", value: "6,240", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-[#3B5BDB]/20", iconColor: "text-[#3B5BDB]" },
   { icon: Moon, label: "Sleep", value: "7", valueSuffix: "hr", value2: "23", value2Suffix: "min", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-secondary/20", iconColor: "text-secondary" },
+  { icon: Flame, label: "Calories", value: "1,847", unit: "kcal", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-health-watch/20", iconColor: "text-health-watch" },
 ];
 
 const remindersData = [
@@ -106,42 +107,44 @@ export default function Dashboard() {
           <span className="text-[11px] opacity-60">{healthScore.syncedAgo}</span>
         </div>
 
-        {/* Vital cards */}
-        <div className="grid grid-cols-3 gap-2.5">
-          {vitals.map((v, i) => (
-            <motion.div
-              key={v.label}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className="bg-white/10 backdrop-blur-sm rounded-2xl p-3.5"
-            >
-              <div className={`w-8 h-8 rounded-xl ${v.iconBg} flex items-center justify-center mb-3`}>
-                <v.icon className={`w-4 h-4 ${v.iconColor}`} />
-              </div>
-              <div className="mb-1">
-                {v.value2 ? (
-                  <p className="text-xl font-bold leading-tight">
-                    {v.value}<span className="text-xs font-normal opacity-60">{v.valueSuffix} </span>
-                    {v.value2}<span className="text-xs font-normal opacity-60">{v.value2Suffix}</span>
-                  </p>
-                ) : (
-                  <p className="text-xl font-bold leading-tight">
-                    {v.value}
-                    {v.unit && <span className="text-xs font-normal opacity-60 ml-0.5">{v.unit}</span>}
-                  </p>
-                )}
-              </div>
-              <p className="text-[10px] opacity-60 mb-1.5">{v.label}</p>
-              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                v.status === "Normal" 
-                  ? "bg-health-good/20 text-health-good" 
-                  : "bg-health-watch/20 text-health-watch"
-              }`}>
-                {v.status}
-              </span>
-            </motion.div>
-          ))}
+        {/* Vital cards - horizontal scroll */}
+        <div className="-mx-5 px-5">
+          <div className="flex gap-2.5 overflow-x-auto pb-1">
+            {vitals.map((v, i) => (
+              <motion.div
+                key={v.label}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="shrink-0 w-[140px] bg-white/8 border border-white/10 backdrop-blur-sm rounded-2xl p-3.5"
+              >
+                <div className={`w-8 h-8 rounded-xl ${v.iconBg} flex items-center justify-center mb-3`}>
+                  <v.icon className={`w-4 h-4 ${v.iconColor}`} />
+                </div>
+                <div className="mb-1">
+                  {v.value2 ? (
+                    <p className="text-xl font-bold leading-tight">
+                      {v.value}<span className="text-xs font-normal opacity-60">{v.valueSuffix} </span>
+                      {v.value2}<span className="text-xs font-normal opacity-60">{v.value2Suffix}</span>
+                    </p>
+                  ) : (
+                    <p className="text-xl font-bold leading-tight">
+                      {v.value}
+                      {v.unit && <span className="text-xs font-normal opacity-60 ml-0.5">{v.unit}</span>}
+                    </p>
+                  )}
+                </div>
+                <p className="text-[11px] opacity-60 mb-2">{v.label}</p>
+                <span className={`text-[10px] font-medium px-2.5 py-1 rounded-full border ${
+                  v.status === "Normal" 
+                    ? "border-health-good/30 text-health-good bg-health-good/10" 
+                    : "border-health-watch/30 text-health-watch bg-health-watch/10"
+                }`}>
+                  {v.status}
+                </span>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
