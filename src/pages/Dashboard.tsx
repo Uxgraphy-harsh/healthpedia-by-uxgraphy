@@ -16,8 +16,9 @@ const healthScore = {
 
 const vitals = [
   { icon: Heart, label: "Heart Rate", value: "72", unit: "bpm", status: "Normal", statusColor: "text-health-good", iconBg: "bg-health-alert/20", iconColor: "text-health-alert" },
-  { icon: Footprints, label: "Steps", value: "6,240", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-health-watch/20", iconColor: "text-health-watch" },
+  { icon: Footprints, label: "Steps", value: "6,240", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-[#3B5BDB]/20", iconColor: "text-[#3B5BDB]" },
   { icon: Moon, label: "Sleep", value: "7", valueSuffix: "hr", value2: "23", value2Suffix: "min", unit: "", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-secondary/20", iconColor: "text-secondary" },
+  { icon: Flame, label: "Calories", value: "1,847", unit: "kcal", status: "Below Goal", statusColor: "text-health-watch", iconBg: "bg-health-watch/20", iconColor: "text-health-watch" },
 ];
 
 const remindersData = [
