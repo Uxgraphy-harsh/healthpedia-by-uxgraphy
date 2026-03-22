@@ -378,14 +378,14 @@ export default function Reminders() {
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 overflow-x-auto scrollbar-hide pb-2 -mx-5 px-5">
+          <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2 -mx-5 px-5">
             {filterTabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className="shrink-0 relative px-1 pb-2"
               >
-                <span className={`text-sm font-medium ${activeTab === tab ? "text-blue-500" : "text-muted-foreground"}`}>
+                <span className={`text-[15px] font-medium whitespace-nowrap ${activeTab === tab ? "text-blue-500" : "text-muted-foreground"}`}>
                   {tab}
                 </span>
                 {activeTab === tab && (
