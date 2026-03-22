@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Stack, Bell, FolderOpen, UserCircle } from "@phosphor-icons/react";
+import { Stack, ListChecks, FolderOpen, UserCircle } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import askAiFlower from "@/assets/ask-ai-flower.svg";
 
 const tabs = [
   { path: "/dashboard", icon: Stack, label: "Summary" },
-  { path: "/reminders", icon: Bell, label: "Reminders" },
+  { path: "/reminders", icon: ListChecks, label: "Reminders" },
   { path: "/chat", icon: null, label: "Ask AI", isCenter: true },
   { path: "/records", icon: FolderOpen, label: "Records" },
   { path: "/profile", icon: UserCircle, label: "Profile" },
@@ -18,7 +18,14 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="max-w-md mx-auto relative">
-        <div className="bg-card/90 backdrop-blur-xl border-t border-border/30 px-2 pb-safe">
+        {/* Pink radial gradient overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(ellipse at 50% 0%, hsl(340 100% 80% / 0.15), transparent 70%)",
+          }}
+        />
+        <div className="bg-card/90 backdrop-blur-xl border-t border-border/30 px-2 pb-safe relative">
           <div className="flex justify-around items-end pt-2 pb-2">
             {tabs.map((tab) => {
               const active = location.pathname === tab.path;
@@ -31,7 +38,6 @@ export default function BottomNav() {
                     className="flex flex-col items-center px-3 relative"
                     style={{ marginBottom: 0 }}
                   >
-                    {/* Flower that overflows the navbar */}
                     <motion.div
                       whileTap={{ scale: 0.92 }}
                       className="absolute -top-10 w-16 h-16 flex items-center justify-center"
@@ -45,10 +51,9 @@ export default function BottomNav() {
                         fetchPriority="high"
                       />
                     </motion.div>
-                    {/* Spacer to push label down to align with others */}
                     <div className="h-6" />
                     <span
-                      className="text-[10px] font-semibold"
+                      className="text-[10px] font-semibold italic"
                       style={{ color: "#60A5FA" }}
                     >
                       {tab.label}
@@ -72,7 +77,7 @@ export default function BottomNav() {
                   )}
                   {tab.icon && (
                     <tab.icon
-                      size={24}
+                      size={22}
                       weight={active ? "fill" : "regular"}
                       className={`transition-colors ${
                         active ? "text-foreground" : "text-muted-foreground"
