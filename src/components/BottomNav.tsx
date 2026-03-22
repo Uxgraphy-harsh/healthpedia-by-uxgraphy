@@ -53,7 +53,7 @@ export default function BottomNav() {
                     </motion.div>
                     <div className="h-6" />
                     <span
-                      className="text-[10px] font-semibold italic"
+                      className="text-[10px] font-semibold"
                       style={{ color: "#60A5FA" }}
                     >
                       {tab.label}
