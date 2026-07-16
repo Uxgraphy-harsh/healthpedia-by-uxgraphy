@@ -629,7 +629,7 @@ function MedicinesSubSheet({
 }
 
 function AddPrescriptionSheet({ onClose }: { onClose: () => void }) {
-  const [details, setDetails] = useState({ hospital: "", doctor: "", date: "", notes: "" });
+  const [details, setDetails] = useState<DetailsDraft>({ doctor: "", hospital: "", date: "", speciality: "" });
   const [meds, setMeds] = useState<DraftMed[]>([]);
   const [openDetails, setOpenDetails] = useState(false);
   const [openMeds, setOpenMeds] = useState(false);
