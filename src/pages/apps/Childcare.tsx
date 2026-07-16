@@ -120,53 +120,39 @@ function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void 
         </div>
       </div>
 
-      {/* bottom bar: back + mini apps strip + add */}
-      <div className="fixed bottom-0 inset-x-0 z-50 flex items-end justify-center gap-2 px-4 pb-6 pt-3 pointer-events-none">
+      {/* bottom bar: back + two icons pill + add */}
+      <div className="fixed bottom-0 inset-x-0 z-50 flex items-center justify-center gap-3 px-6 pb-6 pt-3 pointer-events-none">
         <button
           onClick={onBack}
-          className="pointer-events-auto shrink-0 w-11 h-11 rounded-full bg-white border border-border/60 flex items-center justify-center shadow"
-          aria-label="Back"
+          className="pointer-events-auto w-11 h-11 rounded-full bg-white border border-border/60 flex items-center justify-center shadow"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
-        <div className="pointer-events-auto flex-1 min-w-0 bg-white border border-border/60 rounded-full shadow px-2 py-1.5">
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
-            <button
-              onClick={() => setTab("schedule")}
-              className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-[16px] ${tab === "schedule" ? "bg-[#EEF2FF]" : ""}`}
-              aria-label="Baby schedule"
-            >
-              📅
-            </button>
-            <div className="shrink-0 w-px h-6 bg-border/60 mx-0.5" />
-            {linkedApps.map((a) => (
-              <button
-                key={a.id}
-                onClick={() => navigate(`/app/${a.id}`)}
-                className={`shrink-0 w-9 h-9 rounded-full ${a.bg} flex items-center justify-center text-[16px]`}
-                aria-label={a.label}
-                title={a.label}
-              >
-                {a.emoji}
-              </button>
-            ))}
-            <button
-              onClick={() => setLinkedOpen(true)}
-              className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-foreground/70"
-              aria-label="All linked apps"
-            >
-              <DotsNine size={18} weight="bold" />
-            </button>
-          </div>
+        <div className="pointer-events-auto flex items-center gap-1 bg-white border border-border/60 rounded-full px-2 py-1.5 shadow">
+          <button
+            onClick={() => setLinkedOpen(true)}
+            className={`w-9 h-9 rounded-full flex items-center justify-center ${tab === "linked" ? "bg-[#EEF2FF] text-[#60A5FA]" : "text-foreground/70"}`}
+            aria-label="Linked apps"
+          >
+            <DotsNine size={18} weight="bold" />
+          </button>
+          <button
+            onClick={() => setTab("schedule")}
+            className={`w-9 h-9 rounded-full flex items-center justify-center ${tab === "schedule" ? "bg-[#EEF2FF] text-[#60A5FA]" : "text-foreground/70"}`}
+            aria-label="Baby schedule"
+          >
+            📅
+          </button>
         </div>
         <button
-          className="pointer-events-auto shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg"
+          className="pointer-events-auto w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg"
           style={{ background: "#60A5FA" }}
           aria-label="Add entry"
         >
           <span className="text-2xl leading-none -mt-0.5">+</span>
         </button>
       </div>
+
 
 
       {/* Linked apps bottom sheet */}
