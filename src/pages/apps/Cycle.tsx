@@ -207,10 +207,10 @@ function MonthCalendar({
   const monthLabel = first.toLocaleString("en", { month: "long" }).toUpperCase();
   const ROW_H = 60;
 
-  // group contiguous runs so we can draw pill backgrounds row by row
+  // Build pill segments from PREDICTED period runs (highlighted range)
   const runs: number[][] = [];
   let cur: number[] = [];
-  [...periodDays].sort((a, b) => a - b).forEach((d) => {
+  [...predictedPeriod].sort((a, b) => a - b).forEach((d) => {
     if (cur.length && d === cur[cur.length - 1] + 1) cur.push(d);
     else {
       if (cur.length) runs.push(cur);
@@ -219,10 +219,8 @@ function MonthCalendar({
   });
   if (cur.length) runs.push(cur);
 
-  // split each run into per-row segments
-  const pillSegments: { row: number; startCol: number; endCol: number; solid: boolean }[] = [];
+  const pillSegments: { row: number; startCol: number; endCol: number }[] = [];
   runs.forEach((run) => {
-    if (run.length < 2) return; // single day → no pill, just droplet + colored number
     let segStart = run[0];
     for (let i = 1; i <= run.length; i++) {
       const prev = run[i - 1];
@@ -237,7 +235,6 @@ function MonthCalendar({
           row: Math.floor(startIdx / 7),
           startCol: startIdx % 7,
           endCol: endIdx % 7,
-          solid: true,
         });
         if (next != null) segStart = next;
       }
@@ -250,7 +247,7 @@ function MonthCalendar({
         {monthLabel} {year}
       </p>
       <div className="relative">
-        {/* solid pink pills behind contiguous period runs */}
+        {/* soft pink pills behind predicted period ranges */}
         {pillSegments.map((s, i) => (
           <div
             key={`p-${i}`}
@@ -265,29 +262,6 @@ function MonthCalendar({
           />
         ))}
 
-        {/* predicted period: dashed pill outline */}
-        {predictedPeriod.length > 0 && (() => {
-          const first = predictedPeriod[0];
-          const last = predictedPeriod[predictedPeriod.length - 1];
-          const firstIdx = startWeekday + first - 1;
-          const lastIdx = startWeekday + last - 1;
-          if (Math.floor(firstIdx / 7) !== Math.floor(lastIdx / 7)) return null;
-          const row = Math.floor(firstIdx / 7);
-          const startCol = firstIdx % 7;
-          const endCol = lastIdx % 7;
-          return (
-            <div
-              className="pointer-events-none absolute rounded-full border"
-              style={{
-                top: `calc(${row} * ${ROW_H}px + 6px)`,
-                left: `calc(${(startCol / 7) * 100}% + 4px)`,
-                width: `calc(${((endCol - startCol + 1) / 7) * 100}% - 8px)`,
-                height: ROW_H - 12,
-                borderColor: "#F5A9A0",
-              }}
-            />
-          );
-        })()}
 
         <div className="grid grid-cols-7">
           {cells.map((d, i) => {
