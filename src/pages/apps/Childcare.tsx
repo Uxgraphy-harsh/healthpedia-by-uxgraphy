@@ -4,7 +4,8 @@ import { Baby, ArrowLeft, ChevronDown, X as XIcon } from "lucide-react";
 import { DotsNine } from "@phosphor-icons/react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
-import { useNavigate } from "react-router-dom";
+import ChildSubApp, { type ChildAppId } from "@/pages/apps/childcare/ChildSubApp";
+
 
 const kids = [
   { id: "aarav", name: "Aarav", age: "6 yrs", ageDetail: "26 months 9 days", nextVaccine: "MMR booster · Apr 12", initials: "A", color: "bg-[#FB923C]" },
