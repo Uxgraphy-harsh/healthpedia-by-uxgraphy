@@ -723,8 +723,21 @@ function AddExpenseFullScreen({
                     }}
                     disabled={(d) => d > new Date()}
                     initialFocus
-                    className="pointer-events-auto rounded-2xl p-2"
+                    className="pointer-events-auto w-full rounded-2xl p-2"
+                    classNames={{
+                      months: "flex flex-col w-full",
+                      month: "space-y-3 w-full",
+                      table: "w-full border-collapse",
+                      head_row: "grid grid-cols-7 w-full",
+                      head_cell: "text-muted-foreground font-normal text-[0.75rem] text-center",
+                      row: "grid grid-cols-7 w-full mt-1",
+                      cell: "aspect-square w-full text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent/40 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                      day: "h-full w-full p-0 font-normal rounded-lg hover:bg-neutral-100 aria-selected:opacity-100",
+                      day_selected: "bg-[#F66B9A] text-white hover:bg-[#F66B9A] hover:text-white focus:bg-[#F66B9A] focus:text-white",
+                      day_today: "bg-neutral-100 text-neutral-900",
+                    }}
                   />
+
                 </motion.div>
               </>
             )}
