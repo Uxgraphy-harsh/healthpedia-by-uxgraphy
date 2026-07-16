@@ -1,4 +1,5 @@
-import { ArrowLeft, Plus, Search } from "lucide-react";
+import { ArrowLeft, Plus, Search, X } from "lucide-react";
+import { useState } from "react";
 
 export type ChildAppId =
   | "prescriptions"
