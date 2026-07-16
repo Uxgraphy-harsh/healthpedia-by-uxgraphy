@@ -170,46 +170,37 @@ function Overview({ monthTotal, budget, setBudget, deltaPct, expenses }: {
         {new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" })}
       </p>
 
-      {/* Hero card */}
+      {/* Hero card with circular budget ring (Copilot-inspired) */}
       <div
         className="mt-4 overflow-hidden rounded-3xl p-5 text-white"
         style={{ background: `linear-gradient(135deg, ${DEEP}, ${TEAL})` }}
       >
-        <p className="text-xs uppercase tracking-widest opacity-80">Total spent</p>
-        <p className="mt-2 text-5xl font-bold tracking-tight">{currency(monthTotal)}</p>
-
-        <div className="mt-4 flex items-center gap-2 text-xs">
-          {deltaPct === 0 ? (
-            <span className="opacity-80">No change vs last month</span>
-          ) : deltaPct > 0 ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1">
-              <ArrowUpRight className="h-3 w-3" /> {deltaPct}% vs last month
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1">
-              <ArrowDownRight className="h-3 w-3" /> {Math.abs(deltaPct)}% vs last month
-            </span>
-          )}
-        </div>
-
-        {/* progress */}
-        <div className="mt-5">
-          <div className="flex items-center justify-between text-xs opacity-90">
-            <span>{pct}% of budget</span>
-            <span>{currency(budget)}</span>
+        <div className="flex items-center gap-5">
+          <BudgetRing pct={pct} over={over} />
+          <div className="flex-1">
+            <p className="text-[11px] uppercase tracking-widest opacity-80">Total spent</p>
+            <p className="mt-1 text-3xl font-bold tracking-tight">{currency(monthTotal)}</p>
+            <p className="mt-1 text-xs opacity-80">of {currency(budget)}</p>
+            <div className="mt-2">
+              {deltaPct === 0 ? (
+                <span className="text-[11px] opacity-80">No change vs last month</span>
+              ) : deltaPct > 0 ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">
+                  <ArrowUpRight className="h-3 w-3" /> {deltaPct}% vs last month
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">
+                  <ArrowDownRight className="h-3 w-3" /> {Math.abs(deltaPct)}% vs last month
+                </span>
+              )}
+            </div>
           </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/20">
-            <div
-              className="h-full rounded-full"
-              style={{ width: `${pct}%`, background: over ? "#FCA5A5" : "#FFFFFF" }}
-            />
-          </div>
-          <p className="mt-2 text-xs opacity-90">
-            {over
-              ? `Over budget by ${currency(monthTotal - budget)}`
-              : `${currency(remaining)} left this month`}
-          </p>
         </div>
+        <p className="mt-4 text-xs opacity-90">
+          {over
+            ? `Over budget by ${currency(monthTotal - budget)}`
+            : `${currency(remaining)} left this month`}
+        </p>
       </div>
 
       {/* Budget row */}
