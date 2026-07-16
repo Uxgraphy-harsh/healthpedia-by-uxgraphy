@@ -249,18 +249,28 @@ export default function FamilyHistory() {
     );
   };
 
-  const handleSaveRecord = (hpid: string, relation: string, conds: Draft[]) => {
+  const handleSaveRecord = (
+    hpid: string,
+    relation: string,
+    birthday: string,
+    gender: string,
+    conds: Draft[]
+  ) => {
     const cleanHpid = hpid.startsWith("#") ? hpid : `#${hpid}`;
     const newConds: Condition[] = conds
       .filter((c) => c.name.trim().length > 0)
       .map((c) => ({ name: c.name.trim(), diagnosed: c.date.trim() || "—" }));
+
+    const age = birthday
+      ? Math.max(0, new Date().getFullYear() - new Date(birthday).getFullYear())
+      : 0;
 
     setMembers((prev) => {
       const existing = prev.find((m) => m.hpid === cleanHpid);
       if (existing) {
         return prev.map((m) =>
           m.id === existing.id
-            ? { ...m, relation, conditions: [...m.conditions, ...newConds] }
+            ? { ...m, relation, age: age || m.age, conditions: [...m.conditions, ...newConds] }
             : m
         );
       }
@@ -270,14 +280,15 @@ export default function FamilyHistory() {
           id: Date.now().toString(),
           name: cleanHpid,
           relation,
-          age: 0,
+          age,
           hpid: cleanHpid,
-          avatar: `https://api.dicebear.com/7.x/personas/svg?seed=${cleanHpid}`,
+          avatar: "",
           active: false,
           conditions: newConds,
         },
       ];
     });
+    void gender;
   };
 
   return (
