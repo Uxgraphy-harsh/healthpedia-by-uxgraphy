@@ -103,15 +103,8 @@ export default function Allergies({ embedded }: EmbeddedProps = {}) {
   };
 
   return (
-    <MiniAppShell
-      appId="allergies"
-      name={app.name}
-      tagline={app.tagline}
-      icon={app.icon}
-      bg={app.bg}
-      fg={app.fg}
-      bottomActions={[]}
-    >
+    <AppFrame appId="allergies" embedded={embedded}>
+
       <div className="space-y-6 pb-32">
         {groups.map((g) => (
           <div key={g.category} className="space-y-3">
