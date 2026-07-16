@@ -144,8 +144,10 @@ export default function Shop() {
       {view === "shop" && (
         <ShopView
           category={category} setCategory={setCategory}
-          products={category === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === category)}
+          products={visibleProducts}
           cart={cart} onInc={inc} onDec={dec}
+          onOpenFilters={() => setFiltersOpen(true)}
+          filterCount={activeFilterCount}
         />
       )}
 
