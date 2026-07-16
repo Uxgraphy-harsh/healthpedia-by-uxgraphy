@@ -45,9 +45,10 @@ const linkedApps = [
 ];
 
 function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void }) {
-  const navigate = useNavigate();
   const [tab, setTab] = useState<"schedule" | "linked">("schedule");
   const [linkedOpen, setLinkedOpen] = useState(false);
+  const [activeApp, setActiveApp] = useState<ChildAppId | null>(null);
+
 
   return (
     <div className="fixed inset-0 z-[70] bg-[#F5F5F7] flex flex-col">
