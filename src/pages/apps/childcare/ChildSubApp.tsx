@@ -1,10 +1,10 @@
 import { ArrowLeft, Search } from "lucide-react";
-import Prescriptions from "./Prescriptions";
-import Symptoms from "./Symptoms";
-import Allergies from "./Allergies";
-import Insurance from "./Insurance";
-import Notes from "./Notes";
-import Vault from "./Vault";
+import Prescriptions from "../Prescriptions";
+import Symptoms from "../Symptoms";
+import Allergies from "../Allergies";
+import Insurance from "../Insurance";
+import Notes from "../Notes";
+import Vault from "../Vault";
 
 export type ChildAppId =
   | "prescriptions"
