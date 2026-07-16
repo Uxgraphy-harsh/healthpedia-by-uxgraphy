@@ -435,6 +435,9 @@ export default function AIChat() {
           </>
         )}
       </AnimatePresence>
+
+      <AppLauncher open={showLauncher} onClose={() => setShowLauncher(false)} />
     </div>
   );
 }
+
