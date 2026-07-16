@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import { getMiniApp } from "@/data/miniApps";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 type Severity = "Mild" | "Moderate" | "Severe";
 type AllergyType = "Drug" | "Food" | "Environmental" | "Other";
@@ -75,8 +75,7 @@ const typeToCategory: Record<AllergyType, string> = {
   Other: "Other",
 };
 
-export default function Allergies() {
-  const app = getMiniApp("allergies")!;
+export default function Allergies({ embedded }: EmbeddedProps = {}) {
   const [groups, setGroups] = useState(seedGroups);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -104,15 +103,8 @@ export default function Allergies() {
   };
 
   return (
-    <MiniAppShell
-      appId="allergies"
-      name={app.name}
-      tagline={app.tagline}
-      icon={app.icon}
-      bg={app.bg}
-      fg={app.fg}
-      bottomActions={[]}
-    >
+    <AppFrame appId="allergies" embedded={embedded}>
+
       <div className="space-y-6 pb-32">
         {groups.map((g) => (
           <div key={g.category} className="space-y-3">
@@ -171,7 +163,7 @@ export default function Allergies() {
         }}
         existingNames={groups.flatMap((g) => g.items.map((i) => i.name))}
       />
-    </MiniAppShell>
+    </AppFrame>
   );
 }
 

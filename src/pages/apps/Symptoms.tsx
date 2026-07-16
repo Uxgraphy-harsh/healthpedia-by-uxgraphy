@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { Plus, ChevronRight, ArrowLeft, FileText, Upload, X, Sparkles, Share2 } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 import { sampleSymptoms } from "@/data/sampleData";
 
 type Aggregated = {
@@ -70,8 +70,7 @@ function mockLogsFor(name: string, count: number, status: "Passed" | "Ongoing"):
   return logs;
 }
 
-export default function Symptoms() {
-  const app = getMiniApp("symptoms")!;
+export default function Symptoms({ embedded }: EmbeddedProps = {}) {
   const [symptoms] = useState(sampleSymptoms);
   const [openSymptom, setOpenSymptom] = useState<Aggregated | null>(null);
   const [showAdd, setShowAdd] = useState(false);
@@ -100,14 +99,8 @@ export default function Symptoms() {
   }, [symptoms]);
 
   return (
-    <MiniAppShell
-      appId="symptoms"
-      name={app.name}
-      tagline={app.tagline}
-      icon={app.icon}
-      bg={app.bg}
-      fg={app.fg}
-    >
+    <AppFrame appId="symptoms" embedded={embedded}>
+
       <div className="space-y-3">
         {aggregated.map((s) => (
           <button
@@ -158,7 +151,7 @@ export default function Symptoms() {
           onClose={() => setShowAdd(false)}
         />
       )}
-    </MiniAppShell>
+    </AppFrame>
   );
 }
 

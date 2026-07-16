@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { Plus, Minus, User, Building2, Calendar, Pill, Search as SearchIcon, X, ArrowLeft, ChevronRight, Sparkles, FileText, Sun, Moon, Upload } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import AppLockGate from "@/components/AppLockGate";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 interface Medicine {
   id: string;
@@ -907,8 +906,7 @@ function AddPrescriptionSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function Prescriptions() {
-  const app = getMiniApp("prescriptions")!;
+export default function Prescriptions({ embedded }: EmbeddedProps = {}) {
   const [rx] = useState<Rx[]>(initialRx);
   const [showAdd, setShowAdd] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -933,20 +931,8 @@ export default function Prescriptions() {
   const openRx = rx.find((r) => r.id === openId) || null;
 
   return (
-    <AppLockGate appId="prescriptions">
-      <MiniAppShell
-        appId="prescriptions"
-        name={app.name}
-        tagline={app.tagline}
-        icon={app.icon}
-        bg={app.bg}
-        fg={app.fg}
-        bottomActions={[
-          { icon: Pill, label: "All", active: true },
-          { icon: User, label: "Doctors" },
-          { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
-        ]}
-      >
+    <AppFrame appId="prescriptions" embedded={embedded}>
+
         <div className="space-y-3">
           {rx.map((r) => (
             <button
@@ -1061,7 +1047,6 @@ export default function Prescriptions() {
             </div>
           </div>
         )}
-      </MiniAppShell>
-    </AppLockGate>
+    </AppFrame>
   );
 }

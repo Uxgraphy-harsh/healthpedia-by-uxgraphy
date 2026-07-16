@@ -1,8 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { Upload, Search as SearchIcon, FolderOpen, X, ArrowLeft, MoreHorizontal, SlidersHorizontal, FileText, Image as ImageIcon, ChevronRight, Check, Sparkles } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import AppLockGate from "@/components/AppLockGate";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 interface VaultFile {
   name: string;
@@ -66,8 +65,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "lab", label: "Lab name A-Z" },
 ];
 
-export default function Vault() {
-  const app = getMiniApp("vault")!;
+export default function Vault({ embedded }: EmbeddedProps = {}) {
   const [folders, setFolders] = useState(initialFolders);
   const [showAdd, setShowAdd] = useState(false);
   const [condition, setCondition] = useState("");
@@ -163,19 +161,8 @@ export default function Vault() {
   };
 
   return (
-    <AppLockGate appId="vault">
-      <MiniAppShell
-        appId="vault"
-        name={app.name}
-        tagline={app.tagline}
-        icon={app.icon}
-        bg={app.bg}
-        fg={app.fg}
-        bottomActions={[
-          { icon: FolderOpen, label: "Files", active: true },
-          { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
-        ]}
-      >
+    <AppFrame appId="vault" embedded={embedded}>
+
         {/* Folder grid */}
         <div className="grid grid-cols-2 gap-3">
           {folders.map((f) => (
@@ -590,8 +577,7 @@ export default function Vault() {
             </div>
           </div>
         )}
-      </MiniAppShell>
-    </AppLockGate>
+    </AppFrame>
   );
 }
 

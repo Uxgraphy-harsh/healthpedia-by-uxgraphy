@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Plus, AtSign, X } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import { getMiniApp, miniApps } from "@/data/miniApps";
+import { miniApps } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 interface Note {
   id: string;
@@ -33,9 +34,9 @@ function tagColor(appId: string) {
   return { bg: a?.bg ?? "bg-muted", fg: a?.fg ?? "text-muted-foreground", name: a?.name ?? appId };
 }
 
-export default function Notes() {
-  const app = getMiniApp("notes")!;
+export default function Notes({ embedded }: EmbeddedProps = {}) {
   const [notes, setNotes] = useState(initial);
+
   const [showAdd, setShowAdd] = useState(false);
   const [text, setText] = useState("");
   const [pickingRef, setPickingRef] = useState(false);
@@ -53,14 +54,8 @@ export default function Notes() {
   };
 
   return (
-    <MiniAppShell
-      appId="notes"
-      name={app.name}
-      tagline={app.tagline}
-      icon={app.icon}
-      bg={app.bg}
-      fg={app.fg}
-    >
+    <AppFrame appId="notes" embedded={embedded}>
+
       <div className="space-y-2.5">
         {notes.map((n) => (
           <div key={n.id} className="bg-card rounded-2xl p-4 border border-border/40">
@@ -175,6 +170,6 @@ export default function Notes() {
           </div>
         </div>
       )}
-    </MiniAppShell>
+    </AppFrame>
   );
 }
