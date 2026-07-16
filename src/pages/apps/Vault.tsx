@@ -263,7 +263,7 @@ export default function Vault() {
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </button>
                   </div>
                 );
               })}
