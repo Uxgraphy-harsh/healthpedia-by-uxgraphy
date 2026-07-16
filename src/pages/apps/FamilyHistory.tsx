@@ -116,7 +116,7 @@ function AddRecordSheet({
               >
                 Cancel
               </button>
-              <h2 className="text-[16px] font-bold text-center">Add a Medical Record</h2>
+              <h2 className="text-[16px] font-bold text-center whitespace-nowrap">Add a Medical Record</h2>
               <div />
             </div>
 
