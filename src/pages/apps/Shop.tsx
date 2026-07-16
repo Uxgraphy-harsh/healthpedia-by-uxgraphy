@@ -499,9 +499,13 @@ function AddressesView({ addresses, selectedId, onSelect, onAdd, onBack, onConti
             </button>
           );
         })}
-        <button onClick={onAdd} className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-neutral-300 py-4 text-sm font-medium text-neutral-700">
+        <button
+          onClick={onAdd}
+          className="inline-flex items-center gap-2 self-start rounded-full bg-neutral-100 px-4 py-2.5 text-sm font-medium text-neutral-800"
+        >
           <Plus className="h-4 w-4" /> Add new address
         </button>
+
       </div>
       <button onClick={onContinue} className="mt-6 w-full rounded-xl py-3.5 text-sm font-semibold text-white" style={{ background: "#111" }}>Select &amp; continue</button>
     </div>
