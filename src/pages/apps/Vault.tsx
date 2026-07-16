@@ -311,6 +311,11 @@ export default function Vault() {
           </div>
         )}
 
+        {/* Report detail overlay */}
+        {openReport && (
+          <ReportDetail report={openReport} onClose={() => setOpenReportId(null)} />
+        )}
+
         {/* Floating upload pill */}
         {!showAdd && !showSearch && (
           <button
