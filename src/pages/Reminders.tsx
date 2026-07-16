@@ -504,6 +504,18 @@ export default function Reminders() {
         </div>
       </div>
 
+      {/* Floating Add reminder button */}
+      {!showAddSheet && (
+        <button
+          onClick={() => setShowAddSheet(true)}
+          className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+          style={{ background: "#171717" }}
+        >
+          <Plus className="h-5 w-5" strokeWidth={2.5} />
+          <span className="font-semibold">Add reminder</span>
+        </button>
+      )}
+
       {/* Add Sheet */}
       <AnimatePresence>
         {showAddSheet && (
@@ -511,6 +523,7 @@ export default function Reminders() {
         )}
       </AnimatePresence>
     </MiniAppShell>
+
   );
 }
 
