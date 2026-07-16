@@ -170,6 +170,6 @@ export default function Notes({ embedded }: EmbeddedProps = {}) {
           </div>
         </div>
       )}
-    </MiniAppShell>
+    </AppFrame>
   );
 }
