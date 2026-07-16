@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import { getMiniApp } from "@/data/miniApps";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 type Severity = "Mild" | "Moderate" | "Severe";
 type AllergyType = "Drug" | "Food" | "Environmental" | "Other";
