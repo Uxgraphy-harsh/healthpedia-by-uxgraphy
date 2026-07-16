@@ -650,6 +650,8 @@ function AddPrescriptionSheet({ onClose }: { onClose: () => void }) {
     </div>
   );
 }
+
+export default function Prescriptions() {
   const app = getMiniApp("prescriptions")!;
   const [rx] = useState<Rx[]>(initialRx);
   const [showAdd, setShowAdd] = useState(false);
