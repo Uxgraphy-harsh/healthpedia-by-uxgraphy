@@ -14,7 +14,6 @@ const A = (icon: LucideIcon, label: string, opts: Partial<MiniAppAction> = {}): 
 export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   vault: [
     A(FolderOpen, "Files", { active: true }),
-    A(Upload, "Upload"),
     A(Plus, "New", { primary: true }),
     A(Search, "Search"),
   ],
