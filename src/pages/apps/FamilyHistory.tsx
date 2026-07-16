@@ -52,23 +52,29 @@ function AddRecordSheet({
 }: {
   open: boolean;
   onClose: () => void;
-  onSave: (hpid: string, conds: Draft[]) => void;
+  onSave: (hpid: string, relation: string, conds: Draft[]) => void;
 }) {
   const [hpid, setHpid] = useState("");
+  const [relation, setRelation] = useState("");
   const [conds, setConds] = useState<Draft[]>([{ name: "", date: "" }]);
 
   const update = (i: number, key: keyof Draft, val: string) =>
     setConds((prev) => prev.map((c, idx) => (idx === i ? { ...c, [key]: val } : c)));
 
-  const canSave = hpid.trim().length > 0 && conds.every((c) => c.name.trim().length > 0);
+  const canSave =
+    hpid.trim().length > 0 &&
+    relation.trim().length > 0 &&
+    conds.every((c) => c.name.trim().length > 0);
 
   const handleSave = () => {
     if (!canSave) return;
-    onSave(hpid.trim(), conds);
+    onSave(hpid.trim(), relation.trim(), conds);
     setHpid("");
+    setRelation("");
     setConds([{ name: "", date: "" }]);
     onClose();
   };
+
 
   return (
     <AnimatePresence>
@@ -112,6 +118,18 @@ function AddRecordSheet({
                   value={hpid}
                   onChange={(e) => setHpid(e.target.value)}
                   placeholder="#000000000000"
+                  className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                />
+              </div>
+
+              <div className="rounded-2xl border border-border/70 px-4 py-3">
+                <label className="text-[12px] text-muted-foreground">
+                  Relation<span className="text-[#F66B9A]">*</span>
+                </label>
+                <input
+                  value={relation}
+                  onChange={(e) => setRelation(e.target.value)}
+                  placeholder="e.g. Father, Mother, Sister"
                   className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
                 />
               </div>
@@ -192,7 +210,7 @@ export default function FamilyHistory() {
     );
   };
 
-  const handleSaveRecord = (hpid: string, conds: Draft[]) => {
+  const handleSaveRecord = (hpid: string, relation: string, conds: Draft[]) => {
     const cleanHpid = hpid.startsWith("#") ? hpid : `#${hpid}`;
     const newConds: Condition[] = conds
       .filter((c) => c.name.trim().length > 0)
@@ -202,15 +220,17 @@ export default function FamilyHistory() {
       const existing = prev.find((m) => m.hpid === cleanHpid);
       if (existing) {
         return prev.map((m) =>
-          m.id === existing.id ? { ...m, conditions: [...m.conditions, ...newConds] } : m
+          m.id === existing.id
+            ? { ...m, relation, conditions: [...m.conditions, ...newConds] }
+            : m
         );
       }
       return [
         ...prev,
         {
           id: Date.now().toString(),
-          name: "New Member",
-          relation: "Family",
+          name: cleanHpid,
+          relation,
           age: 0,
           hpid: cleanHpid,
           avatar: `https://api.dicebear.com/7.x/personas/svg?seed=${cleanHpid}`,
