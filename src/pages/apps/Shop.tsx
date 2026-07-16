@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 import {
-  ShoppingBag, Search, SlidersHorizontal, Tag, ClipboardList,
+  ShoppingBag, ShoppingCart, Search, SlidersHorizontal, Tag, ClipboardList,
   ArrowLeft, Minus, Plus, ChevronDown, Truck, HelpCircle,
   CheckCircle2, Copy, ExternalLink, Circle,
 } from "lucide-react";
@@ -409,16 +409,26 @@ function CartView({ items, total, inc, dec, onBrowse, onCheckout }: {
 }) {
   if (items.length === 0) {
     return (
-      <div className="mt-6 flex flex-col items-center rounded-2xl border border-neutral-200 bg-white p-8">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full" style={{ background: "#FFE9D5" }}>
-          <ShoppingBag className="h-7 w-7" style={{ color: CORAL }} />
+      <>
+        <div className="mt-2 flex items-center justify-between border-b border-neutral-200 pb-4">
+          <h2 className="text-2xl font-bold text-neutral-900">Cart</h2>
+          <div className="flex items-center gap-1.5 rounded-full border border-amber-200 px-3 py-1" style={{ background: "linear-gradient(90deg,#FFF4D6,#FFE7B0)" }}>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full text-[10px]" style={{ background: "#F5B23B", color: "#fff" }}>₹</span>
+            <span className="text-sm font-bold text-neutral-900">80,000</span>
+          </div>
         </div>
-        <p className="text-lg font-bold text-neutral-900">Your cart is empty</p>
-        <p className="mt-1 text-sm text-neutral-500">Add products to get started</p>
-        <button onClick={onBrowse} className="mt-5 w-full rounded-xl py-3 text-sm font-semibold text-white" style={{ background: "#111" }}>Browse Product</button>
-      </div>
+        <div className="mt-5 flex flex-col items-center rounded-2xl border border-neutral-200 bg-gradient-to-b from-neutral-50 to-white px-6 py-12 text-center">
+          <ShoppingCart className="h-14 w-14" strokeWidth={2.25} style={{ color: CORAL }} />
+          <p className="mt-6 text-xl font-bold text-neutral-900">Your cart is empty</p>
+          <p className="mt-2 text-sm text-neutral-500">Add products to get started</p>
+          <button onClick={onBrowse} className="mt-6 w-full rounded-2xl py-4 text-sm font-semibold text-white" style={{ background: "#1A1A1A" }}>
+            Browse Product
+          </button>
+        </div>
+      </>
     );
   }
+
   return (
     <div className="pb-24">
       <div className="mt-3 space-y-3">
