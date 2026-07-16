@@ -140,6 +140,7 @@ export default function Symptoms() {
 
       {/* Floating Log symptom button */}
       <button
+        onClick={() => setShowAdd(true)}
         className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
         style={{ background: "#171717" }}
       >
@@ -149,6 +150,13 @@ export default function Symptoms() {
 
       {openSymptom && (
         <SymptomDetail symptom={openSymptom} onClose={() => setOpenSymptom(null)} />
+      )}
+
+      {showAdd && (
+        <AddSymptomSheet
+          existingNames={aggregated.map((a) => a.name)}
+          onClose={() => setShowAdd(false)}
+        />
       )}
     </MiniAppShell>
   );
