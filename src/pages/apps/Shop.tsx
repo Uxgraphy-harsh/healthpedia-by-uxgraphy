@@ -192,6 +192,37 @@ export default function Shop() {
         <HelpView onBack={() => setView("orderDetail")} />
       )}
 
+      {/* Floating View Cart bar */}
+      <AnimatePresence>
+        {cartCount > 0 && view === "shop" && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 320, damping: 30 }}
+            className="fixed inset-x-0 bottom-24 z-40 pb-safe"
+          >
+            <div className="mx-auto max-w-md px-6">
+              <button
+                onClick={() => setView("cart")}
+                className="flex w-full items-center justify-between rounded-full px-5 py-3.5 text-white shadow-lg"
+                style={{ background: "#111" }}
+              >
+                <ShoppingBag className="h-5 w-5" />
+                <div className="text-center">
+                  <p className="text-sm font-semibold leading-tight">View Cart</p>
+                  <p className="text-[11px] text-white/70 leading-tight">₹{cartTotal} total</p>
+                </div>
+                <span className="flex h-6 min-w-[24px] items-center justify-center rounded-full px-1.5 text-xs font-bold text-white" style={{ background: CORAL }}>
+                  {cartCount}
+                </span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
       {/* Track order bottom sheet */}
       <AnimatePresence>
         {trackSheet && (
