@@ -1,12 +1,58 @@
-import { Plus, AlertTriangle } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 
-const allergies = [
-  { name: "Peanuts", severity: "Severe", reaction: "Anaphylaxis", color: "bg-[#EF4444]" },
-  { name: "Pollen", severity: "Mild", reaction: "Sneezing, itchy eyes", color: "bg-[#F59E0B]" },
-  { name: "Penicillin", severity: "Moderate", reaction: "Rash", color: "bg-[#F97316]" },
+type Severity = "Severe" | "Moderate" | "Mild";
+
+type Allergy = {
+  name: string;
+  description: string;
+  severity: Severity;
+};
+
+const groups: { category: string; items: Allergy[] }[] = [
+  {
+    category: "Drug & Medication",
+    items: [
+      {
+        name: "Penicillin",
+        description: "Causes anaphylaxis — immediate throat swelling and difficulty breathing",
+        severity: "Severe",
+      },
+      {
+        name: "Sulfa drugs",
+        description: "Causes skin rash and itching within hours of ingestion",
+        severity: "Moderate",
+      },
+    ],
+  },
+  {
+    category: "Food",
+    items: [
+      {
+        name: "Shellfish",
+        description: "Mild nausea and digestive discomfort",
+        severity: "Mild",
+      },
+    ],
+  },
+  {
+    category: "Environmental",
+    items: [
+      {
+        name: "Dust mites",
+        description: "Sneezing, watery eyes, nasal congestion — worsens at night",
+        severity: "Mild",
+      },
+    ],
+  },
 ];
+
+const severityStyles: Record<Severity, string> = {
+  Severe: "bg-[#FEE2E2] text-[#DC2626]",
+  Moderate: "bg-[#FFEDD5] text-[#EA580C]",
+  Mild: "bg-[#DCFCE7] text-[#16A34A]",
+};
 
 export default function Allergies() {
   const app = getMiniApp("allergies")!;
@@ -19,20 +65,39 @@ export default function Allergies() {
       bg={app.bg}
       fg={app.fg}
     >
-      <div className="space-y-2">
-        {allergies.map((a) => (
-          <div key={a.name} className="bg-card rounded-2xl p-4 border border-border/40 flex items-start gap-3">
-            <div className={`w-11 h-11 rounded-xl ${a.color}/12 flex items-center justify-center shrink-0`}>
-              <AlertTriangle className={`w-5 h-5 ${a.color.replace("bg-", "text-")}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="font-semibold text-sm">{a.name}</p>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${a.color} text-white`}>
-                  {a.severity}
-                </span>
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-1">{a.reaction}</p>
+      <div className="space-y-6 pb-32">
+        {groups.map((g) => (
+          <div key={g.category} className="space-y-3">
+            <p className="text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase px-1">
+              {g.category}
+            </p>
+            <div className="space-y-3">
+              {g.items.map((a) => (
+                <div
+                  key={a.name}
+                  className="bg-card rounded-2xl p-4 border border-border/60 flex items-start gap-3"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[17px] leading-tight text-foreground">
+                      {a.name}
+                    </p>
+                    <p className="text-[14px] text-muted-foreground mt-1 leading-snug">
+                      {a.description}
+                    </p>
+                    <span
+                      className={`inline-block mt-3 text-[13px] font-medium px-3 py-1 rounded-full ${severityStyles[a.severity]}`}
+                    >
+                      {a.severity}
+                    </span>
+                  </div>
+                  <button
+                    aria-label={`Delete ${a.name}`}
+                    className="shrink-0 text-muted-foreground hover:text-foreground transition-colors p-1"
+                  >
+                    <Trash2 className="w-5 h-5" strokeWidth={1.75} />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         ))}
