@@ -66,6 +66,16 @@ export default function MiniAppShell({
             <Icon className={`h-5 w-5 ${fg}`} />
             <span className="text-[13px] font-semibold text-black pr-1">{name}</span>
           </button>
+        </div>
+
+        <div
+          className="flex items-center rounded-full border p-1 backdrop-blur-xl"
+          style={{
+            background: "hsl(var(--card) / 0.55)",
+            borderColor: "hsl(var(--border) / 0.55)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+          }}
+        >
           <button
             onClick={() => navigate("/")}
             className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
@@ -74,9 +84,6 @@ export default function MiniAppShell({
             <img src={askAiFlower} alt="" className="h-5 w-5" />
           </button>
         </div>
-
-        <div />
-
       </header>
 
       <div className="px-5 pt-1 pb-3 flex items-center gap-3">
