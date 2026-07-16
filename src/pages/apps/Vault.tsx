@@ -141,6 +141,7 @@ export default function Vault() {
           {folders.map((f) => (
             <button
               key={f.id}
+              onClick={() => setOpenFolderId(f.id)}
               className="bg-card rounded-2xl p-4 border border-border/40 text-left flex flex-col gap-3 aspect-[1/1.05]"
             >
               <div className="text-4xl leading-none">{f.emoji}</div>
@@ -156,6 +157,154 @@ export default function Vault() {
             </button>
           ))}
         </div>
+
+        {/* Folder detail overlay */}
+        {openFolder && (
+          <div className="fixed inset-0 z-[70] bg-background flex flex-col">
+            {/* Header */}
+            <div className="px-5 pt-5 pb-3 flex items-start gap-3">
+              <button onClick={() => setOpenFolderId(null)} className="pt-1">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <div className="text-3xl leading-none pt-0.5">{openFolder.emoji}</div>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-[22px] font-bold leading-tight">{openFolder.name}</h1>
+                <p className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground mt-0.5">
+                  {openFolder.reports?.reduce((a, r) => a + r.files.length, 0) ?? openFolder.files} files total
+                </p>
+              </div>
+              <button className="pt-1">
+                <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+
+            {/* Search + Sort */}
+            <div className="px-5 pb-4 flex items-center gap-3 border-b border-border/40">
+              <div className="flex-1 flex items-center gap-2 rounded-full bg-muted/60 px-4 py-2.5">
+                <SearchIcon className="w-4 h-4 text-muted-foreground" />
+                <input
+                  value={folderQuery}
+                  onChange={(e) => setFolderQuery(e.target.value)}
+                  placeholder="Search report name, symptom, n..."
+                  className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground"
+                />
+                {folderQuery && (
+                  <button onClick={() => setFolderQuery("")}>
+                    <X className="w-4 h-4 text-muted-foreground" />
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => setShowSort(true)}
+                className="w-11 h-11 rounded-full border border-border/60 flex items-center justify-center"
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Report list */}
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+              {sortedReports.length === 0 && (
+                <p className="text-center text-sm text-muted-foreground pt-16">
+                  No reports in this folder yet.
+                </p>
+              )}
+              {sortedReports.map((r, idx) => {
+                const prevYear = idx > 0 ? sortedReports[idx - 1].year : null;
+                const showYearDivider = prevYear && prevYear !== r.year;
+                return (
+                  <div key={r.id}>
+                    {showYearDivider && (
+                      <div className="flex items-center gap-3 my-4">
+                        <div className="flex-1 h-px bg-border/60" />
+                        <span className="text-xs text-muted-foreground">{r.year}</span>
+                        <div className="flex-1 h-px bg-border/60" />
+                      </div>
+                    )}
+                    <div className="rounded-2xl border border-border/40 bg-card p-4">
+                      <div className="flex items-start gap-3">
+                        <div
+                          className="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white shrink-0"
+                          style={{ background: "#2A1A1F" }}
+                        >
+                          <span className="text-lg font-bold leading-none">{r.day}</span>
+                          <span className="text-[9px] font-semibold tracking-wider mt-0.5">{r.month}</span>
+                          <span className="text-[8px] opacity-80 mt-0.5">{r.year}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] text-muted-foreground">
+                            {r.files.length} files · PDF + {r.files.filter((f) => f.type === "img").length} photos
+                          </p>
+                          <p className="text-[15px] font-bold leading-tight mt-0.5">{r.lab}</p>
+                          <p className="text-[13px] text-muted-foreground">{r.doctor}</p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground mt-1" />
+                      </div>
+                      <p className="text-[13px] leading-relaxed text-foreground/80 mt-3">
+                        {r.summary}
+                      </p>
+                      <div className="border-t border-border/40 mt-3 pt-3 flex flex-wrap gap-2">
+                        {r.files.map((fi) => (
+                          <div
+                            key={fi.name}
+                            className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1"
+                          >
+                            {fi.type === "pdf" ? (
+                              <span className="w-4 h-4 rounded-sm bg-[#F66B9A]/15 text-[#F66B9A] text-[8px] font-bold flex items-center justify-center">PDF</span>
+                            ) : (
+                              <ImageIcon className="w-3.5 h-3.5 text-[#60A5FA]" />
+                            )}
+                            <span className="text-[11px] font-medium">{fi.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Sort bottom sheet */}
+            {showSort && (
+              <div
+                className="absolute inset-0 z-10 bg-black/40 flex items-end"
+                onClick={() => setShowSort(false)}
+              >
+                <div
+                  className="w-full max-w-md mx-auto bg-background rounded-t-3xl pb-6"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="w-10 h-1 rounded-full bg-muted mx-auto my-3" />
+                  <div className="flex items-center px-5 pb-3">
+                    <button
+                      onClick={() => setShowSort(false)}
+                      className="text-sm font-medium text-[#60A5FA] w-16 text-left"
+                    >
+                      Cancel
+                    </button>
+                    <h3 className="flex-1 text-center text-[15px] font-bold">Sort by</h3>
+                    <div className="w-16" />
+                  </div>
+                  <div className="border-t border-border/60">
+                    {SORT_OPTIONS.map((o) => (
+                      <button
+                        key={o.key}
+                        onClick={() => {
+                          setSortKey(o.key);
+                          setShowSort(false);
+                        }}
+                        className="w-full flex items-center justify-between px-5 py-4 border-b border-border/40 last:border-b-0 text-left"
+                      >
+                        <span className="text-[15px] font-medium">{o.label}</span>
+                        {sortKey === o.key && <Check className="w-5 h-5 text-[#60A5FA]" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Floating upload pill */}
         {!showAdd && !showSearch && (
