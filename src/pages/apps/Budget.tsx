@@ -544,6 +544,24 @@ function Analytics({ expenses }: { expenses: Expense[] }) {
   );
 }
 
+function FilterChip({ label, active, color, onClick }: {
+  label: string; active: boolean; color: string; onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors"
+      style={{
+        borderColor: active ? color : "#E5E5E5",
+        background: active ? `${color}18` : "#FFFFFF",
+        color: active ? color : "#525252",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-neutral-200 bg-white p-4">
