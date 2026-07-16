@@ -52,23 +52,29 @@ function AddRecordSheet({
 }: {
   open: boolean;
   onClose: () => void;
-  onSave: (hpid: string, conds: Draft[]) => void;
+  onSave: (hpid: string, relation: string, conds: Draft[]) => void;
 }) {
   const [hpid, setHpid] = useState("");
+  const [relation, setRelation] = useState("");
   const [conds, setConds] = useState<Draft[]>([{ name: "", date: "" }]);
 
   const update = (i: number, key: keyof Draft, val: string) =>
     setConds((prev) => prev.map((c, idx) => (idx === i ? { ...c, [key]: val } : c)));
 
-  const canSave = hpid.trim().length > 0 && conds.every((c) => c.name.trim().length > 0);
+  const canSave =
+    hpid.trim().length > 0 &&
+    relation.trim().length > 0 &&
+    conds.every((c) => c.name.trim().length > 0);
 
   const handleSave = () => {
     if (!canSave) return;
-    onSave(hpid.trim(), conds);
+    onSave(hpid.trim(), relation.trim(), conds);
     setHpid("");
+    setRelation("");
     setConds([{ name: "", date: "" }]);
     onClose();
   };
+
 
   return (
     <AnimatePresence>
