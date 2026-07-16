@@ -161,19 +161,8 @@ export default function Vault({ embedded }: EmbeddedProps = {}) {
   };
 
   return (
-    <AppLockGate appId="vault">
-      <MiniAppShell
-        appId="vault"
-        name={app.name}
-        tagline={app.tagline}
-        icon={app.icon}
-        bg={app.bg}
-        fg={app.fg}
-        bottomActions={[
-          { icon: FolderOpen, label: "Files", active: true },
-          { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
-        ]}
-      >
+    <AppFrame appId="vault" embedded={embedded}>
+
         {/* Folder grid */}
         <div className="grid grid-cols-2 gap-3">
           {folders.map((f) => (
