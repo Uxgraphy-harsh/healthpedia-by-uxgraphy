@@ -63,12 +63,20 @@ export default function MiniAppShell({
           }}
         >
           <button
+            onClick={() => navigate("/")}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Ask AI"
+          >
+            <img src={askAiFlower} alt="" className="h-5 w-5" />
+          </button>
+          <button
             onClick={() => navigate("/chat")}
             className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
             aria-label="Chat history"
           >
             <ClockCounterClockwise size={19} weight="regular" className="text-foreground/80" />
           </button>
+
           <button
             onClick={() => setShowNotifications(true)}
             className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
