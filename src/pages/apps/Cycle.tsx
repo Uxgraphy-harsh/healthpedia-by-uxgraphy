@@ -418,10 +418,16 @@ export default function Cycle() {
                 <p className="text-base font-bold" style={{ color: PHASE_COLORS[phase] }}>
                   You are in your {PHASE_LABEL[phase].toLowerCase()} phase
                 </p>
-                <div className="mt-1 flex items-center gap-1.5 text-sm text-neutral-700">
-                  <Info className="h-4 w-4" />
+                <div className="mt-1 flex items-center gap-2 text-sm text-neutral-700">
+                  <span
+                    className="flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                    style={{ background: PHASE_COLORS[phase] }}
+                  >
+                    i
+                  </span>
                   <span>What does this mean?</span>
                 </div>
+
               </div>
               <div
                 className="flex h-14 w-14 items-center justify-center rounded-full"
