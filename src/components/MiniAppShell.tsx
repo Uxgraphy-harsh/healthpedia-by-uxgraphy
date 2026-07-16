@@ -42,26 +42,24 @@ export default function MiniAppShell({
   return (
     <div className={`mobile-container ${bar ? "pb-28" : "pb-10"} min-h-[100dvh]`}>
       <header className="relative z-10 flex items-center justify-between px-4 pb-3 pt-4">
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-1 rounded-full border p-1 backdrop-blur-xl"
+          style={{
+            background: "hsl(var(--card) / 0.55)",
+            borderColor: "hsl(var(--border) / 0.55)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+          }}
+        >
           <button
             onClick={() => setShowLauncher(true)}
-            className={`flex h-11 w-11 items-center justify-center rounded-2xl ${bg} border backdrop-blur-xl`}
-            style={{
-              borderColor: "hsl(var(--border) / 0.55)",
-              boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
-            }}
+            className={`flex h-9 w-9 items-center justify-center rounded-full ${bg}`}
             aria-label="Switch mini app"
           >
             <Icon className={`h-5 w-5 ${fg}`} />
           </button>
           <button
             onClick={() => navigate("/")}
-            className="flex h-11 w-11 items-center justify-center rounded-2xl border backdrop-blur-xl"
-            style={{
-              background: "hsl(var(--card) / 0.55)",
-              borderColor: "hsl(var(--border) / 0.55)",
-              boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
-            }}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
             aria-label="Ask AI"
           >
             <img src={askAiFlower} alt="" className="h-5 w-5" />
