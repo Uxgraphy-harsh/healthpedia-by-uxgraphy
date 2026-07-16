@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Calendar, MapPin, Check, BellRing } from "lucide-react";
+import { Plus, Calendar, MapPin, Check, BellRing, Clock } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 
@@ -23,6 +23,7 @@ const initial: Appt[] = [
 export default function Appointments() {
   const app = getMiniApp("appointments")!;
   const [appts] = useState(initial);
+  const [showAdd, setShowAdd] = useState(false);
 
   return (
     <MiniAppShell
@@ -32,12 +33,13 @@ export default function Appointments() {
       icon={app.icon}
       bg={app.bg}
       fg={app.fg}
-      action={
-        <button className="w-10 h-10 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shrink-0">
-          <Plus className="w-5 h-5" />
-        </button>
-      }
+      bottomActions={[
+        { icon: Calendar, label: "Upcoming", active: true },
+        { icon: Clock, label: "Past" },
+        { icon: MapPin, label: "Nearby" },
+      ]}
     >
+
       <div className="rounded-2xl bg-[#8B5CF6]/8 border border-[#8B5CF6]/20 p-3 mb-4 flex items-center gap-3">
         <BellRing className="w-4 h-4 text-[#8B5CF6] shrink-0" />
         <p className="text-[11px] text-foreground/70">
