@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Plus, AtSign, X } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import { getMiniApp, miniApps } from "@/data/miniApps";
+import { miniApps } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 interface Note {
   id: string;
