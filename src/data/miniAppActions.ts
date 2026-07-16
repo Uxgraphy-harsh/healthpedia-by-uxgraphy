@@ -68,11 +68,7 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
     A(QrCode, "Share QR"),
     A(Phone, "SOS"),
   ],
-  insurance: [
-    A(ShieldCheck, "Policies", { active: true }),
-    A(FileText, "Claims"),
-    A(CreditCard, "Card"),
-  ],
+  insurance: [],
   notes: [
     A(StickyNote, "All", { active: true }),
     A(Filter, "Filter"),
