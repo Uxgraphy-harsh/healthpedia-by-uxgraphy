@@ -167,15 +167,13 @@ export default function Budget() {
     >
       {view === "overview" && (
         <Overview
-          monthTotal={monthTotal}
-          budget={monthlyBudget}
-          setBudget={setMonthlyBudget}
-          deltaPct={deltaPct}
-          expenses={monthExpenses}
-          onManageCategories={() => setCatsOpen(true)}
+          expenses={expenses}
           resolveCat={cats.byId}
+          categories={cats.all}
+          onRemove={removeExpense}
         />
       )}
+
       {view === "expenses" && (
         <ExpensesList
           expenses={expenses}
