@@ -137,17 +137,17 @@ export default function Vault() {
         </div>
 
         {/* Add folder sheet */}
-        {/* Floating add button */}
-        <motion.button
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.15 }}
-          onClick={() => setShowAdd(true)}
-          className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shadow-lg shadow-[#F66B9A]/30 active:scale-95"
-          aria-label="Add document"
-        >
-          <Plus className="w-6 h-6" strokeWidth={2.5} />
-        </motion.button>
+        {/* Floating add button (matches period tracker & budget) */}
+        {!showAdd && (
+          <button
+            onClick={() => setShowAdd(true)}
+            className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+            style={{ background: "#171717" }}
+          >
+            <Plus className="h-5 w-5" strokeWidth={2.5} />
+            <span className="font-semibold">Add document</span>
+          </button>
+        )}
 
         {showAdd && (
           <div
