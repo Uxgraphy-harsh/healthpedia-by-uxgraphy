@@ -216,190 +216,131 @@ function CatGlyph({ cat, className, style }: { cat: Category; className?: string
   return <Icon className={className} style={style} />;
 }
 
-/* ---------------- Overview ---------------- */
+/* ---------------- Overview (recent + history + category filters) ---------------- */
 
 function Overview({
-  monthTotal, budget, setBudget, deltaPct, expenses, onManageCategories, resolveCat,
+  expenses, resolveCat, categories, onRemove,
 }: {
-  monthTotal: number; budget: number; setBudget: (n: number) => void;
-  deltaPct: number; expenses: Expense[];
-  onManageCategories: () => void;
+  expenses: Expense[];
   resolveCat: (id: string) => Category;
+  categories: Category[];
+  onRemove: (id: string) => void;
 }) {
-  const pct = Math.min(100, budget ? Math.round((monthTotal / budget) * 100) : 0);
-  const remaining = Math.max(0, budget - monthTotal);
-  const over = monthTotal > budget;
+  const [filter, setFilter] = useState<string>("all");
 
-  const byCat = useMemo(() => {
-    const map = new Map<string, number>();
-    expenses.forEach((e) => map.set(e.categoryId, (map.get(e.categoryId) ?? 0) + e.amount));
-    return [...map.entries()]
-      .map(([id, total]) => ({ cat: resolveCat(id), total }))
-      .sort((a, b) => b.total - a.total);
-  }, [expenses, resolveCat]);
+  const activeCats = useMemo(() => {
+    const set = new Set(expenses.map((e) => e.categoryId));
+    return categories.filter((c) => set.has(c.id));
+  }, [expenses, categories]);
 
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(String(budget));
-  useEffect(() => setDraft(String(budget)), [budget]);
+  const filtered = useMemo(
+    () => (filter === "all" ? expenses : expenses.filter((e) => e.categoryId === filter)),
+    [expenses, filter]
+  );
+
+  const sorted = useMemo(
+    () => [...filtered].sort((a, b) => (a.date < b.date ? 1 : -1)),
+    [filtered]
+  );
+
+  const recent = sorted.slice(0, 3);
+  const history = sorted.slice(3);
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, Expense[]>();
+    history.forEach((e) => {
+      const list = map.get(e.date) ?? [];
+      list.push(e);
+      map.set(e.date, list);
+    });
+    return [...map.entries()];
+  }, [history]);
 
   return (
     <div className="pb-24">
-      <h2 className="mt-2 text-2xl font-bold text-neutral-900">This month</h2>
+      <h2 className="mt-2 text-2xl font-bold text-neutral-900">Transactions</h2>
       <p className="mt-1 text-sm text-neutral-500">
-        {new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" })}
+        {expenses.length} {expenses.length === 1 ? "entry" : "entries"} logged
       </p>
 
-      <div className="mt-4 overflow-hidden rounded-3xl p-5 text-white"
-        style={{ background: `linear-gradient(135deg, ${DEEP}, ${TEAL})` }}>
-        <div className="flex items-center gap-5">
-          <BudgetRing pct={pct} over={over} />
-          <div className="flex-1">
-            <p className="text-[11px] uppercase tracking-widest opacity-80">Total spent</p>
-            <p className="mt-1 text-3xl font-bold tracking-tight">{currency(monthTotal)}</p>
-            <p className="mt-1 text-xs opacity-80">of {currency(budget)}</p>
-            <div className="mt-2">
-              {deltaPct === 0 ? (
-                <span className="text-[11px] opacity-80">No change vs last month</span>
-              ) : deltaPct > 0 ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">
-                  <ArrowUpRight className="h-3 w-3" /> {deltaPct}% vs last month
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">
-                  <ArrowDownRight className="h-3 w-3" /> {Math.abs(deltaPct)}% vs last month
-                </span>
-              )}
-            </div>
-          </div>
+      {/* Category filters */}
+      <div className="mt-4 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex w-max gap-2">
+          <FilterChip label="All" active={filter === "all"} color={TEAL} onClick={() => setFilter("all")} />
+          {activeCats.map((c) => (
+            <FilterChip key={c.id} label={c.label} active={filter === c.id} color={c.color}
+              onClick={() => setFilter(c.id)} />
+          ))}
         </div>
-        <p className="mt-4 text-xs opacity-90">
-          {over ? `Over budget by ${currency(monthTotal - budget)}` : `${currency(remaining)} left this month`}
-        </p>
       </div>
 
-      <div className="mt-4 flex items-center justify-between rounded-2xl border border-neutral-200 bg-white p-4">
-        <div>
-          <p className="text-xs uppercase tracking-widest text-neutral-500">Monthly budget</p>
-          {editing ? (
-            <div className="mt-1 flex items-center gap-2">
-              <span className="text-lg font-semibold text-neutral-900">₹</span>
-              <input autoFocus type="number" min={0} value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                className="w-28 rounded-lg border border-neutral-200 px-2 py-1 text-base font-semibold outline-none focus:border-teal-500" />
+      {sorted.length === 0 ? (
+        <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-neutral-200 p-10 text-center">
+          <Wallet className="h-10 w-10" style={{ color: TEAL }} />
+          <p className="mt-4 text-lg font-bold text-neutral-900">No transactions yet</p>
+          <p className="mt-1 text-sm text-neutral-500">Tap the + button to log your first one.</p>
+        </div>
+      ) : (
+        <>
+          {/* Recent transactions */}
+          <div className="mt-5">
+            <p className="text-sm font-semibold text-neutral-900">Recent transactions</p>
+            <div className="mt-3 space-y-2">
+              {recent.map((e) => (
+                <TxRow key={e.id} e={e} cat={resolveCat(e.categoryId)} onRemove={onRemove} />
+              ))}
             </div>
-          ) : (
-            <p className="mt-1 text-lg font-bold text-neutral-900">{currency(budget)}</p>
+          </div>
+
+          {/* History */}
+          {grouped.length > 0 && (
+            <div className="mt-6">
+              <p className="text-sm font-semibold text-neutral-900">History</p>
+              <div className="mt-3 space-y-5">
+                {grouped.map(([date, list]) => (
+                  <div key={date}>
+                    <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">
+                      {new Date(date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
+                    </p>
+                    <div className="space-y-2">
+                      {list.map((e) => (
+                        <TxRow key={e.id} e={e} cat={resolveCat(e.categoryId)} onRemove={onRemove} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
-        </div>
-        {editing ? (
-          <button
-            onClick={() => { setBudget(Math.max(0, Number(draft) || 0)); setEditing(false); }}
-            className="rounded-full px-4 py-2 text-xs font-semibold text-white"
-            style={{ background: TEAL }}>
-            Save
-          </button>
-        ) : (
-          <button
-            onClick={() => setEditing(true)}
-            className="rounded-full border border-neutral-200 px-4 py-2 text-xs font-semibold text-neutral-700">
-            Edit
-          </button>
-        )}
-      </div>
-
-      <div className="mt-5">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-neutral-900">By category</p>
-          <button
-            onClick={onManageCategories}
-            className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700">
-            <Settings2 className="h-3 w-3" /> Manage
-          </button>
-        </div>
-        {byCat.length === 0 ? (
-          <p className="mt-3 rounded-2xl border border-dashed border-neutral-200 p-6 text-center text-sm text-neutral-500">
-            No expenses this month yet. Tap + to add one.
-          </p>
-        ) : (
-          <div className="mt-3 space-y-3">
-            {byCat.map(({ cat, total }) => {
-              const p = monthTotal ? Math.round((total / monthTotal) * 100) : 0;
-              return (
-                <div key={cat.id} className="rounded-2xl border border-neutral-200 bg-white p-3">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl text-base"
-                      style={{ background: `${cat.color}22`, color: cat.color }}>
-                      <CatGlyph cat={cat} className="h-4 w-4" />
-                    </span>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-neutral-900">{cat.label}</p>
-                        <p className="text-sm font-bold text-neutral-900">{currency(total)}</p>
-                      </div>
-                      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
-                        <div className="h-full rounded-full" style={{ width: `${p}%`, background: cat.color }} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {expenses.length > 0 && (
-        <div className="mt-6">
-          <p className="text-sm font-semibold text-neutral-900">Recent transactions</p>
-          <div className="mt-3 divide-y divide-neutral-100 rounded-2xl border border-neutral-200 bg-white">
-            {[...expenses]
-              .sort((a, b) => (a.date < b.date ? 1 : -1))
-              .slice(0, 5)
-              .map((e) => {
-                const cat = resolveCat(e.categoryId);
-                return (
-                  <div key={e.id} className="flex items-center gap-3 p-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl text-base"
-                      style={{ background: `${cat.color}22`, color: cat.color }}>
-                      <CatGlyph cat={cat} className="h-4 w-4" />
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="truncate text-sm font-semibold text-neutral-900">{e.title || cat.label}</p>
-                      <p className="text-xs text-neutral-500">
-                        {cat.label} · {new Date(e.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-                      </p>
-                    </div>
-                    <p className="text-sm font-bold text-neutral-900">{currency(e.amount)}</p>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
 }
 
-function BudgetRing({ pct, over }: { pct: number; over: boolean }) {
-  const size = 88, stroke = 8;
-  const r = (size - stroke) / 2;
-  const C = 2 * Math.PI * r;
-  const dash = (Math.min(100, pct) / 100) * C;
+function TxRow({ e, cat, onRemove }: { e: Expense; cat: Category; onRemove: (id: string) => void }) {
+  const isIncome = e.type === "income";
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.22)" strokeWidth={stroke} fill="none" />
-        <circle cx={size / 2} cy={size / 2} r={r}
-          stroke={over ? "#FCA5A5" : "#FFFFFF"} strokeWidth={stroke} strokeLinecap="round"
-          fill="none" strokeDasharray={`${dash} ${C - dash}`} />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-lg font-bold leading-none">{pct}%</span>
-        <span className="text-[9px] uppercase tracking-widest opacity-80">used</span>
+    <div className="flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-3">
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
+        style={{ background: `${cat.color}22`, color: cat.color }}>
+        <CatGlyph cat={cat} className="h-4 w-4" />
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className="truncate text-sm font-semibold text-neutral-900">{e.title || cat.label}</p>
+        <p className="text-xs text-neutral-500">{cat.label}{e.note ? ` · ${e.note}` : ""}</p>
       </div>
+      <p className="text-sm font-bold" style={{ color: isIncome ? "#16A34A" : "#0A0A0A" }}>
+        {isIncome ? "+" : ""}{currency(e.amount)}
+      </p>
+      <button onClick={() => onRemove(e.id)} aria-label="Delete"
+        className="ml-1 rounded-full p-1.5 text-neutral-400 hover:text-red-500">
+        <Trash2 className="h-4 w-4" />
+      </button>
     </div>
   );
 }
+
 
 /* ---------------- Expenses list ---------------- */
 
