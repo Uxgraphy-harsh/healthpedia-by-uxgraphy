@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload, Search as SearchIcon, FolderOpen, Plus, X } from "lucide-react";
+import { Upload, Search as SearchIcon, FolderOpen, X } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
