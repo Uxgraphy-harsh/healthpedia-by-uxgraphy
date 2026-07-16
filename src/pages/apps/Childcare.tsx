@@ -69,7 +69,7 @@ const linkedApps = [
   { id: "vault", label: "Vault", emoji: "🗂️", bg: "bg-[#E0E7FF]" },
 ];
 
-function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void }) {
+function ChildDetail({ kid, onBack }: { kid: Kid; onBack: () => void }) {
   const [tab, setTab] = useState<"schedule" | "linked">("schedule");
   const [linkedOpen, setLinkedOpen] = useState(false);
   const [activeApp, setActiveApp] = useState<ChildAppId | null>(null);
