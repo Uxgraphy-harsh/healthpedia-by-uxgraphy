@@ -1,8 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { Upload, Search as SearchIcon, FolderOpen, X, ArrowLeft, MoreHorizontal, SlidersHorizontal, FileText, Image as ImageIcon, ChevronRight, Check, Sparkles } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import AppLockGate from "@/components/AppLockGate";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 interface VaultFile {
   name: string;
