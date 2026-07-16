@@ -27,7 +27,7 @@ export default function MiniAppBottomBar({ actions, accent }: Props) {
   return (
     <div className="fixed bottom-4 left-0 right-0 z-40 pb-safe">
       <div className="mx-auto max-w-md px-4">
-        <div className="flex items-center justify-around rounded-full bg-card/95 px-3 py-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.25)] backdrop-blur-xl border border-border/40">
+        <div className="flex items-center justify-around rounded-full bg-card/95 px-3 py-2 backdrop-blur-xl border border-border/40">
           {actions.map((a, i) => {
             const isActive = a.active || a.primary;
             return (
