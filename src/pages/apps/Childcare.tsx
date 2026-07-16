@@ -194,9 +194,17 @@ function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void 
           </>
         )}
       </AnimatePresence>
+
+      {/* Child-scoped mini app */}
+      <AnimatePresence>
+        {activeApp && (
+          <ChildSubApp kid={kid} appId={activeApp} onBack={() => setActiveApp(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
 
 export default function Childcare() {
   const app = getMiniApp("childcare")!;
