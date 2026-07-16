@@ -5,9 +5,11 @@ import { getMiniApp } from "@/data/miniApps";
 import {
   Wallet, BarChart3, List, Plus, ArrowUpRight, ArrowDownRight,
   Stethoscope, Pill, FlaskConical, ShieldCheck, HeartPulse, Hospital,
-  Sparkles, Trash2, X, Repeat, Delete, Check, Calendar as CalendarIcon,
+  Sparkles, Trash2, X, Delete, Check, Calendar as CalendarIcon,
   Settings2,
 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+
 
 const TEAL = "#0EA5A5";
 const DEEP = "#0B4B4B";
@@ -622,14 +624,12 @@ function AddExpenseFullScreen({
               className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 text-neutral-700">
               <X className="h-4 w-4" />
             </button>
-            <div className="flex items-center rounded-full bg-neutral-100 p-1">
-              <TypeTab active={type === "expense"} onClick={() => setType("expense")}>Expense</TypeTab>
-              <TypeTab active={type === "income"}  onClick={() => setType("income")}>Income</TypeTab>
+            <div className="rounded-full bg-neutral-100 px-4 py-1.5 text-sm font-semibold text-neutral-900">
+              Add expense
             </div>
-            <button aria-label="Repeat" className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 text-neutral-700">
-              <Repeat className="h-4 w-4" />
-            </button>
+            <div className="h-9 w-9" />
           </div>
+
 
           {/* Amount */}
           <div className="flex flex-1 flex-col items-center justify-center px-6">
@@ -698,20 +698,38 @@ function AddExpenseFullScreen({
             </button>
           </div>
 
-          {/* Date sheet */}
-          <SimpleSheet open={datePickerOpen} onClose={() => setDatePickerOpen(false)} title="Date">
-            <input
-              type="date"
-              value={date}
-              max={todayISO()}
-              onChange={(e) => setDate(e.target.value)}
-              className="mt-2 w-full rounded-2xl border border-neutral-200 px-4 py-3 text-base outline-none"
-            />
-            <button onClick={() => setDatePickerOpen(false)}
-              className="mt-4 w-full rounded-2xl bg-neutral-900 py-3 text-sm font-semibold text-white">
-              Done
-            </button>
-          </SimpleSheet>
+          {/* Date sheet — iOS-style calendar */}
+          <AnimatePresence>
+            {datePickerOpen && (
+              <>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  onClick={() => setDatePickerOpen(false)}
+                  className="absolute inset-0 z-[95] bg-black/30" />
+                <motion.div
+                  initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+                  transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                  className="absolute inset-x-3 bottom-3 z-[96] rounded-3xl bg-white p-3 shadow-2xl"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={new Date(date)}
+                    onSelect={(d) => {
+                      if (d) {
+                        const iso = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                          .toISOString().slice(0, 10);
+                        setDate(iso);
+                        setDatePickerOpen(false);
+                      }
+                    }}
+                    disabled={(d) => d > new Date()}
+                    initialFocus
+                    className="pointer-events-auto rounded-2xl p-2"
+                  />
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+
 
           {/* Category picker — right-anchored floating stack */}
           <AnimatePresence>
