@@ -4,7 +4,8 @@ import { Baby, ArrowLeft, ChevronDown, X as XIcon } from "lucide-react";
 import { DotsNine } from "@phosphor-icons/react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
-import { useNavigate } from "react-router-dom";
+import ChildSubApp, { type ChildAppId } from "@/pages/apps/childcare/ChildSubApp";
+
 
 const kids = [
   { id: "aarav", name: "Aarav", age: "6 yrs", ageDetail: "26 months 9 days", nextVaccine: "MMR booster · Apr 12", initials: "A", color: "bg-[#FB923C]" },
@@ -44,9 +45,10 @@ const linkedApps = [
 ];
 
 function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void }) {
-  const navigate = useNavigate();
   const [tab, setTab] = useState<"schedule" | "linked">("schedule");
   const [linkedOpen, setLinkedOpen] = useState(false);
+  const [activeApp, setActiveApp] = useState<ChildAppId | null>(null);
+
 
   return (
     <div className="fixed inset-0 z-[70] bg-[#F5F5F7] flex flex-col">
@@ -180,7 +182,7 @@ function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void 
                 {linkedApps.map((a) => (
                   <button
                     key={a.id}
-                    onClick={() => { setLinkedOpen(false); navigate(`/apps/${a.id}`); }}
+                    onClick={() => { setLinkedOpen(false); setActiveApp(a.id as ChildAppId); }}
                     className="flex flex-col items-center gap-2 rounded-2xl border border-border/60 bg-card p-3"
                   >
                     <div className={`w-11 h-11 rounded-2xl ${a.bg} flex items-center justify-center text-xl`}>{a.emoji}</div>
@@ -192,9 +194,17 @@ function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void 
           </>
         )}
       </AnimatePresence>
+
+      {/* Child-scoped mini app */}
+      <AnimatePresence>
+        {activeApp && (
+          <ChildSubApp kid={kid} appId={activeApp} onBack={() => setActiveApp(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
 
 export default function Childcare() {
   const app = getMiniApp("childcare")!;
