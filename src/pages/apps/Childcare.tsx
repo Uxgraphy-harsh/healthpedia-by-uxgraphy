@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Baby } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 
@@ -31,16 +31,10 @@ export default function Childcare() {
             </div>
           </div>
         ))}
+        <button className="w-full py-3 rounded-2xl border-2 border-dashed border-border text-sm font-medium text-muted-foreground flex items-center justify-center gap-2">
+          <Baby className="w-4 h-4" /> Add child profile
+        </button>
       </div>
-
-      {/* Floating Add child button */}
-      <button
-        className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
-        style={{ background: "#171717" }}
-      >
-        <Plus className="h-5 w-5" strokeWidth={2.5} />
-        <span className="font-semibold">Add child</span>
-      </button>
     </MiniAppShell>
   );
 }
