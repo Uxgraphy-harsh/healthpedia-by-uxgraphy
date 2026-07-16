@@ -54,14 +54,8 @@ export default function Notes({ embedded }: EmbeddedProps = {}) {
   };
 
   return (
-    <MiniAppShell
-      appId="notes"
-      name={app.name}
-      tagline={app.tagline}
-      icon={app.icon}
-      bg={app.bg}
-      fg={app.fg}
-    >
+    <AppFrame appId="notes" embedded={embedded}>
+
       <div className="space-y-2.5">
         {notes.map((n) => (
           <div key={n.id} className="bg-card rounded-2xl p-4 border border-border/40">
