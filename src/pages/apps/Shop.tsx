@@ -123,7 +123,7 @@ export default function Shop() {
         <ShopView
           category={category} setCategory={setCategory}
           products={category === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === category)}
-          onAdd={inc}
+          cart={cart} onInc={inc} onDec={dec}
         />
       )}
 
