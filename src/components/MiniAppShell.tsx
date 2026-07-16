@@ -7,6 +7,7 @@ import {
   Gear,
   Bell,
   UserCircle,
+  DotsNine,
   X as XIcon,
 } from "@phosphor-icons/react";
 import { useAppLock } from "@/contexts/AppLockContext";
@@ -50,6 +51,13 @@ export default function MiniAppShell({
             boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
           }}
         >
+          <button
+            onClick={() => setShowLauncher(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Open app launcher"
+          >
+            <DotsNine size={20} weight="bold" className="text-foreground/80" />
+          </button>
           <button
             onClick={() => setShowLauncher(true)}
             className={`flex h-9 w-9 items-center justify-center rounded-full ${bg}`}
