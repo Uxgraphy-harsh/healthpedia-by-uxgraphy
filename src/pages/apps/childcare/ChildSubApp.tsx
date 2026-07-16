@@ -1,4 +1,5 @@
-import { ArrowLeft, Plus, Search } from "lucide-react";
+import { ArrowLeft, Plus, Search, X } from "lucide-react";
+import { useState } from "react";
 
 export type ChildAppId =
   | "prescriptions"
@@ -183,6 +184,27 @@ function Vault() {
 
 export default function ChildSubApp({ kid, appId, onBack }: Props) {
   const meta = APP_META[appId];
+  const [addOpen, setAddOpen] = useState(false);
+  const [form, setForm] = useState({ title: "", doctor: "", dose: "", dates: "" });
+  const [localPrescriptions, setLocalPrescriptions] = useState(prescriptions);
+
+  const submitPrescription = () => {
+    if (!form.title.trim()) return;
+    setLocalPrescriptions((prev) => [
+      {
+        id: String(Date.now()),
+        title: form.title,
+        doctor: form.doctor || "Pediatrician",
+        meds: 1,
+        dose: form.dose || "As directed",
+        dates: form.dates || "Ongoing",
+        status: "Ongoing",
+      },
+      ...prev,
+    ]);
+    setForm({ title: "", doctor: "", dose: "", dates: "" });
+    setAddOpen(false);
+  };
 
   return (
     <div className="fixed inset-0 z-[75] bg-[#F5F5F7] flex flex-col">
@@ -217,7 +239,29 @@ export default function ChildSubApp({ kid, appId, onBack }: Props) {
 
       {/* content */}
       <div className="flex-1 overflow-y-auto px-5 pb-32">
-        {appId === "prescriptions" && <Prescriptions kid={kid} />}
+        {appId === "prescriptions" && (
+          <div className="space-y-3">
+            {localPrescriptions.map((p) => (
+              <div key={p.id} className="bg-card rounded-2xl p-4 border-2 border-dashed border-border/60">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[15px] font-bold leading-tight">{p.title}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{p.doctor}</p>
+                  </div>
+                  <span className={`shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full ${p.status === "Ongoing" ? "bg-[#DCFCE7] text-emerald-700" : "bg-muted text-muted-foreground"}`}>
+                    {p.status}
+                  </span>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <span className="px-2 py-0.5 rounded-full bg-muted/60">{p.meds} med</span>
+                  <span>{p.dose}</span>
+                </div>
+                <p className="mt-2 text-[11px] text-muted-foreground">{p.dates}</p>
+              </div>
+            ))}
+            <p className="text-center text-[11px] text-muted-foreground pt-2">Prescriptions for {kid.name} only</p>
+          </div>
+        )}
         {appId === "symptoms" && <Symptoms />}
         {appId === "allergies" && <Allergies />}
         {appId === "insurance" && <Insurance kid={kid} />}
@@ -227,12 +271,82 @@ export default function ChildSubApp({ kid, appId, onBack }: Props) {
 
       {/* FAB */}
       <button
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+        onClick={() => setAddOpen(true)}
+        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg active:scale-95 transition-transform"
         style={{ background: "#111" }}
       >
         <Plus className="w-4 h-4" />
         <span className="text-[13px] font-semibold">{meta.fab}</span>
       </button>
+
+      {/* Add prescription bottom sheet */}
+      {addOpen && appId === "prescriptions" && (
+        <div className="fixed inset-0 z-[90] flex items-end" onClick={() => setAddOpen(false)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div
+            className="relative w-full bg-white rounded-t-3xl p-5 pb-8 max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[18px] font-bold">Add prescription</h2>
+              <button
+                onClick={() => setAddOpen(false)}
+                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-[11px] text-muted-foreground mb-4">For {kid.name}</p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[11px] font-semibold text-muted-foreground">Prescription title</label>
+                <input
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  placeholder="e.g. Amoxicillin syrup"
+                  className="mt-1 w-full h-11 rounded-xl border border-border/60 px-3 text-[14px] outline-none focus:border-[#60A5FA]"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-muted-foreground">Doctor</label>
+                <input
+                  value={form.doctor}
+                  onChange={(e) => setForm({ ...form, doctor: e.target.value })}
+                  placeholder="e.g. Dr. Meera Rao · Pediatrician"
+                  className="mt-1 w-full h-11 rounded-xl border border-border/60 px-3 text-[14px] outline-none focus:border-[#60A5FA]"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-muted-foreground">Dose</label>
+                <input
+                  value={form.dose}
+                  onChange={(e) => setForm({ ...form, dose: e.target.value })}
+                  placeholder="e.g. 5 ml · Twice a day"
+                  className="mt-1 w-full h-11 rounded-xl border border-border/60 px-3 text-[14px] outline-none focus:border-[#60A5FA]"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-muted-foreground">Dates</label>
+                <input
+                  value={form.dates}
+                  onChange={(e) => setForm({ ...form, dates: e.target.value })}
+                  placeholder="e.g. Nov 12 - Nov 19"
+                  className="mt-1 w-full h-11 rounded-xl border border-border/60 px-3 text-[14px] outline-none focus:border-[#60A5FA]"
+                />
+              </div>
+            </div>
+            <button
+              onClick={submitPrescription}
+              disabled={!form.title.trim()}
+              className="mt-6 w-full h-12 rounded-full text-white text-[14px] font-semibold disabled:opacity-40"
+              style={{ background: "#111" }}
+            >
+              Add prescription
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
