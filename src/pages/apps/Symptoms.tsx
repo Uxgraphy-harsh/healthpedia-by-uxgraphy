@@ -151,7 +151,7 @@ export default function Symptoms({ embedded }: EmbeddedProps = {}) {
           onClose={() => setShowAdd(false)}
         />
       )}
-    </MiniAppShell>
+    </AppFrame>
   );
 }
 
