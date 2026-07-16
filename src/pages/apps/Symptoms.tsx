@@ -223,6 +223,25 @@ function SymptomDetail({ symptom, onClose }: { symptom: Aggregated; onClose: () 
           ))}
         </div>
       </div>
+
+      {/* Sticky footer actions */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 px-5 pt-3 pb-6 bg-gradient-to-t from-background via-background/95 to-background/0">
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            className="rounded-full py-3.5 flex items-center justify-center gap-2 text-white font-semibold text-[15px] shadow-lg"
+            style={{
+              background: "linear-gradient(135deg, #3B1220 0%, #5C1E33 55%, #7A2340 100%)",
+            }}
+          >
+            <Sparkles className="h-4 w-4" strokeWidth={2.2} />
+            Ask AI
+          </button>
+          <button className="rounded-full py-3.5 flex items-center justify-center gap-2 border border-foreground/80 bg-background font-semibold text-[15px] text-foreground">
+            <Share2 className="h-4 w-4" strokeWidth={2} />
+            Share
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
