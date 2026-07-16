@@ -70,7 +70,9 @@ export default function Vault() {
   const app = getMiniApp("vault")!;
   const [folders, setFolders] = useState(initialFolders);
   const [showAdd, setShowAdd] = useState(false);
-  const [newName, setNewName] = useState("");
+  const [condition, setCondition] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: number; type: string }[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>([]);
