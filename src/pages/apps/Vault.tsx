@@ -135,9 +135,26 @@ export default function Vault() {
     setShowAdd(false);
   };
 
-  const results = query.trim()
-    ? folders.filter((f) => f.name.toLowerCase().includes(query.toLowerCase()))
-    : [];
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [] as { folder: VaultFolder; report: VaultReport }[];
+    const out: { folder: VaultFolder; report: VaultReport }[] = [];
+    for (const folder of folders) {
+      for (const report of folder.reports ?? []) {
+        const hay = [
+          folder.name,
+          report.lab,
+          report.doctor,
+          report.summary,
+          ...report.files.map((f) => f.name),
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (hay.includes(q)) out.push({ folder, report });
+      }
+    }
+    return out;
+  }, [query, folders]);
 
   const commitSearch = (q: string) => {
     const s = q.trim();
