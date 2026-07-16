@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
-import { Calendar as CalendarIcon, LayoutDashboard, Plus, ChevronDown, Info } from "lucide-react";
+import { Calendar as CalendarIcon, LayoutDashboard, Plus, ChevronDown, Info, BarChart3 } from "lucide-react";
 
 // ─── Colors (burgundy palette from reference) ───────────────────────────────
 const BURGUNDY = "#5B0A0A";
@@ -372,6 +372,7 @@ export default function Cycle() {
             onClick: () => setTab("calendar"),
           },
           { icon: Plus, label: "Log Now", primary: true, onClick: goLogNow },
+          { icon: BarChart3, label: "Insights", onClick: () => navigate("/apps/cycle/insights") },
         ]}
       >
         {tab === "dashboard" && (
