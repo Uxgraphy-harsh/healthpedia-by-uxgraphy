@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { FolderOpen, Folder, Plus, FileText, Image as ImageIcon, ChevronRight, Upload, StickyNote } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
