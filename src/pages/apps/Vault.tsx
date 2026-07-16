@@ -81,6 +81,7 @@ export default function Vault() {
   const [openReportId, setOpenReportId] = useState<string | null>(null);
 
   const openFolder = openFolderId ? folders.find((f) => f.id === openFolderId) : null;
+  const openReport = openReportId ? openFolder?.reports?.find((r) => r.id === openReportId) ?? null : null;
 
   const sortedReports = useMemo(() => {
     const reports = openFolder?.reports ?? [];
