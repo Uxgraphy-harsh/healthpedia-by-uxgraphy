@@ -69,12 +69,14 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
   return (
     <button
       onClick={onChange}
-      className={`relative h-7 w-12 rounded-full transition-colors ${on ? "bg-[#60A5FA]" : "bg-[#E2E8F0]"}`}
       aria-pressed={on}
+      className={`relative h-8 w-[52px] rounded-full transition-colors duration-200 ${
+        on ? "bg-[#60A5FA]" : "bg-[#E5E7EB]"
+      }`}
     >
       <span
-        className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform ${
-          on ? "translate-x-[22px]" : "translate-x-0.5"
+        className={`absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-all duration-200 ${
+          on ? "left-[calc(100%-2px)] -translate-x-full" : "left-0.5"
         }`}
       />
     </button>
