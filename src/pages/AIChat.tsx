@@ -220,7 +220,7 @@ export default function AIChat() {
       <header className="relative z-10 flex items-center justify-between px-4 pb-3 pt-4">
         <button
           onClick={() => setShowLauncher(true)}
-          className="flex h-11 w-11 items-center justify-center rounded-2xl border backdrop-blur-xl"
+          className="flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl"
           style={{
             background: "hsl(var(--card) / 0.55)",
             borderColor: "hsl(var(--border) / 0.55)",
