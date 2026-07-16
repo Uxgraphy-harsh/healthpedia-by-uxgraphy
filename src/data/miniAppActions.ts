@@ -75,7 +75,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   insurance: [
     A(ShieldCheck, "Policies", { active: true }),
     A(FileText, "Claims"),
-    A(Plus, "Add", { primary: true }),
     A(CreditCard, "Card"),
   ],
   notes: [
