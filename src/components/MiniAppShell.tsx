@@ -74,57 +74,8 @@ export default function MiniAppShell({
           </button>
         </div>
 
-        <div
-          className="flex items-center gap-1 rounded-full border p-1 backdrop-blur-xl"
-          style={{
-            background: "hsl(var(--card) / 0.55)",
-            borderColor: "hsl(var(--border) / 0.55)",
-            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
-          }}
-        >
-          <button
-            onClick={() => navigate("/chat")}
-            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
-            aria-label="Chat history"
-          >
-            <ClockCounterClockwise size={19} weight="regular" className="text-foreground/80" />
-          </button>
+        <div />
 
-
-          <button
-            onClick={() => setShowNotifications(true)}
-            className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
-            aria-label="Notifications"
-          >
-            <Bell size={19} weight="regular" className="text-foreground/80" />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#F66B9A]" />
-          </button>
-          {hasPin && (
-            <button
-              onClick={() => toggleAppLock(appId)}
-              className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
-              aria-label={isLocked ? "Remove PIN lock" : "Add PIN lock"}
-            >
-              {isLocked
-                ? <Lock className="h-4 w-4 text-[#F66B9A]" />
-                : <LockOpen className="h-4 w-4 text-foreground/70" />}
-            </button>
-          )}
-          <button
-            onClick={() => navigate("/settings/app-lock")}
-            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
-            aria-label="Settings"
-          >
-            <Gear size={19} weight="regular" className="text-foreground/80" />
-          </button>
-          <button
-            onClick={() => navigate("/profile")}
-            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
-            aria-label="Profile"
-          >
-            <UserCircle size={22} weight="fill" className="text-[#60A5FA]" />
-          </button>
-        </div>
       </header>
 
       <div className="px-5 pt-1 pb-3 flex items-center gap-3">
