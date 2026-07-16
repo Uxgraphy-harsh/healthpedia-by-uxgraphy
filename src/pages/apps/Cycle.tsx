@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
@@ -9,6 +11,13 @@ const cycleLength = 28;
 export default function Cycle() {
   const app = getMiniApp("cycle")!;
   const pct = (cycleDay / cycleLength) * 100;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem("cycle_onboarding")) {
+      navigate("/apps/cycle/onboarding", { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <AppLockGate appId="cycle">
