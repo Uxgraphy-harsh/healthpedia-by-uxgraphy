@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Plus, ChevronRight, ArrowLeft, FileText } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { Plus, ChevronRight, ArrowLeft, FileText, Upload, X } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 import { sampleSymptoms } from "@/data/sampleData";
@@ -74,6 +74,7 @@ export default function Symptoms() {
   const app = getMiniApp("symptoms")!;
   const [symptoms] = useState(sampleSymptoms);
   const [openSymptom, setOpenSymptom] = useState<Aggregated | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
 
   const aggregated = useMemo<Aggregated[]>(() => {
     const map = new Map<string, Aggregated>();
@@ -139,6 +140,7 @@ export default function Symptoms() {
 
       {/* Floating Log symptom button */}
       <button
+        onClick={() => setShowAdd(true)}
         className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
         style={{ background: "#171717" }}
       >
@@ -148,6 +150,13 @@ export default function Symptoms() {
 
       {openSymptom && (
         <SymptomDetail symptom={openSymptom} onClose={() => setOpenSymptom(null)} />
+      )}
+
+      {showAdd && (
+        <AddSymptomSheet
+          existingNames={aggregated.map((a) => a.name)}
+          onClose={() => setShowAdd(false)}
+        />
       )}
     </MiniAppShell>
   );
@@ -303,5 +312,317 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     <p className="text-[11px] tracking-[0.14em] text-muted-foreground font-medium mb-2">
       {children}
     </p>
+  );
+}
+
+// ─── Add Symptom Bottom Sheet ───────────────────────────────────────────────
+
+const ALONGSIDE_OPTS = ["Dizziness", "Headache", "Throat tightness", "Stress", "Nausea", "Fatigue"];
+
+function AddSymptomSheet({
+  existingNames,
+  onClose,
+}: {
+  existingNames: string[];
+  onClose: () => void;
+}) {
+  const [name, setName] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [meridiem, setMeridiem] = useState<"AM" | "PM">("AM");
+  const [status, setStatus] = useState<"Passed" | "Ongoing">("Passed");
+  const [severity, setSeverity] = useState<number>(0);
+  const [alongside, setAlongside] = useState<string[]>([]);
+  const [trigger, setTrigger] = useState<string | null>(null);
+  const [note, setNote] = useState("");
+  const [files, setFiles] = useState<{ name: string; size: string }[]>([]);
+  const [showSuggest, setShowSuggest] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const canSave = name.trim().length > 0;
+
+  const filteredSuggest = existingNames.filter(
+    (n) => name.trim() && n.toLowerCase().includes(name.trim().toLowerCase()) && n !== name
+  );
+
+  const toggle = <T,>(arr: T[], v: T, setter: (a: T[]) => void) =>
+    setter(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+
+  const sevColors = [
+    "border-[#60A5FA] bg-[#EEF4FF] text-[#2563EB]",
+    "border-[#34D399] bg-[#ECFDF5] text-[#059669]",
+    "border-[#FBBF24] bg-[#FEFCE8] text-[#B45309]",
+    "border-[#FB923C] bg-[#FFF7ED] text-[#C2410C]",
+    "border-[#F87171] bg-[#FEF2F2] text-[#DC2626]",
+  ];
+
+  const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFiles((prev) => [...prev, { name: f.name, size: `${(f.size / (1024 * 1024)).toFixed(1)} MB` }]);
+    e.target.value = "";
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+      <div
+        className="w-full bg-background rounded-t-[28px] max-h-[92vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Grabber */}
+        <div className="pt-2 pb-1 flex justify-center">
+          <div className="h-1 w-10 rounded-full bg-border" />
+        </div>
+
+        {/* Header */}
+        <div className="grid grid-cols-3 items-center px-5 py-3">
+          <button onClick={onClose} className="text-[15px] text-[#2563EB] font-medium text-left">
+            Cancel
+          </button>
+          <h2 className="text-[16px] font-semibold text-center">Add symptom</h2>
+          <span />
+        </div>
+
+        {/* Scroll body */}
+        <div className="overflow-y-auto px-5 pb-6 pt-2 flex-1">
+          {/* Symptom */}
+          <SectionLabel>SYMPTOM</SectionLabel>
+          <div className="rounded-2xl border border-border/60 px-4 py-3 mb-3 relative">
+            <p className="text-[11px] text-muted-foreground mb-0.5">
+              Symptom name<span className="text-[#EF4444]">*</span>
+            </p>
+            <input
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setShowSuggest(true);
+              }}
+              onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
+              onFocus={() => setShowSuggest(true)}
+              placeholder="Type to add or search existing symptom..."
+              className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/70"
+              maxLength={80}
+            />
+            {showSuggest && filteredSuggest.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1 z-10 bg-background border border-border/60 rounded-2xl shadow-lg overflow-hidden">
+                {filteredSuggest.slice(0, 5).map((s) => (
+                  <button
+                    key={s}
+                    onMouseDown={() => {
+                      setName(s);
+                      setShowSuggest(false);
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-[14px] hover:bg-muted"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Date + Time */}
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="rounded-2xl border border-border/60 px-4 py-3">
+              <p className="text-[11px] text-muted-foreground mb-0.5">Date</p>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full bg-transparent outline-none text-[15px]"
+              />
+            </div>
+            <div className="rounded-2xl border border-border/60 px-4 py-3 flex items-center gap-2">
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted-foreground mb-0.5">Time</p>
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="w-full bg-transparent outline-none text-[15px]"
+                />
+              </div>
+              <div className="flex text-[13px] font-semibold shrink-0">
+                <button
+                  onClick={() => setMeridiem("AM")}
+                  className={meridiem === "AM" ? "text-foreground" : "text-muted-foreground/60"}
+                >
+                  AM
+                </button>
+                <span className="mx-1 text-muted-foreground/40">|</span>
+                <button
+                  onClick={() => setMeridiem("PM")}
+                  className={meridiem === "PM" ? "text-foreground" : "text-muted-foreground/60"}
+                >
+                  PM
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="grid grid-cols-2 rounded-full bg-muted/40 p-1 mb-6">
+            {(["Passed", "Ongoing"] as const).map((s) => {
+              const active = status === s;
+              const activeClass =
+                s === "Passed"
+                  ? "bg-[#60A5FA]/15 text-[#2563EB]"
+                  : "bg-[#F59E0B]/15 text-[#C2410C]";
+              return (
+                <button
+                  key={s}
+                  onClick={() => setStatus(s)}
+                  className={`py-2.5 rounded-full text-[15px] font-medium transition-colors ${
+                    active ? activeClass : "text-muted-foreground"
+                  }`}
+                >
+                  {s}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Severity */}
+          <SectionLabel>SEVERITY</SectionLabel>
+          <div className="flex gap-2 mb-6">
+            {[1, 2, 3, 4, 5].map((n) => {
+              const active = n <= severity;
+              return (
+                <button
+                  key={n}
+                  onClick={() => setSeverity(n)}
+                  className={`h-12 flex-1 rounded-xl border text-[15px] font-medium transition-colors ${
+                    active
+                      ? sevColors[n - 1]
+                      : "border-border/60 text-foreground bg-background"
+                  }`}
+                >
+                  {n}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Alongside */}
+          <SectionLabel>ALONGSIDE</SectionLabel>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {ALONGSIDE_OPTS.map((o) => {
+              const active = alongside.includes(o);
+              return (
+                <button
+                  key={o}
+                  onClick={() => toggle(alongside, o, setAlongside)}
+                  className={`text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
+                    active
+                      ? "bg-[#2563EB] text-white border-[#2563EB]"
+                      : "bg-background text-foreground border-border/60"
+                  }`}
+                >
+                  {o}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Trigger */}
+          <SectionLabel>POSSIBLE TRIGGER</SectionLabel>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {TRIGGERS.map((t) => {
+              const active = trigger === t;
+              return (
+                <button
+                  key={t}
+                  onClick={() => setTrigger(active ? null : t)}
+                  className={`text-[13px] px-3 py-1.5 rounded-full border transition-colors ${
+                    active
+                      ? "bg-[#2563EB] text-white border-[#2563EB]"
+                      : "bg-background text-foreground border-border/60"
+                  }`}
+                >
+                  {t}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Additional information */}
+          <SectionLabel>ADDITIONAL INFORMATION</SectionLabel>
+          <div className="rounded-2xl border border-border/60 px-4 py-3 mb-6">
+            <p className="text-[11px] text-muted-foreground mb-1">Note</p>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Write or paste a link"
+              rows={3}
+              maxLength={1000}
+              className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/70 resize-none"
+            />
+          </div>
+
+          {/* Attachments */}
+          <SectionLabel>ATTACHMENTS</SectionLabel>
+          <button
+            onClick={() => fileInput.current?.click()}
+            className="w-full rounded-2xl border border-dashed border-border py-6 flex flex-col items-center gap-2 mb-3"
+          >
+            <Upload className="h-5 w-5 text-[#F66B9A]" strokeWidth={2} />
+            <p className="text-[15px] font-semibold">Tap to upload</p>
+            <p className="text-[12px] text-muted-foreground">Max upto 2 mb per file upload</p>
+            <div className="flex gap-2 mt-1">
+              {["PDF", "JPG", "PNG"].map((t) => (
+                <span
+                  key={t}
+                  className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </button>
+          <input
+            ref={fileInput}
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            className="hidden"
+            onChange={onPickFile}
+          />
+
+          {files.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {files.map((f, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 border border-border/60 rounded-xl px-3 py-2.5"
+                >
+                  <FileText className="h-5 w-5 text-[#3B82F6] shrink-0" />
+                  <p className="flex-1 min-w-0 text-[14px] font-medium truncate">{f.name}</p>
+                  <span className="text-[12px] text-muted-foreground shrink-0">{f.size}</span>
+                  <button
+                    onClick={() => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
+                    className="p-1"
+                  >
+                    <X className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sticky footer */}
+        <div className="px-5 pt-3 pb-6 border-t border-border/40 bg-background">
+          <button
+            disabled={!canSave}
+            onClick={onClose}
+            className={`w-full rounded-full py-4 text-[16px] font-semibold text-white transition-opacity ${
+              canSave ? "opacity-100" : "opacity-40"
+            }`}
+            style={{ background: "#0A0A0A" }}
+          >
+            Save Symptom
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
