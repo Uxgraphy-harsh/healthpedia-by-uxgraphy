@@ -371,7 +371,7 @@ export default function Cycle() {
             active: tab === "calendar",
             onClick: () => setTab("calendar"),
           },
-          { icon: Plus, label: "Log Now", primary: true, onClick: goLogNow },
+          
           { icon: BarChart3, label: "Insights", onClick: () => navigate("/apps/cycle/insights") },
         ]}
       >
