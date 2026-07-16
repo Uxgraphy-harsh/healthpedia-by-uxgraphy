@@ -89,18 +89,6 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Health Score */}
-        <div className="mb-3">
-          <h1 className="text-6xl font-bold font-serif leading-none">{healthScore.score}</h1>
-          <p className="text-sm opacity-80 mt-1">Health score</p>
-        </div>
-
-        {/* Change pill */}
-        <div className="inline-flex items-center gap-1.5 bg-health-good/20 text-health-good rounded-full px-3 py-1 mb-4">
-          <TrendingUp className="w-3.5 h-3.5" />
-          <span className="text-xs font-medium">{healthScore.change}</span>
-        </div>
-
         {/* Synced */}
         <div className="flex items-center gap-1.5 mb-5">
           <div className="w-1.5 h-1.5 rounded-full bg-health-good" />
