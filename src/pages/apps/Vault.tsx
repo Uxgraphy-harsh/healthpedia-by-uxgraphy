@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload, Search as SearchIcon, FolderOpen, Plus, X } from "lucide-react";
+import { Upload, Search as SearchIcon, FolderOpen, X } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
@@ -67,7 +67,6 @@ export default function Vault() {
         fg={app.fg}
         bottomActions={[
           { icon: FolderOpen, label: "Files", active: true },
-          { icon: Plus, label: "New", primary: true, onClick: () => setShowAdd(true) },
           { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
         ]}
       >
