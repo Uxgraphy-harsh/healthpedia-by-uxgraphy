@@ -121,17 +121,18 @@ function AddRecordSheet({
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-              {/* Healthpedia ID */}
+              {/* Name */}
               <div className="rounded-2xl border border-border/70 px-4 py-3">
                 <label className="text-[12px] text-muted-foreground">
-                  Healthpedia ID<span className="text-[#F66B9A]">*</span>
+                  Name<span className="text-[#F66B9A]">*</span>
                 </label>
                 <input
                   value={hpid}
                   onChange={(e) => setHpid(e.target.value)}
-                  placeholder="#000000000000"
+                  placeholder="Enter name"
                   className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
                 />
+
               </div>
 
               <div className="rounded-2xl border border-border/70 px-4 py-3">
