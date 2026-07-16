@@ -37,7 +37,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   symptoms: [
     A(Stethoscope, "Log", { active: true }),
     A(TrendingUp, "Trends"),
-    A(Plus, "Add", { primary: true }),
     A(Clock, "History"),
   ],
   cycle: [
