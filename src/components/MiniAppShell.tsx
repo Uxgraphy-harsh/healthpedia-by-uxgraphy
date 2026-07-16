@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Lock, LockOpen, type LucideIcon } from "lucide-react";
 import { useAppLock } from "@/contexts/AppLockContext";
+import MiniAppBottomBar, { type MiniAppAction } from "@/components/MiniAppBottomBar";
 
 interface Props {
   appId: string;
@@ -12,15 +13,18 @@ interface Props {
   fg: string;
   children: ReactNode;
   action?: ReactNode;
+  bottomActions?: MiniAppAction[];
 }
 
-export default function MiniAppShell({ appId, name, tagline, icon: Icon, bg, fg, children, action }: Props) {
+export default function MiniAppShell({
+  appId, name, tagline, icon: Icon, bg, fg, children, action, bottomActions,
+}: Props) {
   const navigate = useNavigate();
   const { hasPin, lockedApps, toggleAppLock } = useAppLock();
   const isLocked = lockedApps.includes(appId);
 
   return (
-    <div className="mobile-container pb-32 min-h-[100dvh]">
+    <div className={`mobile-container ${bottomActions ? "pb-28" : "pb-10"} min-h-[100dvh]`}>
       <div className="px-5 pt-6 pb-4 flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -50,6 +54,8 @@ export default function MiniAppShell({ appId, name, tagline, icon: Icon, bg, fg,
       </div>
 
       <div className="px-5">{children}</div>
+
+      {bottomActions && <MiniAppBottomBar actions={bottomActions} accent={fg} />}
     </div>
   );
 }
