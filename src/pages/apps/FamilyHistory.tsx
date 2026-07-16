@@ -146,6 +146,33 @@ function AddRecordSheet({
                 />
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-border/70 px-4 py-3">
+                  <label className="text-[12px] text-muted-foreground">Birthday</label>
+                  <input
+                    type="date"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                  />
+                </div>
+                <div className="rounded-2xl border border-border/70 px-4 py-3">
+                  <label className="text-[12px] text-muted-foreground">
+                    Gender<span className="text-[#F66B9A]">*</span>
+                  </label>
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full bg-transparent outline-none text-[15px] appearance-none"
+                  >
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
               {conds.map((c, i) => (
                 <div key={i} className="space-y-2">
                   <div className="flex items-center justify-between px-1">
