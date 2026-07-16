@@ -3,10 +3,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 import {
-  ShoppingBag, ShoppingCart, Search, SlidersHorizontal, Tag, ClipboardList,
-  ArrowLeft, Minus, Plus, ChevronDown, Truck, HelpCircle,
+  ShoppingBag, ShoppingCart, Search, SlidersHorizontal, ClipboardList,
+  ArrowLeft, Minus, Plus, ChevronDown, Truck, HelpCircle, LayoutGrid,
   CheckCircle2, Copy, ExternalLink, Circle,
 } from "lucide-react";
+
 
 const CORAL = "#EF4E3B";
 const DEEP = "#5B0A0A";
