@@ -281,28 +281,34 @@ function PrescriptionDetail({ rx, onClose }: { rx: Rx; onClose: () => void }) {
   );
 }
 
+interface MedPhoto {
+  name: string;
+  size: string;
+}
+
+type WhenKey = "breakfast" | "lunch" | "dinner" | "bedtime";
+type FoodInstr = "empty" | "before" | "after" | "with";
+
 interface DraftMed {
   id: string;
   name: string;
-  qty: string;
-  timing: "Before food" | "After food";
-  schedule: { morning: boolean; afternoon: boolean; evening: boolean; night: boolean };
+  pills: number;
+  note: string;
+  when: Record<WhenKey, boolean>;
+  food: FoodInstr | null;
+  photos: MedPhoto[];
 }
 
-function ScheduleToggle({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="h-10 w-10 rounded-lg flex items-center justify-center text-[13px] font-semibold transition-colors"
-      style={{
-        background: active ? "#DCEBFF" : "#F1F1F3",
-        color: active ? "#60A5FA" : "#9A9AA0",
-      }}
-    >
-      {label}
-    </button>
-  );
+function timingLabel(m: DraftMed): string {
+  switch (m.food) {
+    case "empty": return "Empty stomach";
+    case "before": return "Before food";
+    case "after": return "After food";
+    case "with": return "With food";
+    default: return "Anytime";
+  }
 }
+
 
 interface DetailsDraft {
   doctor: string;
