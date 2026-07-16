@@ -170,46 +170,37 @@ function Overview({ monthTotal, budget, setBudget, deltaPct, expenses }: {
         {new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" })}
       </p>
 
-      {/* Hero card */}
+      {/* Hero card with circular budget ring (Copilot-inspired) */}
       <div
         className="mt-4 overflow-hidden rounded-3xl p-5 text-white"
         style={{ background: `linear-gradient(135deg, ${DEEP}, ${TEAL})` }}
       >
-        <p className="text-xs uppercase tracking-widest opacity-80">Total spent</p>
-        <p className="mt-2 text-5xl font-bold tracking-tight">{currency(monthTotal)}</p>
-
-        <div className="mt-4 flex items-center gap-2 text-xs">
-          {deltaPct === 0 ? (
-            <span className="opacity-80">No change vs last month</span>
-          ) : deltaPct > 0 ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1">
-              <ArrowUpRight className="h-3 w-3" /> {deltaPct}% vs last month
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-1">
-              <ArrowDownRight className="h-3 w-3" /> {Math.abs(deltaPct)}% vs last month
-            </span>
-          )}
-        </div>
-
-        {/* progress */}
-        <div className="mt-5">
-          <div className="flex items-center justify-between text-xs opacity-90">
-            <span>{pct}% of budget</span>
-            <span>{currency(budget)}</span>
+        <div className="flex items-center gap-5">
+          <BudgetRing pct={pct} over={over} />
+          <div className="flex-1">
+            <p className="text-[11px] uppercase tracking-widest opacity-80">Total spent</p>
+            <p className="mt-1 text-3xl font-bold tracking-tight">{currency(monthTotal)}</p>
+            <p className="mt-1 text-xs opacity-80">of {currency(budget)}</p>
+            <div className="mt-2">
+              {deltaPct === 0 ? (
+                <span className="text-[11px] opacity-80">No change vs last month</span>
+              ) : deltaPct > 0 ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">
+                  <ArrowUpRight className="h-3 w-3" /> {deltaPct}% vs last month
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[11px]">
+                  <ArrowDownRight className="h-3 w-3" /> {Math.abs(deltaPct)}% vs last month
+                </span>
+              )}
+            </div>
           </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/20">
-            <div
-              className="h-full rounded-full"
-              style={{ width: `${pct}%`, background: over ? "#FCA5A5" : "#FFFFFF" }}
-            />
-          </div>
-          <p className="mt-2 text-xs opacity-90">
-            {over
-              ? `Over budget by ${currency(monthTotal - budget)}`
-              : `${currency(remaining)} left this month`}
-          </p>
         </div>
+        <p className="mt-4 text-xs opacity-90">
+          {over
+            ? `Over budget by ${currency(monthTotal - budget)}`
+            : `${currency(remaining)} left this month`}
+        </p>
       </div>
 
       {/* Budget row */}
@@ -288,6 +279,66 @@ function Overview({ monthTotal, budget, setBudget, deltaPct, expenses }: {
           </div>
         )}
       </div>
+
+      {/* Recent transactions (Dime-inspired) */}
+      {expenses.length > 0 && (
+        <div className="mt-6">
+          <p className="text-sm font-semibold text-neutral-900">Recent transactions</p>
+          <div className="mt-3 divide-y divide-neutral-100 rounded-2xl border border-neutral-200 bg-white">
+            {[...expenses]
+              .sort((a, b) => (a.date < b.date ? 1 : -1))
+              .slice(0, 5)
+              .map((e) => {
+                const cat = catById(e.categoryId);
+                const Icon = cat.icon;
+                return (
+                  <div key={e.id} className="flex items-center gap-3 p-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl"
+                      style={{ background: `${cat.color}22`, color: cat.color }}>
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate text-sm font-semibold text-neutral-900">{e.title}</p>
+                      <p className="text-xs text-neutral-500">
+                        {cat.label} · {new Date(e.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      </p>
+                    </div>
+                    <p className="text-sm font-bold text-neutral-900">{currency(e.amount)}</p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Budget ring ---------------- */
+
+function BudgetRing({ pct, over }: { pct: number; over: boolean }) {
+  const size = 88;
+  const stroke = 8;
+  const r = (size - stroke) / 2;
+  const C = 2 * Math.PI * r;
+  const dash = (Math.min(100, pct) / 100) * C;
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.22)" strokeWidth={stroke} fill="none" />
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          stroke={over ? "#FCA5A5" : "#FFFFFF"}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          fill="none"
+          strokeDasharray={`${dash} ${C - dash}`}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-lg font-bold leading-none">{pct}%</span>
+        <span className="text-[9px] uppercase tracking-widest opacity-80">used</span>
+      </div>
     </div>
   );
 }
@@ -297,9 +348,21 @@ function Overview({ monthTotal, budget, setBudget, deltaPct, expenses }: {
 function ExpensesList({ expenses, onRemove }: {
   expenses: Expense[]; onRemove: (id: string) => void;
 }) {
+  const [filter, setFilter] = useState<string>("all");
+
+  const activeCatIds = useMemo(() => {
+    const set = new Set(expenses.map((e) => e.categoryId));
+    return CATEGORIES.filter((c) => set.has(c.id));
+  }, [expenses]);
+
+  const filtered = useMemo(
+    () => (filter === "all" ? expenses : expenses.filter((e) => e.categoryId === filter)),
+    [expenses, filter]
+  );
+
   const grouped = useMemo(() => {
     const map = new Map<string, Expense[]>();
-    [...expenses]
+    [...filtered]
       .sort((a, b) => (a.date < b.date ? 1 : -1))
       .forEach((e) => {
         const list = map.get(e.date) ?? [];
@@ -307,7 +370,7 @@ function ExpensesList({ expenses, onRemove }: {
         map.set(e.date, list);
       });
     return [...map.entries()];
-  }, [expenses]);
+  }, [filtered]);
 
   if (expenses.length === 0) {
     return (
@@ -319,10 +382,38 @@ function ExpensesList({ expenses, onRemove }: {
     );
   }
 
+  const filterTotal = filtered.reduce((a, b) => a + b.amount, 0);
+
   return (
     <div className="pb-24">
       <h2 className="mt-2 text-2xl font-bold text-neutral-900">All expenses</h2>
+      <p className="mt-1 text-sm text-neutral-500">
+        {filtered.length} {filtered.length === 1 ? "entry" : "entries"} · {currency(filterTotal)}
+      </p>
+
+      {/* Category filter chips */}
+      <div className="mt-3 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex w-max gap-2">
+          <FilterChip
+            label="All"
+            active={filter === "all"}
+            color={TEAL}
+            onClick={() => setFilter("all")}
+          />
+          {activeCatIds.map((c) => (
+            <FilterChip
+              key={c.id}
+              label={c.label}
+              active={filter === c.id}
+              color={c.color}
+              onClick={() => setFilter(c.id)}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className="mt-4 space-y-5">
+
         {grouped.map(([date, list]) => (
           <div key={date}>
             <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">
@@ -450,6 +541,24 @@ function Analytics({ expenses }: { expenses: Expense[] }) {
         )}
       </div>
     </div>
+  );
+}
+
+function FilterChip({ label, active, color, onClick }: {
+  label: string; active: boolean; color: string; onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors"
+      style={{
+        borderColor: active ? color : "#E5E5E5",
+        background: active ? `${color}18` : "#FFFFFF",
+        color: active ? color : "#525252",
+      }}
+    >
+      {label}
+    </button>
   );
 }
 
