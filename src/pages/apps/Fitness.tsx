@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
-import { HeartStraight, Sneaker, Moon, Fire, ArrowUp } from "@phosphor-icons/react";
+import { HeartStraight, Sneaker, Moon, Fire } from "@phosphor-icons/react";
 
 type Vital = {
   key: string;
