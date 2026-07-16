@@ -70,7 +70,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   contacts: [
     A(User, "All", { active: true }),
     A(QrCode, "Share QR"),
-    A(Plus, "Add", { primary: true }),
     A(Phone, "SOS"),
   ],
   insurance: [
