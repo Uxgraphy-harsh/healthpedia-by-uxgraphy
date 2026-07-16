@@ -517,6 +517,8 @@ export default function Cycle() {
                 today={today}
                 periodDays={periodDaysForMonth(calYear, m)}
                 predictedPeriod={[]}
+                onToggle={(d) => togglePeriodDay(calYear, m, d)}
+
               />
             ))}
 
