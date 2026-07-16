@@ -6,7 +6,9 @@ export interface MiniAppAction {
   onClick?: () => void;
   primary?: boolean;
   active?: boolean;
+  badge?: number;
 }
+
 
 interface Props {
   actions: MiniAppAction[];
@@ -35,7 +37,7 @@ export default function MiniAppBottomBar({ actions, accent }: Props) {
                 key={i}
                 onClick={a.onClick}
                 aria-label={a.label}
-                className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors ${
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full transition-colors ${
                   isActive ? activeBg : ""
                 }`}
               >
@@ -45,7 +47,13 @@ export default function MiniAppBottomBar({ actions, accent }: Props) {
                   }`}
                   strokeWidth={isActive ? 2.2 : 1.75}
                 />
+                {a.badge && a.badge > 0 ? (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#EF4E3B] px-1 text-[10px] font-bold text-white">
+                    {a.badge > 99 ? "99+" : a.badge}
+                  </span>
+                ) : null}
               </button>
+
             );
           })}
         </div>
