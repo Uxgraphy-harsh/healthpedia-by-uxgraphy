@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { Plus, Minus, User, Building2, Calendar, Pill, Search as SearchIcon, X, ArrowLeft, ChevronRight, Sparkles, FileText, Sun, Moon, Upload } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import AppLockGate from "@/components/AppLockGate";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 interface Medicine {
   id: string;
