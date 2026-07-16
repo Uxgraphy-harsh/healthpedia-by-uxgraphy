@@ -223,7 +223,10 @@ export default function Vault() {
                         <div className="flex-1 h-px bg-border/60" />
                       </div>
                     )}
-                    <div className="rounded-2xl border border-border/40 bg-card p-4">
+                    <button
+                      onClick={() => setOpenReportId(r.id)}
+                      className="w-full text-left rounded-2xl border border-border/40 bg-card p-4"
+                    >
                       <div className="flex items-start gap-3">
                         <div
                           className="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white shrink-0"
