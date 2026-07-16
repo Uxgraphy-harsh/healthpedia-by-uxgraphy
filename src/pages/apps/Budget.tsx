@@ -622,14 +622,12 @@ function AddExpenseFullScreen({
               className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 text-neutral-700">
               <X className="h-4 w-4" />
             </button>
-            <div className="flex items-center rounded-full bg-neutral-100 p-1">
-              <TypeTab active={type === "expense"} onClick={() => setType("expense")}>Expense</TypeTab>
-              <TypeTab active={type === "income"}  onClick={() => setType("income")}>Income</TypeTab>
+            <div className="rounded-full bg-neutral-100 px-4 py-1.5 text-sm font-semibold text-neutral-900">
+              Add expense
             </div>
-            <button aria-label="Repeat" className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100 text-neutral-700">
-              <Repeat className="h-4 w-4" />
-            </button>
+            <div className="h-9 w-9" />
           </div>
+
 
           {/* Amount */}
           <div className="flex flex-1 flex-col items-center justify-center px-6">
