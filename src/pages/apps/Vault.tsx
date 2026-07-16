@@ -577,8 +577,7 @@ export default function Vault({ embedded }: EmbeddedProps = {}) {
             </div>
           </div>
         )}
-      </MiniAppShell>
-    </AppLockGate>
+    </AppFrame>
   );
 }
 
