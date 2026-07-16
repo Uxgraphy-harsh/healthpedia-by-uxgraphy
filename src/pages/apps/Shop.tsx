@@ -599,34 +599,57 @@ function OrdersView({ tab, setTab, current, history, onBrowse, onOpen }: {
         </div>
       ) : (
         <div className="mt-4 space-y-3">
-          {active.map((o) => (
-            <button key={o.id} onClick={() => onOpen(o.id)} className="flex w-full items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-4 text-left">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl text-2xl" style={{ background: "#FBEEE1" }}>{o.items[0]?.p.emoji}</div>
-              <div className="flex-1">
+          {active.map((o) => {
+            const itemCount = o.items.reduce((a, b) => a + b.qty, 0);
+            return (
+              <button
+                key={o.id}
+                onClick={() => onOpen(o.id)}
+                className="block w-full rounded-2xl border border-neutral-200 bg-white p-4 text-left"
+              >
                 {tab === "current" ? (
                   <>
-                    <p className="text-sm font-bold text-neutral-900">
-                      {o.status === "verifying" ? "Your order request is being verified." : "Your order is on the way & should arrive soon."}
-                    </p>
-                    <p className="mt-0.5 text-xs text-neutral-500">{o.items.reduce((a, b) => a + b.qty, 0)} item{o.items.length !== 1 ? "s" : ""}</p>
-                    <ProgressBar status={o.status} className="mt-2" />
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-2xl" style={{ background: "#FBEEE1" }}>
+                        {o.items[0]?.p.emoji}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold leading-snug text-neutral-900">
+                          {o.status === "verifying" ? "Your order request is being verified." : "Your order is on the way & should arrive soon."}
+                        </p>
+                        <p className="mt-1 text-xs text-neutral-500">
+                          {itemCount} item{itemCount !== 1 ? "s" : ""}
+                          {o.status === "shipped" && `, delivers between ${o.deliverFrom} - ${o.deliverTo}`}
+                        </p>
+                      </div>
+                      <ChevronDown className="mt-1 h-4 w-4 -rotate-90 text-neutral-400" />
+                    </div>
+                    <ProgressBar status={o.status} className="mt-3" />
                   </>
                 ) : (
-                  <>
-                    <p className="text-sm font-bold text-neutral-900">#{o.id}</p>
-                    <p className="mt-0.5 text-sm font-semibold" style={{ color: DEEP }}>₹{o.total}</p>
-                    <p className="mt-1 text-xs text-neutral-500">
-                      {o.items.reduce((a, b) => a + b.qty, 0)} items,{" "}
-                      <span style={{ color: o.status === "delivered" ? OK : ERR }} className="font-semibold">
-                        {o.status === "delivered" ? `delivered ${o.deliveredOn ?? ""}` : "rejected"}
-                      </span>
-                    </p>
-                  </>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-2xl" style={{ background: "#FBEEE1" }}>
+                      {o.items[0]?.p.emoji}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-neutral-900">#{o.id}</p>
+                      <p className="mt-0.5 text-sm font-semibold" style={{ color: DEEP }}>₹{o.total}</p>
+                      <p className="mt-1 text-xs text-neutral-500">
+                        {itemCount} items,{" "}
+                        <span style={{ color: o.status === "delivered" ? OK : ERR }} className="font-semibold">
+                          {o.status === "delivered" ? `delivered ${o.deliveredOn ?? ""}` : "rejected"}
+                        </span>
+                        {o.deliveredOn && ` ${o.deliveredOn}`}
+                      </p>
+                    </div>
+                    <ChevronDown className="h-4 w-4 -rotate-90 text-neutral-400" />
+                  </div>
                 )}
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
+
       )}
     </div>
   );
