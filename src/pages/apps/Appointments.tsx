@@ -75,6 +75,46 @@ export default function Appointments() {
           </div>
         ))}
       </div>
+
+      {/* Floating Book appointment button */}
+      {!showAdd && (
+        <button
+          onClick={() => setShowAdd(true)}
+          className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+          style={{ background: "#171717" }}
+        >
+          <Plus className="h-5 w-5" strokeWidth={2.5} />
+          <span className="font-semibold">Book appointment</span>
+        </button>
+      )}
+
+      {showAdd && (
+        <div
+          className="fixed inset-0 z-[90] bg-black/40 flex items-end"
+          onClick={() => setShowAdd(false)}
+        >
+          <div
+            className="w-full max-w-md mx-auto bg-background rounded-t-3xl flex flex-col max-h-[92dvh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-10 h-1 rounded-full bg-muted mx-auto my-3 shrink-0" />
+            <div className="flex items-center px-5 pb-4 shrink-0">
+              <button
+                onClick={() => setShowAdd(false)}
+                className="text-sm font-medium text-[#60A5FA] w-16 text-left"
+              >
+                Cancel
+              </button>
+              <h3 className="flex-1 text-center text-[17px] font-bold">Book appointment</h3>
+              <div className="w-16" />
+            </div>
+            <div className="px-5 pb-8 text-sm text-muted-foreground">
+              Choose a doctor, date and time to book.
+            </div>
+          </div>
+        </div>
+      )}
     </MiniAppShell>
   );
 }
+
