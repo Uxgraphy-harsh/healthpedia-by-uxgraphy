@@ -70,8 +70,7 @@ function mockLogsFor(name: string, count: number, status: "Passed" | "Ongoing"):
   return logs;
 }
 
-export default function Symptoms() {
-  const app = getMiniApp("symptoms")!;
+export default function Symptoms({ embedded }: EmbeddedProps = {}) {
   const [symptoms] = useState(sampleSymptoms);
   const [openSymptom, setOpenSymptom] = useState<Aggregated | null>(null);
   const [showAdd, setShowAdd] = useState(false);
