@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { Plus, Phone, QrCode, Share2, X, Users, AlertTriangle, MapPin, Ambulance, Shield, Building2, Flame, ChevronDown } from "lucide-react";
+import { Plus, Phone, QrCode, Share2, X, Users, AlertTriangle, MapPin, Ambulance, Shield, Building2, Flame, ChevronDown, UserPlus, BookUser, Check } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 
 // ---------- personal saved contacts ----------
-const contacts = [
+type SavedContact = { id: string; name: string; role: string; phone: string };
+
+const initialContacts: SavedContact[] = [
   { id: "c1", name: "Dr. Sharma", role: "Primary Doctor", phone: "+91 99887 65432" },
   { id: "c2", name: "Dr. Mehta", role: "Cardiologist", phone: "+91 91234 56789" },
   { id: "c3", name: "John Johnson", role: "Spouse · Emergency", phone: "+91 98765 43210" },
   { id: "c4", name: "Apollo Ambulance", role: "Emergency", phone: "102" },
 ];
+
 
 // ---------- location-based emergency numbers ----------
 type EmergencyNumber = {
@@ -99,14 +102,63 @@ function FakeQR({ label }: { label: string }) {
 export default function Contacts() {
   const app = getMiniApp("contacts")!;
   const [tab, setTab] = useState<"contacts" | "emergency">("contacts");
+  const [contacts, setContacts] = useState<SavedContact[]>(initialContacts);
   const [qrFor, setQrFor] = useState<null | "all" | string>(null);
   const [regionKey, setRegionKey] = useState<keyof typeof regions>("in");
   const [showRegion, setShowRegion] = useState(false);
   const region = regions[regionKey];
 
+  // add-contact flow state
+  const [addStep, setAddStep] = useState<null | "choose" | "manual">(null);
+  const [formName, setFormName] = useState("");
+  const [formRole, setFormRole] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [pickerError, setPickerError] = useState<string | null>(null);
+
+  const resetForm = () => { setFormName(""); setFormRole(""); setFormPhone(""); };
+  const closeAdd = () => { setAddStep(null); resetForm(); setPickerError(null); };
+
+  const saveManual = () => {
+    if (!formName.trim() || !formPhone.trim()) return;
+    setContacts((prev) => [
+      { id: `c${Date.now()}`, name: formName.trim(), role: formRole.trim() || "Contact", phone: formPhone.trim() },
+      ...prev,
+    ]);
+    closeAdd();
+  };
+
+  const pickFromDevice = async () => {
+    setPickerError(null);
+    // Web Contact Picker API (Chrome on Android over HTTPS)
+    const nav = navigator as unknown as {
+      contacts?: { select: (props: string[], opts?: { multiple?: boolean }) => Promise<Array<{ name?: string[]; tel?: string[] }>> };
+    };
+    if (!nav.contacts?.select) {
+      setPickerError(
+        "Your device or browser doesn't expose the contacts picker here. In the installed mobile app you'll see your real phonebook — add manually for now."
+      );
+      return;
+    }
+    try {
+      const picked = await nav.contacts.select(["name", "tel"], { multiple: true });
+      if (!picked?.length) return;
+      const mapped: SavedContact[] = picked.map((p, i) => ({
+        id: `c${Date.now()}${i}`,
+        name: p.name?.[0] || "Unnamed",
+        role: "From phone",
+        phone: p.tel?.[0] || "",
+      })).filter((c) => c.phone);
+      if (mapped.length) setContacts((prev) => [...mapped, ...prev]);
+      closeAdd();
+    } catch {
+      setPickerError("Contact picker was cancelled or denied.");
+    }
+  };
+
   const label = qrFor === "all"
     ? "All my contacts"
     : contacts.find((c) => c.id === qrFor)?.name || "";
+
 
   return (
     <MiniAppShell
@@ -159,6 +211,7 @@ export default function Contacts() {
 
           {/* Floating Add contact button */}
           <button
+            onClick={() => setAddStep("choose")}
             className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
             style={{ background: "#171717" }}
           >
@@ -280,6 +333,101 @@ export default function Contacts() {
             </div>
             <FakeQR label={label} />
             <p className="text-center text-[11px] text-muted-foreground mt-4">{label}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Add contact — choose source */}
+      {addStep === "choose" && (
+        <div className="fixed inset-0 z-[60] bg-black/50 flex items-end" onClick={closeAdd}>
+          <div className="w-full bg-background rounded-t-3xl p-5 pb-8" onClick={(e) => e.stopPropagation()}>
+            <div className="w-10 h-1 bg-muted rounded-full mx-auto mb-4" />
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-base font-semibold">Add a contact</p>
+              <button onClick={closeAdd} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <button
+              onClick={() => setAddStep("manual")}
+              className="w-full bg-card rounded-2xl p-4 border border-border/40 flex items-center gap-3 mb-2 active:scale-[0.99] transition-transform"
+            >
+              <div className="w-11 h-11 rounded-xl bg-[#14B8A6]/12 flex items-center justify-center">
+                <UserPlus className="w-5 h-5 text-[#14B8A6]" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-semibold">Enter manually</p>
+                <p className="text-[11px] text-muted-foreground">Type a name, role and phone number</p>
+              </div>
+            </button>
+
+            <button
+              onClick={pickFromDevice}
+              className="w-full bg-card rounded-2xl p-4 border border-border/40 flex items-center gap-3 active:scale-[0.99] transition-transform"
+            >
+              <div className="w-11 h-11 rounded-xl bg-[#3B82F6]/12 flex items-center justify-center">
+                <BookUser className="w-5 h-5 text-[#3B82F6]" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-semibold">Add from phone contacts</p>
+                <p className="text-[11px] text-muted-foreground">Pick from your device's contacts app</p>
+              </div>
+            </button>
+
+            {pickerError && (
+              <p className="text-[11px] text-[#EF4444] mt-3 leading-snug">{pickerError}</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Add contact — manual form */}
+      {addStep === "manual" && (
+        <div className="fixed inset-0 z-[60] bg-black/50 flex items-end" onClick={closeAdd}>
+          <div className="w-full bg-background rounded-t-3xl p-5 pb-8" onClick={(e) => e.stopPropagation()}>
+            <div className="w-10 h-1 bg-muted rounded-full mx-auto mb-4" />
+            <div className="flex items-center justify-between mb-5">
+              <button onClick={() => setAddStep("choose")} className="text-[13px] font-medium text-muted-foreground">Back</button>
+              <p className="text-base font-semibold">New contact</p>
+              <button onClick={closeAdd} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <label className="block text-[11px] font-semibold text-muted-foreground mb-1">Name</label>
+            <input
+              value={formName}
+              onChange={(e) => setFormName(e.target.value)}
+              placeholder="e.g. Dr. Priya Nair"
+              className="w-full bg-muted/50 rounded-xl px-4 py-3 text-sm mb-3 outline-none focus:ring-2 focus:ring-[#14B8A6]/40"
+            />
+
+            <label className="block text-[11px] font-semibold text-muted-foreground mb-1">Role <span className="font-normal opacity-60">(optional)</span></label>
+            <input
+              value={formRole}
+              onChange={(e) => setFormRole(e.target.value)}
+              placeholder="e.g. Dentist, Spouse, Emergency"
+              className="w-full bg-muted/50 rounded-xl px-4 py-3 text-sm mb-3 outline-none focus:ring-2 focus:ring-[#14B8A6]/40"
+            />
+
+            <label className="block text-[11px] font-semibold text-muted-foreground mb-1">Phone</label>
+            <input
+              value={formPhone}
+              onChange={(e) => setFormPhone(e.target.value)}
+              placeholder="+91 98765 43210"
+              inputMode="tel"
+              className="w-full bg-muted/50 rounded-xl px-4 py-3 text-sm mb-5 outline-none focus:ring-2 focus:ring-[#14B8A6]/40"
+            />
+
+            <button
+              onClick={saveManual}
+              disabled={!formName.trim() || !formPhone.trim()}
+              className="w-full rounded-full py-3.5 text-white text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-40"
+              style={{ background: "#171717" }}
+            >
+              <Check className="w-4 h-4" /> Save contact
+            </button>
           </div>
         </div>
       )}
