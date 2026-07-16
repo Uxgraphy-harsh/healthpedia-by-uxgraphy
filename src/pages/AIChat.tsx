@@ -280,7 +280,17 @@ export default function AIChat() {
           </div>
 
           <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-3">
+            <div className="mb-2 flex justify-center">
+              <button
+                onClick={() => setShowHistory(true)}
+                className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/60 px-3 py-1 text-[11px] font-medium text-muted-foreground backdrop-blur-xl"
+              >
+                <ClockCounterClockwise size={13} />
+                Chat history
+              </button>
+            </div>
             <div className="mb-2.5 grid grid-cols-2 gap-2.5">
+
               {quickChips.map((chip) => (
                 <button
                   key={chip.label}
@@ -441,7 +451,55 @@ export default function AIChat() {
       </AnimatePresence>
 
       <AppLauncher open={showLauncher} onClose={() => setShowLauncher(false)} />
+
+      <AnimatePresence>
+        {showNotifications && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-black/40"
+              onClick={() => setShowNotifications(false)}
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 320, damping: 32 }}
+              className="fixed inset-x-0 bottom-0 z-[70] mx-auto w-full max-w-md rounded-t-3xl bg-background p-5 pb-8 shadow-2xl"
+            >
+              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-muted" />
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-bold">Notifications</h2>
+                <button
+                  onClick={() => setShowNotifications(false)}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-muted"
+                >
+                  <XIcon size={16} />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { title: "Metformin due", body: "8:00 AM · Today", accent: "#F59E0B" },
+                  { title: "Dr. Sharma appointment", body: "Tomorrow at 11:30 AM", accent: "#8B5CF6" },
+                  { title: "HbA1c above range", body: "Report added yesterday", accent: "#EF4444" },
+                ].map((n) => (
+                  <div key={n.title} className="rounded-2xl border border-border/40 bg-card p-3.5 flex items-start gap-3">
+                    <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full" style={{ background: n.accent }} />
+                    <div>
+                      <p className="text-sm font-semibold">{n.title}</p>
+                      <p className="text-[11px] text-muted-foreground">{n.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
 
