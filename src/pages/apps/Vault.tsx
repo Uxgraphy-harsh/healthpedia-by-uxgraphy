@@ -65,8 +65,7 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "lab", label: "Lab name A-Z" },
 ];
 
-export default function Vault() {
-  const app = getMiniApp("vault")!;
+export default function Vault({ embedded }: EmbeddedProps = {}) {
   const [folders, setFolders] = useState(initialFolders);
   const [showAdd, setShowAdd] = useState(false);
   const [condition, setCondition] = useState("");
