@@ -281,6 +281,376 @@ function PrescriptionDetail({ rx, onClose }: { rx: Rx; onClose: () => void }) {
   );
 }
 
+interface DraftMed {
+  id: string;
+  name: string;
+  qty: string;
+  timing: "Before food" | "After food";
+  schedule: { morning: boolean; afternoon: boolean; evening: boolean; night: boolean };
+}
+
+function ScheduleToggle({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="h-10 w-10 rounded-lg flex items-center justify-center text-[13px] font-semibold transition-colors"
+      style={{
+        background: active ? "#DCEBFF" : "#F1F1F3",
+        color: active ? "#60A5FA" : "#9A9AA0",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function DetailsSubSheet({
+  initial,
+  onClose,
+  onSave,
+}: {
+  initial: { hospital: string; doctor: string; date: string; notes: string };
+  onClose: () => void;
+  onSave: (v: { hospital: string; doctor: string; date: string; notes: string }) => void;
+}) {
+  const [hospital, setHospital] = useState(initial.hospital);
+  const [doctor, setDoctor] = useState(initial.doctor);
+  const [date, setDate] = useState(initial.date);
+  const [notes, setNotes] = useState(initial.notes);
+  return (
+    <div className="fixed inset-0 z-[95] bg-black/40 flex items-end" onClick={onClose}>
+      <div
+        className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
+        <div className="flex items-center px-5 pb-4 shrink-0">
+          <button onClick={onClose} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
+            Back
+          </button>
+          <h3 className="flex-1 text-center text-[17px] font-bold text-black">Details</h3>
+          <button
+            onClick={() => { onSave({ hospital, doctor, date, notes }); onClose(); }}
+            className="text-[15px] font-semibold text-[#60A5FA] w-20 text-right"
+          >
+            Save
+          </button>
+        </div>
+        <div className="px-5 pb-8 space-y-3 overflow-y-auto">
+          {[
+            { label: "Hospital / Lab", value: hospital, set: setHospital, placeholder: "e.g. SRL Diagnostics" },
+            { label: "Doctor", value: doctor, set: setDoctor, placeholder: "e.g. Dr. Sharma" },
+            { label: "Date", value: date, set: setDate, placeholder: "e.g. 14 Jan 2026" },
+          ].map((f) => (
+            <div key={f.label} className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
+              <p className="text-[11px] font-medium text-muted-foreground mb-1">{f.label}</p>
+              <input
+                value={f.value}
+                onChange={(e) => f.set(e.target.value)}
+                placeholder={f.placeholder}
+                className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30"
+              />
+            </div>
+          ))}
+          <div className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
+            <p className="text-[11px] font-medium text-muted-foreground mb-1">Notes</p>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Any extra notes"
+              rows={3}
+              className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30 resize-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MedicinesSubSheet({
+  meds,
+  onClose,
+  onSave,
+}: {
+  meds: DraftMed[];
+  onClose: () => void;
+  onSave: (m: DraftMed[]) => void;
+}) {
+  const [list, setList] = useState<DraftMed[]>(meds);
+  const [editing, setEditing] = useState<DraftMed | null>(null);
+
+  const addNew = () => {
+    setEditing({
+      id: Math.random().toString(36).slice(2),
+      name: "",
+      qty: "1x",
+      timing: "After food",
+      schedule: { morning: false, afternoon: false, evening: false, night: false },
+    });
+  };
+
+  const commitEdit = (m: DraftMed) => {
+    setList((prev) => {
+      const i = prev.findIndex((x) => x.id === m.id);
+      if (i === -1) return [...prev, m];
+      const copy = [...prev];
+      copy[i] = m;
+      return copy;
+    });
+    setEditing(null);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[95] bg-black/40 flex items-end" onClick={onClose}>
+      <div
+        className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
+        <div className="flex items-center px-5 pb-4 shrink-0">
+          <button onClick={onClose} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
+            Back
+          </button>
+          <h3 className="flex-1 text-center text-[17px] font-bold text-black">Medicines</h3>
+          <button
+            onClick={() => { onSave(list); onClose(); }}
+            className="text-[15px] font-semibold text-[#60A5FA] w-20 text-right"
+          >
+            Save
+          </button>
+        </div>
+
+        <div className="px-5 pb-6 space-y-2 overflow-y-auto flex-1">
+          {list.length === 0 && (
+            <p className="text-center text-sm text-muted-foreground py-8">
+              No medicines yet.
+            </p>
+          )}
+          {list.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => setEditing(m)}
+              className="w-full text-left bg-[#F1F1F3] rounded-2xl px-4 py-3 flex items-center gap-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
+                <Pill className="w-5 h-5 text-[#7A2A4E]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-[14px] text-black truncate">{m.name || "Untitled"}</p>
+                <p className="text-[12px] text-muted-foreground">{m.qty} · {m.timing}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+          ))}
+
+          <button
+            onClick={addNew}
+            className="w-full mt-3 rounded-2xl border-2 border-dashed border-black/15 py-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-black"
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+            Add medicine
+          </button>
+        </div>
+
+        {editing && (
+          <div className="fixed inset-0 z-[100] bg-black/40 flex items-end" onClick={() => setEditing(null)}>
+            <div
+              className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
+              <div className="flex items-center px-5 pb-4 shrink-0">
+                <button onClick={() => setEditing(null)} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
+                  Cancel
+                </button>
+                <h3 className="flex-1 text-center text-[17px] font-bold text-black">Medicine</h3>
+                <button
+                  onClick={() => editing.name.trim() && commitEdit(editing)}
+                  className="text-[15px] font-semibold text-[#60A5FA] w-20 text-right disabled:opacity-40"
+                  disabled={!editing.name.trim()}
+                >
+                  Done
+                </button>
+              </div>
+              <div className="px-5 pb-8 space-y-3 overflow-y-auto">
+                <div className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
+                  <p className="text-[11px] font-medium text-muted-foreground mb-1">Medicine name</p>
+                  <input
+                    autoFocus
+                    value={editing.name}
+                    onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+                    placeholder="e.g. Metformin 500mg"
+                    className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30"
+                  />
+                </div>
+                <div className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
+                  <p className="text-[11px] font-medium text-muted-foreground mb-1">Quantity</p>
+                  <input
+                    value={editing.qty}
+                    onChange={(e) => setEditing({ ...editing, qty: e.target.value })}
+                    placeholder="1x"
+                    className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30"
+                  />
+                </div>
+                <div className="bg-[#F1F1F3] rounded-2xl p-1 flex">
+                  {(["Before food", "After food"] as const).map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setEditing({ ...editing, timing: t })}
+                      className="flex-1 py-2 rounded-xl text-[13px] font-semibold transition-colors"
+                      style={{
+                        background: editing.timing === t ? "#fff" : "transparent",
+                        color: editing.timing === t ? "#000" : "#7A7A80",
+                      }}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+                <div>
+                  <p className="text-[11px] font-medium text-muted-foreground mb-2 px-1">Schedule</p>
+                  <div className="flex gap-2">
+                    {([
+                      ["M", "morning"],
+                      ["L", "afternoon"],
+                      ["D", "evening"],
+                      ["N", "night"],
+                    ] as const).map(([lbl, key]) => (
+                      <ScheduleToggle
+                        key={key}
+                        label={lbl}
+                        active={editing.schedule[key]}
+                        onClick={() =>
+                          setEditing({
+                            ...editing,
+                            schedule: { ...editing.schedule, [key]: !editing.schedule[key] },
+                          })
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AddPrescriptionSheet({ onClose }: { onClose: () => void }) {
+  const [details, setDetails] = useState({ hospital: "", doctor: "", date: "", notes: "" });
+  const [meds, setMeds] = useState<DraftMed[]>([]);
+  const [openDetails, setOpenDetails] = useState(false);
+  const [openMeds, setOpenMeds] = useState(false);
+
+  const detailsFilled = details.hospital.trim() !== "" || details.doctor.trim() !== "" || details.date.trim() !== "";
+  const canSave = detailsFilled && meds.length > 0;
+
+  return (
+    <div className="fixed inset-0 z-[90] bg-black/40 flex items-end" onClick={onClose}>
+      <div
+        className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
+
+        {/* Header */}
+        <div className="flex items-center px-5 pb-4 shrink-0">
+          <button onClick={onClose} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
+            Back
+          </button>
+          <h3 className="flex-1 text-center text-[17px] font-bold text-black">Prescription details</h3>
+          <div className="w-20" />
+        </div>
+
+        <div className="px-5 pb-6 flex-1 overflow-y-auto">
+          {/* Validation notice */}
+          {!canSave && (
+            <p className="text-[15px] leading-snug text-[#E5484D] mb-5">
+              Prescription details and adding at least medicine 1 is required to add new prescription.
+            </p>
+          )}
+
+          {/* Rows */}
+          <div className="space-y-3">
+            <button
+              onClick={() => setOpenDetails(true)}
+              className="w-full flex items-center gap-3 bg-[#F1F1F3] rounded-2xl px-3 py-3 text-left"
+            >
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: "#E5484D" }}
+              >
+                <FileText className="w-6 h-6 text-white" strokeWidth={2.2} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[17px] font-bold text-black">
+                  Prescription Details<span className="text-[#E5484D] font-bold">*</span>
+                </p>
+                {detailsFilled && (
+                  <p className="text-[12px] text-muted-foreground truncate mt-0.5">
+                    {[details.hospital, details.doctor, details.date].filter(Boolean).join(" · ")}
+                  </p>
+                )}
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+            </button>
+
+            <button
+              onClick={() => setOpenMeds(true)}
+              className="w-full flex items-center gap-3 bg-[#F1F1F3] rounded-2xl px-3 py-3 text-left"
+            >
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)" }}
+              >
+                <Pill className="w-6 h-6 text-white" strokeWidth={2.2} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[17px] font-bold text-black">Medicines</p>
+              </div>
+              <span className="text-[15px] font-semibold text-black bg-white/70 border border-black/5 rounded-lg px-2.5 py-0.5">
+                {meds.length}
+              </span>
+              <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0" />
+            </button>
+          </div>
+        </div>
+
+        {/* Done button */}
+        <div className="px-5 pb-6 pt-2 shrink-0">
+          <button
+            disabled={!canSave}
+            onClick={onClose}
+            className="w-full h-14 rounded-full text-white text-[17px] font-semibold transition-colors"
+            style={{ background: canSave ? "#171717" : "#B8B8BE" }}
+          >
+            Done
+          </button>
+        </div>
+      </div>
+
+      {openDetails && (
+        <DetailsSubSheet
+          initial={details}
+          onClose={() => setOpenDetails(false)}
+          onSave={setDetails}
+        />
+      )}
+      {openMeds && (
+        <MedicinesSubSheet
+          meds={meds}
+          onClose={() => setOpenMeds(false)}
+          onSave={setMeds}
+        />
+      )}
+    </div>
+  );
+}
+
 export default function Prescriptions() {
   const app = getMiniApp("prescriptions")!;
   const [rx] = useState<Rx[]>(initialRx);
@@ -353,32 +723,9 @@ export default function Prescriptions() {
           </button>
         )}
 
-        {/* Add prescription bottom sheet (placeholder) */}
+        {/* Add prescription bottom sheet */}
         {showAdd && (
-          <div
-            className="fixed inset-0 z-[90] bg-black/40 flex items-end"
-            onClick={() => setShowAdd(false)}
-          >
-            <div
-              className="w-full max-w-md mx-auto bg-background rounded-t-3xl flex flex-col max-h-[92dvh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-10 h-1 rounded-full bg-muted mx-auto my-3 shrink-0" />
-              <div className="flex items-center px-5 pb-4 shrink-0">
-                <button
-                  onClick={() => setShowAdd(false)}
-                  className="text-sm font-medium text-[#60A5FA] w-16 text-left"
-                >
-                  Cancel
-                </button>
-                <h3 className="flex-1 text-center text-[17px] font-bold">Add prescription</h3>
-                <div className="w-16" />
-              </div>
-              <div className="px-5 pb-8 text-sm text-muted-foreground">
-                Upload photo, scan, or fill details manually.
-              </div>
-            </div>
-          </div>
+          <AddPrescriptionSheet onClose={() => setShowAdd(false)} />
         )}
 
         {/* Detail overlay */}
