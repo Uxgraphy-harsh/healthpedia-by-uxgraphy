@@ -460,3 +460,186 @@ export default function Vault() {
     </AppLockGate>
   );
 }
+
+// ---------- Report Detail ----------
+interface LabResult {
+  parameter: string;
+  sub: string;
+  result: string;
+  unit: string;
+  range: string;
+  flag?: boolean;
+}
+const DEMO_RESULTS: LabResult[] = [
+  { parameter: "TSH", sub: "Thyroid stimulating hormone", result: "6.2", unit: "mIU/L", range: "0.4 – 4.0", flag: true },
+  { parameter: "Free T3", sub: "Triiodothyronine", result: "3.1", unit: "pg/mL", range: "2.3 – 4.2" },
+  { parameter: "Free T4", sub: "Thyroxine", result: "0.9", unit: "ng/dL", range: "0.8 – 1.8" },
+  { parameter: "Anti-TPO", sub: "Thyroid peroxidase Ab", result: "42", unit: "IU/mL", range: "0 – 34", flag: true },
+];
+
+function ReportDetail({ report, onClose }: { report: VaultReport; onClose: () => void }) {
+  const displayDate = `${report.day} ${report.month.charAt(0) + report.month.slice(1).toLowerCase()}, ${report.year}`;
+  return (
+    <div className="fixed inset-0 z-[85] bg-background flex flex-col">
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4 flex items-start gap-3">
+        <button onClick={onClose} className="pt-1">
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-[20px] font-bold leading-tight">{report.lab}</h1>
+          <p className="text-[12px] text-muted-foreground mt-0.5 uppercase tracking-wider">{displayDate}</p>
+        </div>
+        <button className="w-9 h-9 rounded-full border border-border/60 flex items-center justify-center">
+          <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-5 pb-40 space-y-6">
+        {/* Doctor's impression */}
+        <div className="rounded-2xl bg-muted/40 p-4">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Doctor's Impression</p>
+          <p className="text-[14px] leading-relaxed">
+            "TSH elevated. Anti-TPO borderline positive. Patient on Eltroxin 50mcg — consider dose titration to 75mcg. Retest TSH and Anti-TPO after 6 weeks. Continue current diet and sleep schedule."
+          </p>
+          <p className="text-[12px] text-muted-foreground mt-3">– {report.doctor.replace(/^Ref\.\s*/, "")}, Endocrinologist</p>
+        </div>
+
+        {/* Report Details */}
+        <section>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Report Details</p>
+          <div className="rounded-2xl border border-border/40 bg-card divide-y divide-border/40">
+            {[
+              ["Hospital / Lab", report.lab],
+              ["Referring doctor", report.doctor.replace(/^Ref\.\s*/, "")],
+              ["Report date", `${report.day} ${report.month.charAt(0) + report.month.slice(1).toLowerCase()} ${report.year}`],
+              ["Sample collected", `${report.day} ${report.month.charAt(0) + report.month.slice(1).toLowerCase()}  ·  7:30 AM`],
+              ["Lab reference", "SRL/PUN/25/004821"],
+            ].map(([k, v]) => (
+              <div key={k} className="flex items-center justify-between px-4 py-3">
+                <span className="text-[13px] text-muted-foreground">{k}</span>
+                <span className="text-[13px] font-semibold text-right">{v}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Vitals */}
+        <section>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Vitals at time of test</p>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { label: "Weight", value: "58", unit: "kg" },
+              { label: "BMI", value: "20.3", unit: "" },
+              { label: "BP", value: "118/76", unit: "" },
+            ].map((v) => (
+              <div key={v.label} className="rounded-2xl border border-border/40 bg-card p-3">
+                <div className="w-6 h-6 rounded-md border border-border/60 flex items-center justify-center mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-foreground/60" />
+                </div>
+                <p className="text-[18px] font-bold leading-none">
+                  {v.value}
+                  {v.unit && <span className="text-[11px] font-medium text-muted-foreground ml-0.5">{v.unit}</span>}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-1">{v.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Results table */}
+        <section>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Results</p>
+          <div className="rounded-2xl border border-border/40 bg-card overflow-hidden">
+            <div className="grid grid-cols-[1.4fr_1fr_1fr] px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground border-b border-border/40">
+              <span>Parameter</span>
+              <span>Result</span>
+              <span>Normal Range</span>
+            </div>
+            {DEMO_RESULTS.map((r) => (
+              <div
+                key={r.parameter}
+                className="grid grid-cols-[1.4fr_1fr_1fr] px-4 py-3 border-b border-border/40 last:border-b-0"
+                style={r.flag ? { background: "#FFF9E5" } : undefined}
+              >
+                <div>
+                  <p className={`text-[13px] font-semibold ${r.flag ? "text-[#B45309]" : ""}`}>{r.parameter}</p>
+                  <p className="text-[11px] text-muted-foreground leading-tight">{r.sub}</p>
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold">{r.result}</p>
+                  <p className="text-[11px] text-muted-foreground">{r.unit}</p>
+                </div>
+                <p className="text-[12px] text-muted-foreground self-center">{r.range}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Prescribed Medicines */}
+        <section>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Prescribed Medicines</p>
+          <div className="flex gap-3 overflow-x-auto -mx-5 px-5 scrollbar-none">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="min-w-[170px] rounded-2xl border border-border/40 bg-card p-3">
+                <div className="relative rounded-xl bg-muted/40 aspect-[4/3] flex items-center justify-center">
+                  <span className="absolute top-2 right-2 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-background border border-border/60">1x</span>
+                  <span className="text-3xl">💊</span>
+                </div>
+                <div className="mt-2 flex items-start gap-2">
+                  <div className="w-8 h-8 rounded-md bg-muted/40 flex items-center justify-center text-lg">💊</div>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold leading-tight">Thyrox 50 Tablet</p>
+                    <p className="text-[11px] text-muted-foreground">~ Before food</p>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center gap-1.5">
+                  <span className="w-7 h-7 rounded-md flex items-center justify-center text-[13px]" style={{ background: "#60A5FA", color: "white" }}>☀︎</span>
+                  <span className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-semibold text-muted-foreground border border-border/60">L</span>
+                  <span className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-semibold text-muted-foreground border border-border/60">D</span>
+                  <span className="w-7 h-7 rounded-md flex items-center justify-center text-[13px] text-muted-foreground border border-border/60">☾</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Attachments */}
+        <section>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Attachments</p>
+          <div className="space-y-2">
+            {report.files.map((fi) => (
+              <div key={fi.name} className="flex items-center gap-3 rounded-2xl border border-border/40 bg-card p-3">
+                {fi.type === "pdf" ? (
+                  <div className="w-10 h-10 rounded-lg bg-[#F66B9A]/15 text-[#F66B9A] text-[10px] font-bold flex items-center justify-center">PDF</div>
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-[#60A5FA]/15 flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-[#60A5FA]" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold truncate">{fi.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{fi.type === "pdf" ? "24.4 MB" : "1.7 MB"}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground -rotate-45" />
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Sticky footer */}
+      <div className="absolute bottom-0 inset-x-0 px-5 pt-4 pb-6 bg-gradient-to-t from-background via-background to-background/0 flex gap-3">
+        <button
+          className="flex-1 h-12 rounded-full text-white font-semibold text-[15px] flex items-center justify-center gap-2"
+          style={{ background: "linear-gradient(135deg, #6B1E3A, #2A1A1F)" }}
+        >
+          <span className="text-base">✦</span> Ask AI
+        </button>
+        <button className="flex-1 h-12 rounded-full border border-border font-semibold text-[15px]">
+          Share
+        </button>
+      </div>
+    </div>
+  );
+}
