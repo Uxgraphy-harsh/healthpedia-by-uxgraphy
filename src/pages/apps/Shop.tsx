@@ -57,6 +57,9 @@ const daysFromNow = (n: number) => {
   return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 };
 
+const PRICE_MIN = 0;
+const PRICE_MAX = 3000;
+
 export default function Shop() {
   const app = getMiniApp("shop")!;
   const [view, setView] = useState<View>("shop");
@@ -69,6 +72,25 @@ export default function Shop() {
   const [ordersTab, setOrdersTab] = useState<"current" | "history">("current");
   const [trackSheet, setTrackSheet] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
+
+  // Filters
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [fCats, setFCats] = useState<string[]>([]);
+  const [fPrice, setFPrice] = useState<[number, number]>([PRICE_MIN, PRICE_MAX]);
+  const [fSort, setFSort] = useState<"low" | "high" | null>(null);
+  const activeFilterCount =
+    fCats.length +
+    (fPrice[0] !== PRICE_MIN || fPrice[1] !== PRICE_MAX ? 1 : 0) +
+    (fSort ? 1 : 0);
+
+  const visibleProducts = useMemo(() => {
+    let list = category === "All" ? PRODUCTS : PRODUCTS.filter((p) => p.category === category);
+    if (fCats.length) list = list.filter((p) => fCats.includes(p.category));
+    list = list.filter((p) => p.price >= fPrice[0] && p.price <= fPrice[1]);
+    if (fSort === "low") list = [...list].sort((a, b) => a.price - b.price);
+    if (fSort === "high") list = [...list].sort((a, b) => b.price - a.price);
+    return list;
+  }, [category, fCats, fPrice, fSort]);
 
   const cartItems = useMemo(
     () => Object.entries(cart).map(([id, qty]) => ({ p: PRODUCTS.find((x) => x.id === id)!, qty })).filter((x) => x.p),
