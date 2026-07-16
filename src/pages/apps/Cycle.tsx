@@ -370,16 +370,41 @@ export default function Cycle() {
       .map((iso) => new Date(iso))
       .filter((d) => d.getFullYear() === y && d.getMonth() === m)
       .map((d) => d.getDate());
-  const togglePeriodDay = (y: number, m: number, d: number) => {
-    const iso = new Date(y, m, d).toISOString().slice(0, 10);
-    setStoredPeriodDays((prev) => {
-      const next = prev.some((s) => s.slice(0, 10) === iso)
-        ? prev.filter((s) => s.slice(0, 10) !== iso)
-        : [...prev, iso];
-      localStorage.setItem("cycle_period_days", JSON.stringify(next));
-      return next;
-    });
+
+  // Predicted period days — projected cycles starting from onboarding lastPeriod
+  const lastPeriodStart = useMemo(() => {
+    const raw = onboarding?.lastPeriod as string | undefined;
+    if (!raw) return null;
+    const [dStr, mStr, yStr] = raw.split(" ");
+    const monthIdx = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].indexOf(mStr);
+    if (monthIdx < 0) return null;
+    return new Date(Number(yStr), monthIdx, Number(dStr));
+  }, [onboarding]);
+
+  const predictedForMonth = (y: number, m: number): number[] => {
+    if (!lastPeriodStart) return [];
+    const actualISO = new Set(storedPeriodDays.map((s) => s.slice(0, 10)));
+    const days = new Set<number>();
+    for (let k = 0; k < 36; k++) {
+      const start = new Date(lastPeriodStart);
+      start.setDate(lastPeriodStart.getDate() + k * cycleLen);
+      for (let j = 0; j < periodLen; j++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + j);
+        if (d.getFullYear() === y && d.getMonth() === m) {
+          const iso = d.toISOString().slice(0, 10);
+          if (!actualISO.has(iso)) days.add(d.getDate());
+        }
+      }
+    }
+    return [...days].sort((a, b) => a - b);
   };
+
+  const openLogForDate = (y: number, m: number, d: number) => {
+    const iso = new Date(y, m, d).toISOString().slice(0, 10);
+    navigate(`/apps/cycle/log?date=${iso}`);
+  };
+
 
 
   const today = new Date();
@@ -517,9 +542,8 @@ export default function Cycle() {
                 month={m}
                 today={today}
                 periodDays={periodDaysForMonth(calYear, m)}
-                predictedPeriod={[]}
-                onToggle={(d) => togglePeriodDay(calYear, m, d)}
-
+                predictedPeriod={predictedForMonth(calYear, m)}
+                onToggle={(d) => openLogForDate(calYear, m, d)}
               />
             ))}
 
