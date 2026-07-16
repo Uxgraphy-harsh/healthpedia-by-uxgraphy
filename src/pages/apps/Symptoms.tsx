@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef } from "react";
 import { Plus, ChevronRight, ArrowLeft, FileText, Upload, X, Sparkles, Share2 } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 import { sampleSymptoms } from "@/data/sampleData";
 
 type Aggregated = {
