@@ -26,6 +26,7 @@ import CycleOnboarding from "./pages/apps/CycleOnboarding";
 import CycleLogNow from "./pages/apps/CycleLogNow";
 import CycleLogPeriod from "./pages/apps/CycleLogPeriod";
 import CycleInsights from "./pages/apps/CycleInsights";
+import CyclePhaseInfo from "./pages/apps/CyclePhaseInfo";
 import Fitness from "./pages/apps/Fitness";
 import Allergies from "./pages/apps/Allergies";
 import FamilyHistory from "./pages/apps/FamilyHistory";
@@ -67,6 +68,7 @@ const App = () => (
               <Route path="/apps/cycle/log" element={<CycleLogNow />} />
               <Route path="/apps/cycle/log-period" element={<CycleLogPeriod />} />
               <Route path="/apps/cycle/insights" element={<CycleInsights />} />
+              <Route path="/apps/cycle/phase" element={<CyclePhaseInfo />} />
               <Route path="/apps/fitness" element={<Fitness />} />
               <Route path="/apps/allergies" element={<Allergies />} />
               <Route path="/apps/family" element={<FamilyHistory />} />
