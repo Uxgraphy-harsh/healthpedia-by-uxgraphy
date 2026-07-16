@@ -16,11 +16,6 @@ export default function Symptoms() {
       icon={app.icon}
       bg={app.bg}
       fg={app.fg}
-      action={
-        <button className="w-10 h-10 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shrink-0">
-          <Plus className="w-5 h-5" />
-        </button>
-      }
     >
       <div className="space-y-2">
         {symptoms.map((s) => (
@@ -42,6 +37,15 @@ export default function Symptoms() {
           </div>
         ))}
       </div>
+
+      {/* Floating Log symptom button */}
+      <button
+        className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+        style={{ background: "#171717" }}
+      >
+        <Plus className="h-5 w-5" strokeWidth={2.5} />
+        <span className="font-semibold">Log symptom</span>
+      </button>
     </MiniAppShell>
   );
 }
