@@ -211,6 +211,7 @@ export default function Contacts() {
 
           {/* Floating Add contact button */}
           <button
+            onClick={() => setAddStep("choose")}
             className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
             style={{ background: "#171717" }}
           >
