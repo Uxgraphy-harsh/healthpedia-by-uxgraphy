@@ -182,7 +182,7 @@ function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void 
                 {linkedApps.map((a) => (
                   <button
                     key={a.id}
-                    onClick={() => { setLinkedOpen(false); navigate(`/apps/${a.id}`); }}
+                    onClick={() => { setLinkedOpen(false); setActiveApp(a.id as ChildAppId); }}
                     className="flex flex-col items-center gap-2 rounded-2xl border border-border/60 bg-card p-3"
                   >
                     <div className={`w-11 h-11 rounded-2xl ${a.bg} flex items-center justify-center text-xl`}>{a.emoji}</div>
