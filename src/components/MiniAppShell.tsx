@@ -53,6 +53,13 @@ export default function MiniAppShell({
         >
           <button
             onClick={() => setShowLauncher(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Open app launcher"
+          >
+            <DotsNine size={20} weight="bold" className="text-foreground/80" />
+          </button>
+          <button
+            onClick={() => setShowLauncher(true)}
             className={`flex h-9 w-9 items-center justify-center rounded-full ${bg}`}
             aria-label="Switch mini app"
           >
