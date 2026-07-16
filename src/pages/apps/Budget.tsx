@@ -279,6 +279,66 @@ function Overview({ monthTotal, budget, setBudget, deltaPct, expenses }: {
           </div>
         )}
       </div>
+
+      {/* Recent transactions (Dime-inspired) */}
+      {expenses.length > 0 && (
+        <div className="mt-6">
+          <p className="text-sm font-semibold text-neutral-900">Recent transactions</p>
+          <div className="mt-3 divide-y divide-neutral-100 rounded-2xl border border-neutral-200 bg-white">
+            {[...expenses]
+              .sort((a, b) => (a.date < b.date ? 1 : -1))
+              .slice(0, 5)
+              .map((e) => {
+                const cat = catById(e.categoryId);
+                const Icon = cat.icon;
+                return (
+                  <div key={e.id} className="flex items-center gap-3 p-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl"
+                      style={{ background: `${cat.color}22`, color: cat.color }}>
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate text-sm font-semibold text-neutral-900">{e.title}</p>
+                      <p className="text-xs text-neutral-500">
+                        {cat.label} · {new Date(e.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      </p>
+                    </div>
+                    <p className="text-sm font-bold text-neutral-900">{currency(e.amount)}</p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Budget ring ---------------- */
+
+function BudgetRing({ pct, over }: { pct: number; over: boolean }) {
+  const size = 88;
+  const stroke = 8;
+  const r = (size - stroke) / 2;
+  const C = 2 * Math.PI * r;
+  const dash = (Math.min(100, pct) / 100) * C;
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.22)" strokeWidth={stroke} fill="none" />
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          stroke={over ? "#FCA5A5" : "#FFFFFF"}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          fill="none"
+          strokeDasharray={`${dash} ${C - dash}`}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-lg font-bold leading-none">{pct}%</span>
+        <span className="text-[9px] uppercase tracking-widest opacity-80">used</span>
+      </div>
     </div>
   );
 }
