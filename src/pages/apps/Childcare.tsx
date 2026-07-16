@@ -40,6 +40,7 @@ const linkedApps = [
   { id: "allergies", label: "Allergies", emoji: "🥜", bg: "bg-[#FCE7F3]" },
   { id: "insurance", label: "Insurance", emoji: "🛡️", bg: "bg-[#DBEAFE]" },
   { id: "notes", label: "Notes", emoji: "📝", bg: "bg-[#E9D5FF]" },
+  { id: "vault", label: "Vault", emoji: "🗂️", bg: "bg-[#E0E7FF]" },
 ];
 
 function ChildDetail({ kid, onBack }: { kid: typeof kids[0]; onBack: () => void }) {
