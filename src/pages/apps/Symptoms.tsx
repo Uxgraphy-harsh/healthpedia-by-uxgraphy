@@ -99,14 +99,8 @@ export default function Symptoms({ embedded }: EmbeddedProps = {}) {
   }, [symptoms]);
 
   return (
-    <MiniAppShell
-      appId="symptoms"
-      name={app.name}
-      tagline={app.tagline}
-      icon={app.icon}
-      bg={app.bg}
-      fg={app.fg}
-    >
+    <AppFrame appId="symptoms" embedded={embedded}>
+
       <div className="space-y-3">
         {aggregated.map((s) => (
           <button
