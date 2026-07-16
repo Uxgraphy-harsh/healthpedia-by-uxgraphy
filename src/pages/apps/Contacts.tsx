@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { Plus, Phone, QrCode, Share2, X, Users, AlertTriangle, MapPin, Ambulance, Shield, Building2, Flame, ChevronDown } from "lucide-react";
+import { Plus, Phone, QrCode, Share2, X, Users, AlertTriangle, MapPin, Ambulance, Shield, Building2, Flame, ChevronDown, UserPlus, BookUser, Check } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 
 // ---------- personal saved contacts ----------
-const contacts = [
+type SavedContact = { id: string; name: string; role: string; phone: string };
+
+const initialContacts: SavedContact[] = [
   { id: "c1", name: "Dr. Sharma", role: "Primary Doctor", phone: "+91 99887 65432" },
   { id: "c2", name: "Dr. Mehta", role: "Cardiologist", phone: "+91 91234 56789" },
   { id: "c3", name: "John Johnson", role: "Spouse · Emergency", phone: "+91 98765 43210" },
   { id: "c4", name: "Apollo Ambulance", role: "Emergency", phone: "102" },
 ];
+
 
 // ---------- location-based emergency numbers ----------
 type EmergencyNumber = {
