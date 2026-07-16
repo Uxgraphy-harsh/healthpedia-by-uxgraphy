@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ChevronLeft, ChevronRight, Check, X } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Check, X, Bell, Clock, Filter } from "lucide-react";
 import { WarningCircle, CheckCircle } from "@phosphor-icons/react";
+import MiniAppShell from "@/components/MiniAppShell";
+import { getMiniApp } from "@/data/miniApps";
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
@@ -380,41 +382,47 @@ export default function Reminders() {
     );
   };
 
+  const app = getMiniApp("reminders")!;
+  const bottomActions = [
+    { icon: Bell, label: "Today", active: !showHistory, onClick: () => setShowHistory(false) },
+    { icon: Clock, label: "History", active: showHistory, onClick: () => setShowHistory(true) },
+    { icon: Plus, label: "Add", primary: true, onClick: () => setShowAddSheet(true) },
+    { icon: Filter, label: "Filter" },
+  ];
+
   // ─── History View ─────────────────────────────────────────────────────────
   if (showHistory) {
     const filtered = filterReminders(history);
     return (
-      <div className="mobile-container pb-24 bg-[#FAFAFA]">
-        {/* Header */}
-        <div className="px-5 pt-6 pb-2">
-          <div className="flex items-center gap-3 mb-5">
-            <button onClick={() => setShowHistory(false)}>
-              <ChevronLeft className="w-5 h-5 text-foreground" />
+      <MiniAppShell
+        appId="reminders"
+        name="Reminders History"
+        tagline={app.tagline}
+        icon={app.icon}
+        bg={app.bg}
+        fg={app.fg}
+        bottomActions={bottomActions}
+      >
+        {/* Tabs */}
+        <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2 -mx-5 px-5">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="shrink-0 relative px-1 pb-2"
+            >
+              <span className={`text-[15px] font-medium whitespace-nowrap ${activeTab === tab ? "text-blue-500" : "text-muted-foreground"}`}>
+                {tab}
+              </span>
+              {activeTab === tab && (
+                <motion.div layoutId="historyTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-500 rounded-full" />
+              )}
             </button>
-            <h1 className="text-xl font-bold">Reminders History</h1>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2 -mx-5 px-5">
-            {filterTabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className="shrink-0 relative px-1 pb-2"
-              >
-                <span className={`text-[15px] font-medium whitespace-nowrap ${activeTab === tab ? "text-blue-500" : "text-muted-foreground"}`}>
-                  {tab}
-                </span>
-                {activeTab === tab && (
-                  <motion.div layoutId="historyTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-500 rounded-full" />
-                )}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
 
         {/* Date section */}
-        <div className="px-5 mt-4">
+        <div className="mt-4">
           <p className="text-xs font-semibold text-muted-foreground tracking-wider mb-3">{todayLabel}</p>
           <div className="space-y-3">
             {filtered.map((r) => (
@@ -429,48 +437,44 @@ export default function Reminders() {
             ))}
           </div>
         </div>
-      </div>
+      </MiniAppShell>
     );
   }
+
 
   // ─── Main List View ───────────────────────────────────────────────────────
   const filtered = filterReminders(reminders);
 
   return (
-    <div className="mobile-container pb-24 bg-[#FAFAFA]">
-      {/* Header */}
-      <div className="px-5 pt-6 pb-2">
-        <div className="flex items-center justify-between mb-5">
-          <h1 className="text-2xl font-bold">Reminders</h1>
+    <MiniAppShell
+      appId="reminders"
+      name={app.name}
+      tagline={app.tagline}
+      icon={app.icon}
+      bg={app.bg}
+      fg={app.fg}
+      bottomActions={bottomActions}
+    >
+      {/* Category tabs */}
+      <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2 -mx-5 px-5">
+        {filterTabs.map((tab) => (
           <button
-            onClick={() => setShowHistory(true)}
-            className="px-4 py-2 rounded-full border border-gray-200 text-sm font-medium"
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className="shrink-0 relative px-1 pb-2"
           >
-            History
+            <span className={`text-[15px] font-medium whitespace-nowrap ${activeTab === tab ? "text-blue-500" : "text-muted-foreground"}`}>
+              {tab}
+            </span>
+            {activeTab === tab && (
+              <motion.div layoutId="mainTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-500 rounded-full" />
+            )}
           </button>
-        </div>
-
-        {/* Category tabs */}
-        <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-2 -mx-5 px-5">
-          {filterTabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className="shrink-0 relative px-1 pb-2"
-            >
-              <span className={`text-[15px] font-medium whitespace-nowrap ${activeTab === tab ? "text-blue-500" : "text-muted-foreground"}`}>
-                {tab}
-              </span>
-              {activeTab === tab && (
-                <motion.div layoutId="mainTabIndicator" className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-500 rounded-full" />
-              )}
-            </button>
-          ))}
-        </div>
+        ))}
       </div>
 
       {/* Date section */}
-      <div className="px-5 mt-2">
+      <div className="mt-2">
         <p className="text-xs font-semibold text-muted-foreground tracking-wider mb-3">{todayLabel}</p>
         <div className="space-y-3">
           {filtered.map((r, i) => (
@@ -501,21 +505,13 @@ export default function Reminders() {
         </div>
       </div>
 
-      {/* FAB */}
-      <button
-        onClick={() => setShowAddSheet(true)}
-        className="fixed bottom-24 right-5 z-40 flex items-center gap-2 bg-red-100 text-red-500 pl-4 pr-5 py-3 rounded-full shadow-lg"
-      >
-        <Plus className="w-5 h-5" />
-        <span className="text-sm font-semibold">Add a reminder</span>
-      </button>
-
       {/* Add Sheet */}
       <AnimatePresence>
         {showAddSheet && (
           <AddReminderSheet onClose={() => setShowAddSheet(false)} onSave={handleAddReminder} />
         )}
       </AnimatePresence>
-    </div>
+    </MiniAppShell>
   );
 }
+

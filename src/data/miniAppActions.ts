@@ -12,6 +12,12 @@ const A = (icon: LucideIcon, label: string, opts: Partial<MiniAppAction> = {}): 
 });
 
 export const defaultBottomActions: Record<string, MiniAppAction[]> = {
+  reminders: [
+    A(Bell, "Today", { active: true }),
+    A(Clock, "History"),
+    A(Plus, "Add", { primary: true }),
+    A(Filter, "Filter"),
+  ],
   vault: [
     A(FolderOpen, "Files", { active: true }),
     A(Plus, "New", { primary: true }),
