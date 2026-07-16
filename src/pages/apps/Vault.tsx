@@ -1,24 +1,69 @@
-import { useState } from "react";
-import { Upload, Search as SearchIcon, FolderOpen, X } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Upload, Search as SearchIcon, FolderOpen, X, ArrowLeft, MoreHorizontal, SlidersHorizontal, FileText, Image as ImageIcon, ChevronRight, Check } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
 
+interface VaultFile {
+  name: string;
+  type: "pdf" | "img";
+}
+interface VaultReport {
+  id: string;
+  day: string;
+  month: string;
+  year: string;
+  dateISO: string; // for sorting
+  lab: string;
+  doctor: string;
+  summary: string;
+  files: VaultFile[];
+}
 interface VaultFolder {
   id: string;
   name: string;
   updated: string;
   files: number;
   emoji: string;
+  reports?: VaultReport[];
 }
 
+const sampleReports: VaultReport[] = [
+  {
+    id: "r1", day: "14", month: "JAN", year: "2025", dateISO: "2025-01-14",
+    lab: "SRL Diagnostics, Baner", doctor: "Ref. Dr. Meena Sharma",
+    summary: "TSH came back elevated at 6.2 mIU/L, above the normal range. Free T3 and T4 are within limits. Anti-TPO antibodies slightly raised. Doctor has recommended a retest in 6 weeks and a possible Eltroxin dosage review.",
+    files: [{ name: "Thyroid_Jan25.pdf", type: "pdf" }, { name: "Report_p1.jpg", type: "img" }, { name: "Report_p2.jpg", type: "img" }],
+  },
+  {
+    id: "r2", day: "22", month: "OCT", year: "2024", dateISO: "2024-10-22",
+    lab: "Metropolis Healthcare", doctor: "Ref. Dr. Anil Kapoor",
+    summary: "TSH within normal range at 3.1 mIU/L. Anti-TPO stable. Continue current dosage; retest in 3 months as routine follow-up.",
+    files: [{ name: "Thyroid_Oct24.pdf", type: "pdf" }, { name: "Scan_1.jpg", type: "img" }],
+  },
+  {
+    id: "r3", day: "05", month: "JUL", year: "2024", dateISO: "2024-07-05",
+    lab: "Thyrocare, Aundh", doctor: "Ref. Dr. Meena Sharma",
+    summary: "Initial workup. TSH elevated, T4 low-normal. Started on Eltroxin 25 mcg.",
+    files: [{ name: "Baseline.pdf", type: "pdf" }],
+  },
+];
+
 const initialFolders: VaultFolder[] = [
-  { id: "f1", name: "Thyroid", updated: "14 Jan 2025", files: 6, emoji: "🦋" },
+  { id: "f1", name: "Thyroid", updated: "14 Jan 2025", files: 6, emoji: "🦋", reports: sampleReports },
   { id: "f2", name: "Diabetes", updated: "14 Jan 2025", files: 4, emoji: "🩸" },
   { id: "f3", name: "Cardiovascular", updated: "2 Nov 2024", files: 3, emoji: "❤️" },
   { id: "f4", name: "General", updated: "2 Nov 2024", files: 8, emoji: "🗂️" },
   { id: "p1", name: "Metformin", updated: "5 Mar 2025", files: 2, emoji: "💊" },
   { id: "p2", name: "Thyronorm", updated: "12 Jan 2025", files: 4, emoji: "🧴" },
+];
+
+type SortKey = "newest" | "oldest" | "most" | "lab";
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "newest", label: "Newest date first" },
+  { key: "oldest", label: "Oldest data first" },
+  { key: "most", label: "Most files" },
+  { key: "lab", label: "Lab name A-Z" },
 ];
 
 export default function Vault() {
@@ -29,6 +74,27 @@ export default function Vault() {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>([]);
+  const [openFolderId, setOpenFolderId] = useState<string | null>(null);
+  const [folderQuery, setFolderQuery] = useState("");
+  const [showSort, setShowSort] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("newest");
+
+  const openFolder = openFolderId ? folders.find((f) => f.id === openFolderId) : null;
+
+  const sortedReports = useMemo(() => {
+    const reports = openFolder?.reports ?? [];
+    const copy = [...reports];
+    switch (sortKey) {
+      case "newest": copy.sort((a, b) => b.dateISO.localeCompare(a.dateISO)); break;
+      case "oldest": copy.sort((a, b) => a.dateISO.localeCompare(b.dateISO)); break;
+      case "most": copy.sort((a, b) => b.files.length - a.files.length); break;
+      case "lab": copy.sort((a, b) => a.lab.localeCompare(b.lab)); break;
+    }
+    const q = folderQuery.trim().toLowerCase();
+    return q
+      ? copy.filter((r) => r.lab.toLowerCase().includes(q) || r.summary.toLowerCase().includes(q) || r.files.some((fi) => fi.name.toLowerCase().includes(q)))
+      : copy;
+  }, [openFolder, sortKey, folderQuery]);
 
   const createFolder = () => {
     if (!newName.trim()) return;
