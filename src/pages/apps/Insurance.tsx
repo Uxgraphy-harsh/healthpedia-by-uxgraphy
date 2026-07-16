@@ -1,7 +1,6 @@
 import { Plus, ShieldCheck } from "lucide-react";
-import MiniAppShell from "@/components/MiniAppShell";
-import AppLockGate from "@/components/AppLockGate";
-import { getMiniApp } from "@/data/miniApps";
+import { AppFrame, type EmbeddedProps } from "./_embedded";
+
 
 const policies = [
   {
