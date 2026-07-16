@@ -478,9 +478,11 @@ function MedicinesSubSheet({
     setEditing({
       id: Math.random().toString(36).slice(2),
       name: "",
-      qty: "1x",
-      timing: "After food",
-      schedule: { morning: false, afternoon: false, evening: false, night: false },
+      pills: 1,
+      note: "",
+      when: { breakfast: false, lunch: false, dinner: false, bedtime: false },
+      food: null,
+      photos: [],
     });
   };
 
@@ -495,10 +497,138 @@ function MedicinesSubSheet({
     setEditing(null);
   };
 
+  const close = () => { onSave(list); onClose(); };
+
   return (
-    <div className="fixed inset-0 z-[95] bg-black/40 flex items-end" onClick={onClose}>
+    <div className="fixed inset-0 z-[95] bg-black/40 flex items-end" onClick={close}>
       <div
         className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
+        <div className="flex items-center px-5 pb-4 shrink-0">
+          <button onClick={close} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
+            Back
+          </button>
+          <h3 className="flex-1 text-center text-[17px] font-bold text-black">Medicines</h3>
+          <div className="w-20" />
+        </div>
+
+        <div className="px-5 pb-6 overflow-y-auto flex-1">
+          <p className="text-[12px] font-semibold tracking-wide text-muted-foreground mb-3">MEDICINES</p>
+
+          {list.length > 0 && (
+            <div className="grid grid-cols-2 gap-3">
+              {list.map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setEditing(m)}
+                  className="text-left bg-white rounded-2xl border border-black/10 p-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+                >
+                  <div className="relative rounded-xl bg-[#F5F5F7] aspect-square flex items-center justify-center overflow-hidden">
+                    <Pill className="w-10 h-10 text-[#7A2A4E]" />
+                    <span className="absolute top-2 right-2 text-[11px] font-semibold text-black bg-white/95 border border-black/10 rounded-full px-2 py-0.5">
+                      {m.pills}x
+                    </span>
+                  </div>
+                  <div className="flex gap-1.5 mt-2">
+                    <div className="w-8 h-8 rounded-md border border-black/60 bg-[#F5F5F7] flex items-center justify-center">
+                      <Pill className="w-3.5 h-3.5 text-[#7A2A4E]" />
+                    </div>
+                    <div className="w-8 h-8 rounded-md border border-black/10 bg-[#F5F5F7] flex items-center justify-center">
+                      <Pill className="w-3.5 h-3.5 text-[#7A2A4E]" />
+                    </div>
+                  </div>
+                  <p className="mt-2 font-bold text-[15px] text-black truncate">{m.name || "Untitled"}</p>
+                  <p className="text-[12px] text-muted-foreground">~ {timingLabel(m)}</p>
+                  <div className="flex items-center gap-3 mt-2">
+                    <MiniWhenIcon active={m.when.breakfast} icon="sun" letter="B" />
+                    <MiniWhenIcon active={m.when.lunch} letter="L" />
+                    <MiniWhenIcon active={m.when.dinner} letter="D" />
+                    <MiniWhenIcon active={m.when.bedtime} icon="moon" letter="N" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          <button
+            onClick={addNew}
+            className="w-full mt-5 rounded-full border border-[#F66B9A] py-3.5 flex items-center justify-center gap-2 text-[15px] font-semibold text-[#F66B9A]"
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+            Add More
+          </button>
+        </div>
+
+        {editing && (
+          <MedicineForm
+            initial={editing}
+            onClose={() => setEditing(null)}
+            onDone={commitEdit}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MiniWhenIcon({ active, icon, letter }: { active: boolean; icon?: "sun" | "moon"; letter: string }) {
+  const cls = "w-7 h-7 rounded-md flex items-center justify-center text-[13px] font-semibold";
+  if (active) {
+    return (
+      <div className={cls} style={{ background: "#60A5FA", color: "#fff" }}>
+        {icon === "sun" ? <Sun className="w-3.5 h-3.5" /> : icon === "moon" ? <Moon className="w-3.5 h-3.5" /> : letter}
+      </div>
+    );
+  }
+  return (
+    <div className={cls} style={{ color: "#B8B8BE" }}>
+      {icon === "sun" ? <Sun className="w-4 h-4" /> : icon === "moon" ? <Moon className="w-4 h-4" /> : letter}
+    </div>
+  );
+}
+
+function MedicineForm({
+  initial,
+  onClose,
+  onDone,
+}: {
+  initial: DraftMed;
+  onClose: () => void;
+  onDone: (m: DraftMed) => void;
+}) {
+  const [m, setM] = useState<DraftMed>(initial);
+  const canAdd = m.name.trim().length > 0;
+
+  const whenOptions: { key: WhenKey; label: string; icon: "sun" | "moon" | null; letter: string }[] = [
+    { key: "breakfast", label: "Breakfast", icon: "sun", letter: "B" },
+    { key: "lunch", label: "Lunch", icon: null, letter: "L" },
+    { key: "dinner", label: "Dinner", icon: null, letter: "D" },
+    { key: "bedtime", label: "Before Bed", icon: "moon", letter: "N" },
+  ];
+
+  const foodOptions: { key: FoodInstr; label: string }[] = [
+    { key: "empty", label: "Empty stomach" },
+    { key: "before", label: "Before meal" },
+    { key: "after", label: "After meal" },
+    { key: "with", label: "With meal" },
+  ];
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    const mapped: MedPhoto[] = files.map((f) => ({
+      name: f.name,
+      size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+    }));
+    setM({ ...m, photos: [...m.photos, ...mapped] });
+    e.target.value = "";
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/40 flex items-end" onClick={onClose}>
+      <div
+        className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[94dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
@@ -507,132 +637,164 @@ function MedicinesSubSheet({
             Back
           </button>
           <h3 className="flex-1 text-center text-[17px] font-bold text-black">Medicines</h3>
-          <button
-            onClick={() => { onSave(list); onClose(); }}
-            className="text-[15px] font-semibold text-[#60A5FA] w-20 text-right"
-          >
-            Save
-          </button>
+          <div className="w-20" />
         </div>
 
-        <div className="px-5 pb-6 space-y-2 overflow-y-auto flex-1">
-          {list.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground py-8">
-              No medicines yet.
+        <div className="px-5 pb-4 space-y-3 overflow-y-auto flex-1">
+          {/* Name */}
+          <div className="rounded-2xl border border-black/10 px-4 py-3">
+            <p className="text-[12px] text-muted-foreground">
+              Medicine name<span className="text-[#E5484D]">*</span>
             </p>
-          )}
-          {list.map((m) => (
-            <button
-              key={m.id}
-              onClick={() => setEditing(m)}
-              className="w-full text-left bg-[#F1F1F3] rounded-2xl px-4 py-3 flex items-center gap-3"
-            >
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
-                <Pill className="w-5 h-5 text-[#7A2A4E]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-[14px] text-black truncate">{m.name || "Untitled"}</p>
-                <p className="text-[12px] text-muted-foreground">{m.qty} · {m.timing}</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
-            </button>
-          ))}
+            <input
+              autoFocus
+              value={m.name}
+              onChange={(e) => setM({ ...m, name: e.target.value })}
+              placeholder="e.g. Thyrox 50, metformin 500mg, etc..."
+              className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30 mt-1"
+            />
+          </div>
 
-          <button
-            onClick={addNew}
-            className="w-full mt-3 rounded-2xl border-2 border-dashed border-black/15 py-4 flex items-center justify-center gap-2 text-[14px] font-semibold text-black"
-          >
-            <Plus className="w-4 h-4" strokeWidth={2.5} />
-            Add medicine
-          </button>
-        </div>
-
-        {editing && (
-          <div className="fixed inset-0 z-[100] bg-black/40 flex items-end" onClick={() => setEditing(null)}>
-            <div
-              className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
-              <div className="flex items-center px-5 pb-4 shrink-0">
-                <button onClick={() => setEditing(null)} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
-                  Cancel
-                </button>
-                <h3 className="flex-1 text-center text-[17px] font-bold text-black">Medicine</h3>
-                <button
-                  onClick={() => editing.name.trim() && commitEdit(editing)}
-                  className="text-[15px] font-semibold text-[#60A5FA] w-20 text-right disabled:opacity-40"
-                  disabled={!editing.name.trim()}
-                >
-                  Done
-                </button>
-              </div>
-              <div className="px-5 pb-8 space-y-3 overflow-y-auto">
-                <div className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
-                  <p className="text-[11px] font-medium text-muted-foreground mb-1">Medicine name</p>
-                  <input
-                    autoFocus
-                    value={editing.name}
-                    onChange={(e) => setEditing({ ...editing, name: e.target.value })}
-                    placeholder="e.g. Metformin 500mg"
-                    className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30"
-                  />
-                </div>
-                <div className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
-                  <p className="text-[11px] font-medium text-muted-foreground mb-1">Quantity</p>
-                  <input
-                    value={editing.qty}
-                    onChange={(e) => setEditing({ ...editing, qty: e.target.value })}
-                    placeholder="1x"
-                    className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30"
-                  />
-                </div>
-                <div className="bg-[#F1F1F3] rounded-2xl p-1 flex">
-                  {(["Before food", "After food"] as const).map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setEditing({ ...editing, timing: t })}
-                      className="flex-1 py-2 rounded-xl text-[13px] font-semibold transition-colors"
-                      style={{
-                        background: editing.timing === t ? "#fff" : "transparent",
-                        color: editing.timing === t ? "#000" : "#7A7A80",
-                      }}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-                <div>
-                  <p className="text-[11px] font-medium text-muted-foreground mb-2 px-1">Schedule</p>
-                  <div className="flex gap-2">
-                    {([
-                      ["M", "morning"],
-                      ["L", "afternoon"],
-                      ["D", "evening"],
-                      ["N", "night"],
-                    ] as const).map(([lbl, key]) => (
-                      <ScheduleToggle
-                        key={key}
-                        label={lbl}
-                        active={editing.schedule[key]}
-                        onClick={() =>
-                          setEditing({
-                            ...editing,
-                            schedule: { ...editing.schedule, [key]: !editing.schedule[key] },
-                          })
-                        }
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+          {/* Pills stepper */}
+          <div className="rounded-2xl border border-black/10 px-4 py-3 flex items-center">
+            <div className="flex-1">
+              <p className="text-[12px] text-muted-foreground">Number of Pills / Unit</p>
+              <p className="text-[17px] text-black mt-0.5">{m.pills}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setM({ ...m, pills: Math.max(1, m.pills - 1) })}
+                className="w-9 h-9 rounded-lg border border-black/15 flex items-center justify-center text-black"
+                aria-label="Decrease"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setM({ ...m, pills: m.pills + 1 })}
+                className="w-9 h-9 rounded-lg border border-black/15 flex items-center justify-center text-black"
+                aria-label="Increase"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        )}
+
+          {/* Note */}
+          <div className="rounded-2xl border border-black/10 px-4 py-3">
+            <p className="text-[12px] text-muted-foreground">Note</p>
+            <textarea
+              value={m.note}
+              onChange={(e) => setM({ ...m, note: e.target.value })}
+              placeholder="e.g. Take with warm water, etc..."
+              rows={2}
+              className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30 mt-1 resize-none"
+            />
+          </div>
+
+          {/* When to take */}
+          <div className="pt-2">
+            <p className="text-[12px] font-semibold tracking-wide text-muted-foreground mb-2">WHEN TO TAKE</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              {whenOptions.map((opt) => {
+                const active = m.when[opt.key];
+                return (
+                  <button
+                    key={opt.key}
+                    onClick={() => setM({ ...m, when: { ...m.when, [opt.key]: !active } })}
+                    className="h-12 rounded-xl flex items-center justify-center gap-2 text-[15px] font-semibold transition-colors"
+                    style={{
+                      background: active ? "#60A5FA" : "#fff",
+                      color: active ? "#fff" : "#171717",
+                      border: active ? "1px solid #60A5FA" : "1px solid rgba(0,0,0,0.1)",
+                    }}
+                  >
+                    {opt.icon === "sun" ? <Sun className="w-4 h-4" /> : opt.icon === "moon" ? <Moon className="w-4 h-4" /> : <span className="w-4 text-center">{opt.letter}</span>}
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Food instruction */}
+          <div className="pt-2">
+            <p className="text-[12px] font-semibold tracking-wide text-muted-foreground mb-2">FOOD INSTRUCTION</p>
+            <div className="flex flex-wrap gap-2">
+              {foodOptions.map((opt) => {
+                const active = m.food === opt.key;
+                return (
+                  <button
+                    key={opt.key}
+                    onClick={() => setM({ ...m, food: active ? null : opt.key })}
+                    className="px-3.5 h-9 rounded-full text-[13px] font-semibold transition-colors"
+                    style={{
+                      background: active ? "#60A5FA" : "#fff",
+                      color: active ? "#fff" : "#171717",
+                      border: active ? "1px solid #60A5FA" : "1px solid rgba(0,0,0,0.12)",
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Medicine photos */}
+          <div className="pt-2">
+            <p className="text-[12px] font-semibold tracking-wide text-muted-foreground mb-2">MEDICINE PHOTOS</p>
+            <label className="block cursor-pointer rounded-2xl border-2 border-dashed border-black/15 py-6 px-4 text-center">
+              <input type="file" accept="image/*,application/pdf" multiple className="hidden" onChange={handleUpload} />
+              <Upload className="w-5 h-5 mx-auto text-[#F66B9A]" />
+              <p className="mt-2 text-[15px] font-bold text-black">Tap to upload</p>
+              <p className="text-[12px] text-muted-foreground mt-0.5">Max upto 2 mb per file upload</p>
+              <div className="flex justify-center gap-2 mt-3">
+                {["PDF", "JPG", "PNG"].map((t) => (
+                  <span key={t} className="text-[11px] font-semibold text-[#7A7A80] bg-[#EDEDF0] rounded-md px-2 py-0.5">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </label>
+            {m.photos.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {m.photos.map((p, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-xl border border-black/10 px-3 py-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-[#DCEBFF] flex items-center justify-center">
+                      <FileText className="w-4 h-4 text-[#60A5FA]" />
+                    </div>
+                    <p className="flex-1 text-[14px] text-black truncate">{p.name}</p>
+                    <span className="text-[12px] text-muted-foreground">{p.size}</span>
+                    <button
+                      onClick={() => setM({ ...m, photos: m.photos.filter((_, j) => j !== i) })}
+                      className="text-muted-foreground"
+                      aria-label="Remove file"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Add footer */}
+        <div className="px-5 pt-2 pb-6 shrink-0">
+          <button
+            disabled={!canAdd}
+            onClick={() => canAdd && onDone(m)}
+            className="w-full h-14 rounded-full text-white text-[17px] font-semibold transition-colors"
+            style={{ background: canAdd ? "#171717" : "#B8B8BE" }}
+          >
+            Add
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
 
 function AddPrescriptionSheet({ onClose }: { onClose: () => void }) {
   const [details, setDetails] = useState<DetailsDraft>({ doctor: "", hospital: "", date: "", speciality: "" });
