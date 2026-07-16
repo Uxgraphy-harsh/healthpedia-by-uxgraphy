@@ -7,6 +7,7 @@ import {
   Gear,
   Bell,
   UserCircle,
+  DotsNine,
   X as XIcon,
 } from "@phosphor-icons/react";
 import { useAppLock } from "@/contexts/AppLockContext";
