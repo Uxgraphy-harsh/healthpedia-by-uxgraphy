@@ -167,6 +167,18 @@ function DateStrip({ today }: { today: Date }) {
   );
 }
 
+// Small blood-drop icon used above period days
+function BloodDrop({ size = 10, muted = false }: { size?: number; muted?: boolean }) {
+  return (
+    <svg width={size} height={size * 1.3} viewBox="0 0 10 13" fill="none" aria-hidden>
+      <path
+        d="M5 0.5C5 0.5 9 5.2 9 8.2C9 10.4 7.2 12.2 5 12.2C2.8 12.2 1 10.4 1 8.2C1 5.2 5 0.5 5 0.5Z"
+        fill={muted ? "#F5A9A0" : CTA}
+      />
+    </svg>
+  );
+}
+
 // ─── Calendar view ──────────────────────────────────────────────────────────
 function MonthCalendar({
   year,
@@ -174,12 +186,14 @@ function MonthCalendar({
   today,
   periodDays,
   predictedPeriod,
+  onToggle,
 }: {
   year: number;
   month: number;
   today: Date;
   periodDays: number[];
   predictedPeriod: number[];
+  onToggle: (day: number) => void;
 }) {
   const first = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -191,8 +205,9 @@ function MonthCalendar({
   while (cells.length % 7 !== 0) cells.push(null);
 
   const monthLabel = first.toLocaleString("en", { month: "long" }).toUpperCase();
+  const ROW_H = 60;
 
-  // group period days into contiguous runs for pill background
+  // group contiguous runs so we can draw pill backgrounds row by row
   const runs: number[][] = [];
   let cur: number[] = [];
   [...periodDays].sort((a, b) => a - b).forEach((d) => {
@@ -204,71 +219,94 @@ function MonthCalendar({
   });
   if (cur.length) runs.push(cur);
 
+  // split each run into per-row segments
+  const pillSegments: { row: number; startCol: number; endCol: number; solid: boolean }[] = [];
+  runs.forEach((run) => {
+    if (run.length < 2) return; // single day → no pill, just droplet + colored number
+    let segStart = run[0];
+    for (let i = 1; i <= run.length; i++) {
+      const prev = run[i - 1];
+      const next = run[i];
+      const prevIdx = startWeekday + prev - 1;
+      const nextIdx = next != null ? startWeekday + next - 1 : -1;
+      const rowBreak = next == null || Math.floor(prevIdx / 7) !== Math.floor(nextIdx / 7);
+      if (rowBreak) {
+        const startIdx = startWeekday + segStart - 1;
+        const endIdx = prevIdx;
+        pillSegments.push({
+          row: Math.floor(startIdx / 7),
+          startCol: startIdx % 7,
+          endCol: endIdx % 7,
+          solid: true,
+        });
+        if (next != null) segStart = next;
+      }
+    }
+  });
+
   return (
-    <div className="mt-4">
-      <p className="mb-2 text-xs font-semibold tracking-widest text-neutral-700">
+    <div className="mt-6">
+      <p className="mb-3 text-xs font-semibold tracking-[0.2em] text-neutral-500">
         {monthLabel} {year}
       </p>
       <div className="relative">
-        {/* period pill backgrounds */}
-        {runs.map((run, i) => {
-          const first = run[0];
-          const last = run[run.length - 1];
-          const firstIdx = startWeekday + first - 1;
-          const lastIdx = startWeekday + last - 1;
-          const row = Math.floor(firstIdx / 7);
-          const startCol = firstIdx % 7;
-          const endCol = lastIdx % 7;
-          if (row !== Math.floor(lastIdx / 7)) return null; // skip pills spanning rows
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full bg-[#B32222]/12"
-              style={{
-                top: `calc(${row} * 56px + 4px)`,
-                left: `calc(${(startCol / 7) * 100}% + 4px)`,
-                width: `calc(${((endCol - startCol + 1) / 7) * 100}% - 8px)`,
-                height: 48,
-              }}
-            />
-          );
-        })}
+        {/* solid pink pills behind contiguous period runs */}
+        {pillSegments.map((s, i) => (
+          <div
+            key={`p-${i}`}
+            className="pointer-events-none absolute rounded-full"
+            style={{
+              top: `calc(${s.row} * ${ROW_H}px + 6px)`,
+              left: `calc(${(s.startCol / 7) * 100}% + 4px)`,
+              width: `calc(${((s.endCol - s.startCol + 1) / 7) * 100}% - 8px)`,
+              height: ROW_H - 12,
+              background: "#F9D9D3",
+            }}
+          />
+        ))}
+
+        {/* predicted period: dashed pill outline */}
         {predictedPeriod.length > 0 && (() => {
           const first = predictedPeriod[0];
           const last = predictedPeriod[predictedPeriod.length - 1];
           const firstIdx = startWeekday + first - 1;
           const lastIdx = startWeekday + last - 1;
+          if (Math.floor(firstIdx / 7) !== Math.floor(lastIdx / 7)) return null;
           const row = Math.floor(firstIdx / 7);
           const startCol = firstIdx % 7;
           const endCol = lastIdx % 7;
-          if (row !== Math.floor(lastIdx / 7)) return null;
           return (
             <div
-              className="absolute rounded-full border border-dashed"
+              className="pointer-events-none absolute rounded-full border"
               style={{
-                top: `calc(${row} * 56px + 4px)`,
+                top: `calc(${row} * ${ROW_H}px + 6px)`,
                 left: `calc(${(startCol / 7) * 100}% + 4px)`,
                 width: `calc(${((endCol - startCol + 1) / 7) * 100}% - 8px)`,
-                height: 48,
-                borderColor: PERIOD_DOT,
+                height: ROW_H - 12,
+                borderColor: "#F5A9A0",
               }}
             />
           );
         })()}
+
         <div className="grid grid-cols-7">
           {cells.map((d, i) => {
-            if (!d) return <div key={i} className="h-14" />;
+            if (!d) return <div key={i} style={{ height: ROW_H }} />;
             const isToday =
               d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
             const isPeriod = periodDays.includes(d);
             const isPredicted = predictedPeriod.includes(d);
             return (
-              <div key={i} className="relative flex h-14 items-center justify-center">
-                {isPeriod && (
-                  <span
-                    className="absolute -top-0.5 h-2 w-2 rounded-full"
-                    style={{ background: PERIOD_DOT }}
-                  />
+              <button
+                key={i}
+                onClick={() => onToggle(d)}
+                className="relative flex items-center justify-center"
+                style={{ height: ROW_H }}
+              >
+                {(isPeriod || isPredicted) && (
+                  <span className="absolute top-1.5">
+                    <BloodDrop muted={isPredicted && !isPeriod} />
+                  </span>
                 )}
                 {isToday ? (
                   <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-neutral-900 text-base font-bold text-neutral-900">
@@ -278,14 +316,14 @@ function MonthCalendar({
                   <span
                     className="relative text-base"
                     style={{
-                      color: isPeriod || isPredicted ? PERIOD_DOT : "#111",
+                      color: isPeriod ? CTA : isPredicted ? "#F5A9A0" : "#111",
                       fontWeight: isPeriod ? 600 : 400,
                     }}
                   >
                     {d}
                   </span>
                 )}
-              </div>
+              </button>
             );
           })}
         </div>
@@ -293,6 +331,7 @@ function MonthCalendar({
     </div>
   );
 }
+
 
 // ─── Main ───────────────────────────────────────────────────────────────────
 export default function Cycle() {
