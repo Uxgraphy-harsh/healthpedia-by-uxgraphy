@@ -298,6 +298,17 @@ export default function Shop() {
           </>
         )}
       </AnimatePresence>
+
+      <FiltersSheet
+        open={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        cats={fCats}
+        setCats={setFCats}
+        price={fPrice}
+        setPrice={setFPrice}
+        sort={fSort}
+        setSort={setFSort}
+      />
     </MiniAppShell>
   );
 }
