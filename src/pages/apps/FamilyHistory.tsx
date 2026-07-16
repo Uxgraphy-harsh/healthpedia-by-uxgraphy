@@ -326,11 +326,8 @@ export default function FamilyHistory() {
                   >
                     Edit
                   </button>
-                  {m.active && (
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700">
-                      Active Today
-                    </span>
-                  )}
+
+
                 </div>
               </div>
 
