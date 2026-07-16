@@ -531,23 +531,57 @@ export default function Vault() {
                   No matches for "{query}"
                 </p>
               ) : (
-                <div className="space-y-2 pt-2">
-                  {results.map((f) => (
+                <div className="space-y-3 pt-2 pb-6">
+                  {results.map(({ folder, report: r }) => (
                     <button
-                      key={f.id}
+                      key={`${folder.id}-${r.id}`}
                       onClick={() => {
                         commitSearch(query);
+                        setOpenFolderId(folder.id);
+                        setOpenReportId(r.id);
                         setShowSearch(false);
                         setQuery("");
                       }}
-                      className="w-full flex items-center gap-3 rounded-2xl border border-border/40 bg-card p-3 text-left"
+                      className="w-full text-left rounded-2xl border border-border/40 bg-card p-4"
                     >
-                      <div className="text-2xl">{f.emoji}</div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold truncate">{f.name}</p>
-                        <p className="text-[11px] text-muted-foreground">
-                          {f.files} files · Updated {f.updated}
-                        </p>
+                      <div className="flex items-start gap-3">
+                        <div
+                          className="w-14 h-14 rounded-xl flex flex-col items-center justify-center text-white shrink-0"
+                          style={{ background: "#2A1A1F" }}
+                        >
+                          <span className="text-lg font-bold leading-none">{r.day}</span>
+                          <span className="text-[9px] font-semibold tracking-wider mt-0.5">{r.month}</span>
+                          <span className="text-[8px] opacity-80 mt-0.5">{r.year}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                            <span>{folder.emoji}</span>
+                            <span>{folder.name}</span>
+                            <span>·</span>
+                            <span>{r.files.length} files</span>
+                          </p>
+                          <p className="text-[15px] font-bold leading-tight mt-0.5 truncate">{r.lab}</p>
+                          <p className="text-[13px] text-muted-foreground truncate">{r.doctor}</p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground mt-1" />
+                      </div>
+                      <p className="text-[13px] leading-relaxed text-foreground/80 mt-3 line-clamp-2">
+                        {r.summary}
+                      </p>
+                      <div className="border-t border-border/40 mt-3 pt-3 flex flex-wrap gap-2">
+                        {r.files.map((fi) => (
+                          <div
+                            key={fi.name}
+                            className="flex items-center gap-1.5 rounded-full border border-border/60 bg-background px-2.5 py-1"
+                          >
+                            {fi.type === "pdf" ? (
+                              <span className="w-4 h-4 rounded-sm bg-[#F66B9A]/15 text-[#F66B9A] text-[8px] font-bold flex items-center justify-center">PDF</span>
+                            ) : (
+                              <ImageIcon className="w-3.5 h-3.5 text-[#60A5FA]" />
+                            )}
+                            <span className="text-[11px] font-medium">{fi.name}</span>
+                          </div>
+                        ))}
                       </div>
                     </button>
                   ))}
