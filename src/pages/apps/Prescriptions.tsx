@@ -906,8 +906,7 @@ function AddPrescriptionSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function Prescriptions() {
-  const app = getMiniApp("prescriptions")!;
+export default function Prescriptions({ embedded }: EmbeddedProps = {}) {
   const [rx] = useState<Rx[]>(initialRx);
   const [showAdd, setShowAdd] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
