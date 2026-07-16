@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ChevronLeft, ChevronRight, Check, X } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Check, X, Bell, Clock, Filter } from "lucide-react";
 import { WarningCircle, CheckCircle } from "@phosphor-icons/react";
+import MiniAppShell from "@/components/MiniAppShell";
+import { getMiniApp } from "@/data/miniApps";
 
 // ─── Types ──────────────────────────────────────────────────────────────────────
 
