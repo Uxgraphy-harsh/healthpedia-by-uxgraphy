@@ -80,6 +80,8 @@ const App = () => (
               <Route path="/apps/notes" element={<Notes />} />
               <Route path="/apps/impact" element={<Impact />} />
               <Route path="/apps/shop" element={<Shop />} />
+              <Route path="/apps/budget" element={<Budget />} />
+
 
               {/* Legacy redirects */}
               <Route path="/home" element={<Navigate to="/chat" replace />} />
