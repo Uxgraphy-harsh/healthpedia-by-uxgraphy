@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 import {
-  ShoppingBag, Search, SlidersHorizontal, Heart, Tag, ClipboardList,
-  ArrowLeft, Minus, Plus, ChevronDown, MapPin, Truck, HelpCircle,
+  ShoppingBag, Search, SlidersHorizontal, Tag, ClipboardList,
+  ArrowLeft, Minus, Plus, ChevronDown, Truck, HelpCircle,
   CheckCircle2, Copy, ExternalLink, Circle,
 } from "lucide-react";
 
