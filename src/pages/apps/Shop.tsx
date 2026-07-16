@@ -777,3 +777,202 @@ function SubHeader({ title, onBack }: { title: string; onBack: () => void }) {
     </div>
   );
 }
+
+/* ---------------- Filters bottom sheet ---------------- */
+const FILTER_CATS = ["Cups", "Bundles", "Care", "Accessories"];
+
+function FiltersSheet({
+  open, onClose, cats, setCats, price, setPrice, sort, setSort,
+}: {
+  open: boolean; onClose: () => void;
+  cats: string[]; setCats: (v: string[]) => void;
+  price: [number, number]; setPrice: (v: [number, number]) => void;
+  sort: "low" | "high" | null; setSort: (v: "low" | "high" | null) => void;
+}) {
+  const toggleCat = (c: string) =>
+    setCats(cats.includes(c) ? cats.filter((x) => x !== c) : [...cats, c]);
+
+  const activeCount =
+    cats.length +
+    (price[0] !== PRICE_MIN || price[1] !== PRICE_MAX ? 1 : 0) +
+    (sort ? 1 : 0);
+
+  const clearAll = () => {
+    setCats([]);
+    setPrice([PRICE_MIN, PRICE_MAX]);
+    setSort(null);
+  };
+
+  const pct = (v: number) => ((v - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            className="fixed inset-0 z-40 bg-black/40"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.div
+            className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-white pb-6"
+            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 32, stiffness: 320 }}
+          >
+            <div className="flex justify-center pt-3">
+              <div className="h-1.5 w-10 rounded-full bg-neutral-300" />
+            </div>
+
+            <div className="flex items-center justify-between px-5 pt-4">
+              <h3 className="text-xl font-bold text-neutral-900">Filters</h3>
+              {activeCount > 0 && (
+                <button onClick={clearAll} className="text-sm font-semibold" style={{ color: CORAL }}>
+                  Clear all filters ({activeCount})
+                </button>
+              )}
+            </div>
+
+            <div className="max-h-[70vh] overflow-y-auto px-5 pt-6">
+              {/* Categories */}
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-widest text-neutral-500">Categories</p>
+                {cats.length > 0 && (
+                  <button onClick={() => setCats([])} className="text-xs font-semibold" style={{ color: CORAL }}>
+                    Clear filter
+                  </button>
+                )}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {FILTER_CATS.map((c) => {
+                  const active = cats.includes(c);
+                  return (
+                    <button
+                      key={c}
+                      onClick={() => toggleCat(c)}
+                      className="flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors"
+                      style={{
+                        background: active ? "#FFE9D5" : "transparent",
+                        borderColor: active ? CORAL : "#E5E5E5",
+                        color: active ? "#111" : "#333",
+                      }}
+                    >
+                      {c}
+                      {active && <span style={{ color: CORAL }}>×</span>}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Price range */}
+              <div className="mt-7 flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-widest text-neutral-500">Price range</p>
+                {(price[0] !== PRICE_MIN || price[1] !== PRICE_MAX) && (
+                  <button
+                    onClick={() => setPrice([PRICE_MIN, PRICE_MAX])}
+                    className="text-xs font-semibold"
+                    style={{ color: CORAL }}
+                  >
+                    Clear filter
+                  </button>
+                )}
+              </div>
+              <div className="mt-6 px-1">
+                <div className="relative h-1.5 rounded-full bg-neutral-200">
+                  <div
+                    className="absolute h-1.5 rounded-full"
+                    style={{
+                      left: `${pct(price[0])}%`,
+                      right: `${100 - pct(price[1])}%`,
+                      background: CORAL,
+                    }}
+                  />
+                  <input
+                    type="range"
+                    min={PRICE_MIN} max={PRICE_MAX} step={50} value={price[0]}
+                    onChange={(e) => {
+                      const v = Math.min(Number(e.target.value), price[1] - 50);
+                      setPrice([v, price[1]]);
+                    }}
+                    className="range-thumb absolute inset-0 h-1.5 w-full appearance-none bg-transparent"
+                    style={{ pointerEvents: "none" }}
+                  />
+                  <input
+                    type="range"
+                    min={PRICE_MIN} max={PRICE_MAX} step={50} value={price[1]}
+                    onChange={(e) => {
+                      const v = Math.max(Number(e.target.value), price[0] + 50);
+                      setPrice([price[0], v]);
+                    }}
+                    className="range-thumb absolute inset-0 h-1.5 w-full appearance-none bg-transparent"
+                    style={{ pointerEvents: "none" }}
+                  />
+                  <style>{`
+                    .range-thumb { -webkit-appearance: none; }
+                    .range-thumb::-webkit-slider-thumb {
+                      -webkit-appearance: none; pointer-events: auto;
+                      height: 22px; width: 22px; border-radius: 9999px;
+                      background: ${CORAL}; border: 3px solid #fff;
+                      box-shadow: 0 1px 4px rgba(0,0,0,0.25); cursor: pointer;
+                    }
+                    .range-thumb::-moz-range-thumb {
+                      pointer-events: auto;
+                      height: 22px; width: 22px; border-radius: 9999px;
+                      background: ${CORAL}; border: 3px solid #fff;
+                      box-shadow: 0 1px 4px rgba(0,0,0,0.25); cursor: pointer;
+                    }
+                  `}</style>
+                </div>
+                <div className="mt-4 flex justify-between text-sm text-neutral-700">
+                  <span>₹{price[0]}</span>
+                  <span>₹{price[1]}</span>
+                </div>
+              </div>
+
+              {/* Sort by */}
+              <div className="mt-7 flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-widest text-neutral-500">Sort by</p>
+                {sort && (
+                  <button onClick={() => setSort(null)} className="text-xs font-semibold" style={{ color: CORAL }}>
+                    Clear filter
+                  </button>
+                )}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[
+                  { id: "low", label: "Price: Low to high" },
+                  { id: "high", label: "Price: High to low" },
+                ].map((o) => {
+                  const active = sort === (o.id as "low" | "high");
+                  return (
+                    <button
+                      key={o.id}
+                      onClick={() => setSort(active ? null : (o.id as "low" | "high"))}
+                      className="rounded-full border px-3.5 py-1.5 text-sm transition-colors"
+                      style={{
+                        background: active ? "#FFE9D5" : "transparent",
+                        borderColor: active ? CORAL : "#E5E5E5",
+                        color: "#111",
+                      }}
+                    >
+                      {o.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="px-5 pt-6">
+              <button
+                onClick={onClose}
+                className="w-full rounded-2xl py-4 text-base font-semibold text-white"
+                style={{ background: "#1A1A1A" }}
+              >
+                Apply Filters
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
