@@ -149,8 +149,10 @@ export default function AIChat() {
   const [isTyping, setIsTyping] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showLauncher, setShowLauncher] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
 
 
   useEffect(() => {
@@ -238,12 +240,14 @@ export default function AIChat() {
           }}
         >
           <button
-            onClick={() => setShowHistory(true)}
-            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            onClick={() => setShowNotifications(true)}
+            className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
             aria-label="Notifications"
           >
             <Bell size={19} weight="regular" className="text-foreground/80" />
+            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#F66B9A]" />
           </button>
+
           <button
             onClick={() => navigate("/settings/app-lock")}
             className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
