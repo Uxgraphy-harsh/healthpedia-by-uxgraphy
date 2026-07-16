@@ -74,6 +74,7 @@ export default function Symptoms() {
   const app = getMiniApp("symptoms")!;
   const [symptoms] = useState(sampleSymptoms);
   const [openSymptom, setOpenSymptom] = useState<Aggregated | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
 
   const aggregated = useMemo<Aggregated[]>(() => {
     const map = new Map<string, Aggregated>();
