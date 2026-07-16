@@ -1,8 +1,9 @@
 import {
   FolderOpen, ShieldCheck, Users, CalendarCheck, Baby, Droplets,
   Activity, AlertTriangle, Contact, Stethoscope, BellRing, Pill,
-  StickyNote, Leaf, ShoppingBag, type LucideIcon
+  StickyNote, Leaf, ShoppingBag, Wallet, type LucideIcon
 } from "lucide-react";
+
 
 export interface MiniApp {
   id: string;
