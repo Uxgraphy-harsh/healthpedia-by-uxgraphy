@@ -248,8 +248,9 @@ export default function Shop() {
 }
 
 /* ---------------- Shop grid ---------------- */
-function ShopView({ category, setCategory, products, onAdd }: {
-  category: string; setCategory: (c: string) => void; products: Product[]; onAdd: (id: string) => void;
+function ShopView({ category, setCategory, products, cart, onInc, onDec }: {
+  category: string; setCategory: (c: string) => void; products: Product[];
+  cart: Record<string, number>; onInc: (id: string) => void; onDec: (id: string) => void;
 }) {
   return (
     <>
@@ -280,24 +281,47 @@ function ShopView({ category, setCategory, products, onAdd }: {
       </div>
       <p className="mt-3 text-xs uppercase tracking-widest text-neutral-500">{products.length} products</p>
       <div className="mt-3 grid grid-cols-2 gap-3 pb-4">
-        {products.map((p) => (
-          <div key={p.id} className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
-            <div className="flex aspect-square items-center justify-center text-5xl" style={{ background: "#FBEEE1" }}>{p.emoji}</div>
-            <div className="p-3">
-              <p className="text-[13px] font-semibold text-neutral-900">{p.name}</p>
-              {p.variant && <p className="mt-0.5 text-[11px] text-neutral-500">{p.variant}</p>}
-              <div className="mt-2 flex items-baseline gap-1.5">
-                {p.original && <span className="text-[11px] text-neutral-400 line-through">₹{p.original}</span>}
-                <span className="text-sm font-bold" style={{ color: DEEP }}>₹{p.price}</span>
+        {products.map((p) => {
+          const qty = cart[p.id] ?? 0;
+          return (
+            <div key={p.id} className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+              <div className="relative flex aspect-square items-center justify-center text-5xl" style={{ background: "#FBEEE1" }}>
+                {p.emoji}
+                <div className="absolute right-2 top-2">
+                  {qty === 0 ? (
+                    <button
+                      onClick={() => onInc(p.id)}
+                      aria-label={`Add ${p.name}`}
+                      className="flex h-9 w-9 items-center justify-center rounded-xl shadow-sm ring-1 ring-black/5"
+                      style={{ background: "#FFE9D5" }}
+                    >
+                      <Plus className="h-4 w-4" style={{ color: CORAL }} strokeWidth={2.5} />
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-2 rounded-xl px-2 py-1.5 text-white shadow-md" style={{ background: CORAL }}>
+                      <button onClick={() => onDec(p.id)} aria-label="Decrease"><Minus className="h-4 w-4" strokeWidth={2.5} /></button>
+                      <span className="min-w-[14px] text-center text-sm font-bold">{qty}</span>
+                      <button onClick={() => onInc(p.id)} aria-label="Increase"><Plus className="h-4 w-4" strokeWidth={2.5} /></button>
+                    </div>
+                  )}
+                </div>
               </div>
-              <button onClick={() => onAdd(p.id)} className="mt-2.5 w-full rounded-lg py-1.5 text-[12px] font-semibold text-white" style={{ background: CORAL }}>Add</button>
+              <div className="p-3">
+                <p className="text-[13px] font-semibold text-neutral-900">{p.name}</p>
+                {p.variant && <p className="mt-0.5 text-[11px] text-neutral-500">{p.variant}</p>}
+                <div className="mt-2 flex items-baseline gap-1.5">
+                  {p.original && <span className="text-[11px] text-neutral-400 line-through">₹{p.original}</span>}
+                  <span className="text-sm font-bold" style={{ color: DEEP }}>₹{p.price}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );
 }
+
 
 /* ---------------- Cart ---------------- */
 function CartView({ items, total, inc, dec, onBrowse, onCheckout }: {
