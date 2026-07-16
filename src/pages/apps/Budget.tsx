@@ -6,9 +6,10 @@ import {
   Wallet, BarChart3, List, Plus, ArrowUpRight, ArrowDownRight,
   Stethoscope, Pill, FlaskConical, ShieldCheck, HeartPulse, Hospital,
   Sparkles, Trash2, X, Delete, Check, Calendar as CalendarIcon,
-  Settings2,
+  Settings2, ChevronDown,
 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+
 
 
 const TEAL = "#0EA5A5";
