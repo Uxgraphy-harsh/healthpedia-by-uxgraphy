@@ -207,10 +207,10 @@ function MonthCalendar({
   const monthLabel = first.toLocaleString("en", { month: "long" }).toUpperCase();
   const ROW_H = 60;
 
-  // group contiguous runs so we can draw pill backgrounds row by row
+  // Build pill segments from PREDICTED period runs (highlighted range)
   const runs: number[][] = [];
   let cur: number[] = [];
-  [...periodDays].sort((a, b) => a - b).forEach((d) => {
+  [...predictedPeriod].sort((a, b) => a - b).forEach((d) => {
     if (cur.length && d === cur[cur.length - 1] + 1) cur.push(d);
     else {
       if (cur.length) runs.push(cur);
@@ -219,10 +219,8 @@ function MonthCalendar({
   });
   if (cur.length) runs.push(cur);
 
-  // split each run into per-row segments
-  const pillSegments: { row: number; startCol: number; endCol: number; solid: boolean }[] = [];
+  const pillSegments: { row: number; startCol: number; endCol: number }[] = [];
   runs.forEach((run) => {
-    if (run.length < 2) return; // single day → no pill, just droplet + colored number
     let segStart = run[0];
     for (let i = 1; i <= run.length; i++) {
       const prev = run[i - 1];
@@ -237,7 +235,6 @@ function MonthCalendar({
           row: Math.floor(startIdx / 7),
           startCol: startIdx % 7,
           endCol: endIdx % 7,
-          solid: true,
         });
         if (next != null) segStart = next;
       }
@@ -250,7 +247,7 @@ function MonthCalendar({
         {monthLabel} {year}
       </p>
       <div className="relative">
-        {/* solid pink pills behind contiguous period runs */}
+        {/* soft pink pills behind predicted period ranges */}
         {pillSegments.map((s, i) => (
           <div
             key={`p-${i}`}
@@ -265,29 +262,6 @@ function MonthCalendar({
           />
         ))}
 
-        {/* predicted period: dashed pill outline */}
-        {predictedPeriod.length > 0 && (() => {
-          const first = predictedPeriod[0];
-          const last = predictedPeriod[predictedPeriod.length - 1];
-          const firstIdx = startWeekday + first - 1;
-          const lastIdx = startWeekday + last - 1;
-          if (Math.floor(firstIdx / 7) !== Math.floor(lastIdx / 7)) return null;
-          const row = Math.floor(firstIdx / 7);
-          const startCol = firstIdx % 7;
-          const endCol = lastIdx % 7;
-          return (
-            <div
-              className="pointer-events-none absolute rounded-full border"
-              style={{
-                top: `calc(${row} * ${ROW_H}px + 6px)`,
-                left: `calc(${(startCol / 7) * 100}% + 4px)`,
-                width: `calc(${((endCol - startCol + 1) / 7) * 100}% - 8px)`,
-                height: ROW_H - 12,
-                borderColor: "#F5A9A0",
-              }}
-            />
-          );
-        })()}
 
         <div className="grid grid-cols-7">
           {cells.map((d, i) => {
@@ -303,9 +277,9 @@ function MonthCalendar({
                 className="relative flex items-center justify-center"
                 style={{ height: ROW_H }}
               >
-                {(isPeriod || isPredicted) && (
+                {isPeriod && (
                   <span className="absolute top-1.5">
-                    <BloodDrop muted={isPredicted && !isPeriod} />
+                    <BloodDrop />
                   </span>
                 )}
                 {isToday ? (
@@ -316,8 +290,8 @@ function MonthCalendar({
                   <span
                     className="relative text-base"
                     style={{
-                      color: isPeriod ? CTA : isPredicted ? "#F5A9A0" : "#111",
-                      fontWeight: isPeriod ? 600 : 400,
+                      color: isPeriod ? CTA : isPredicted ? "#B84E3F" : "#111",
+                      fontWeight: isPeriod ? 700 : isPredicted ? 500 : 400,
                     }}
                   >
                     {d}
@@ -370,16 +344,41 @@ export default function Cycle() {
       .map((iso) => new Date(iso))
       .filter((d) => d.getFullYear() === y && d.getMonth() === m)
       .map((d) => d.getDate());
-  const togglePeriodDay = (y: number, m: number, d: number) => {
-    const iso = new Date(y, m, d).toISOString().slice(0, 10);
-    setStoredPeriodDays((prev) => {
-      const next = prev.some((s) => s.slice(0, 10) === iso)
-        ? prev.filter((s) => s.slice(0, 10) !== iso)
-        : [...prev, iso];
-      localStorage.setItem("cycle_period_days", JSON.stringify(next));
-      return next;
-    });
+
+  // Predicted period days — projected cycles starting from onboarding lastPeriod
+  const lastPeriodStart = useMemo(() => {
+    const raw = onboarding?.lastPeriod as string | undefined;
+    if (!raw) return null;
+    const [dStr, mStr, yStr] = raw.split(" ");
+    const monthIdx = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].indexOf(mStr);
+    if (monthIdx < 0) return null;
+    return new Date(Number(yStr), monthIdx, Number(dStr));
+  }, [onboarding]);
+
+  const predictedForMonth = (y: number, m: number): number[] => {
+    if (!lastPeriodStart) return [];
+    const actualISO = new Set(storedPeriodDays.map((s) => s.slice(0, 10)));
+    const days = new Set<number>();
+    for (let k = 0; k < 36; k++) {
+      const start = new Date(lastPeriodStart);
+      start.setDate(lastPeriodStart.getDate() + k * cycleLen);
+      for (let j = 0; j < periodLen; j++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + j);
+        if (d.getFullYear() === y && d.getMonth() === m) {
+          const iso = d.toISOString().slice(0, 10);
+          if (!actualISO.has(iso)) days.add(d.getDate());
+        }
+      }
+    }
+    return [...days].sort((a, b) => a - b);
   };
+
+  const openLogForDate = (y: number, m: number, d: number) => {
+    const iso = new Date(y, m, d).toISOString().slice(0, 10);
+    navigate(`/apps/cycle/log?date=${iso}`);
+  };
+
 
 
   const today = new Date();
@@ -517,9 +516,8 @@ export default function Cycle() {
                 month={m}
                 today={today}
                 periodDays={periodDaysForMonth(calYear, m)}
-                predictedPeriod={[]}
-                onToggle={(d) => togglePeriodDay(calYear, m, d)}
-
+                predictedPeriod={predictedForMonth(calYear, m)}
+                onToggle={(d) => openLogForDate(calYear, m, d)}
               />
             ))}
 
