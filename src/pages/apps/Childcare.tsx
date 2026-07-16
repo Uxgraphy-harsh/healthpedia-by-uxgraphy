@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Baby, ArrowLeft, ChevronDown, X as XIcon } from "lucide-react";
+import { Baby, ArrowLeft, ChevronDown, X as XIcon, Camera, Calendar } from "lucide-react";
 import { DotsNine } from "@phosphor-icons/react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 import ChildSubApp, { type ChildAppId } from "@/pages/apps/childcare/ChildSubApp";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 
 const kids = [
