@@ -60,14 +60,6 @@ export default function Notes() {
       icon={app.icon}
       bg={app.bg}
       fg={app.fg}
-      action={
-        <button
-          onClick={() => setShowAdd(true)}
-          className="w-10 h-10 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shrink-0"
-        >
-          <Plus className="w-5 h-5" />
-        </button>
-      }
     >
       <div className="space-y-2.5">
         {notes.map((n) => (
@@ -93,6 +85,19 @@ export default function Notes() {
           </div>
         ))}
       </div>
+
+      {/* Floating New note button */}
+      {!showAdd && (
+        <button
+          onClick={() => setShowAdd(true)}
+          className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+          style={{ background: "#171717" }}
+        >
+          <Plus className="h-5 w-5" strokeWidth={2.5} />
+          <span className="font-semibold">New note</span>
+        </button>
+      )}
+
 
       {showAdd && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end" onClick={() => setShowAdd(false)}>
