@@ -34,9 +34,9 @@ function tagColor(appId: string) {
   return { bg: a?.bg ?? "bg-muted", fg: a?.fg ?? "text-muted-foreground", name: a?.name ?? appId };
 }
 
-export default function Notes() {
-  const app = getMiniApp("notes")!;
+export default function Notes({ embedded }: EmbeddedProps = {}) {
   const [notes, setNotes] = useState(initial);
+
   const [showAdd, setShowAdd] = useState(false);
   const [text, setText] = useState("");
   const [pickingRef, setPickingRef] = useState(false);
