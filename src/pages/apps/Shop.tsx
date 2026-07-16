@@ -127,14 +127,17 @@ export default function Shop() {
 
   // Bottom bar tabs
   const bottomActions = [
-    { icon: ShoppingBag, label: "Shop", active: view === "shop", onClick: () => setView("shop") },
-    { icon: ClipboardList, label: "Orders", active: view === "orders" || view === "orderDetail" || view === "help",
+    { icon: LayoutGrid, label: "Products", active: view === "shop", onClick: () => setView("shop") },
+    { icon: Truck, label: "My Orders",
+      active: view === "orders" || view === "orderDetail" || view === "help",
+      badge: currentOrders.length,
       onClick: () => setView("orders") },
-    { icon: Tag, label: "Offers", onClick: () => {} },
-    { icon: ShoppingBag, label: `Cart${cartCount ? ` (${cartCount})` : ""}`,
+    { icon: ShoppingBag, label: "Cart",
+      badge: cartCount,
       primary: view === "cart" || view === "addresses" || view === "addAddress" || view === "summary",
       onClick: () => setView("cart") },
   ];
+
 
   return (
     <MiniAppShell
