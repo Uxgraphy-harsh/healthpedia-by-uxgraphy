@@ -8,9 +8,15 @@ import {
   Microphone,
   Paperclip,
   X as XIcon,
+  SquaresFour,
+  Gear,
+  Bell,
+  UserCircle,
 } from "@phosphor-icons/react";
 import { AlertCircle, Clock, MessageCircle, RefreshCw } from "lucide-react";
 import askAiFlower from "@/assets/ask-ai-flower.svg";
+import AppLauncher from "@/components/AppLauncher";
+
 
 interface Message {
   id: number;
@@ -142,8 +148,12 @@ export default function AIChat() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [showLauncher, setShowLauncher] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+
 
   useEffect(() => {
     if (!scrollRef.current) return;
@@ -207,24 +217,54 @@ export default function AIChat() {
         }}
       />
 
-      <header className="relative z-10 flex items-center justify-between px-5 pb-3 pt-4">
-        <button onClick={() => navigate("/dashboard")} className="flex h-10 w-10 items-center justify-center rounded-full">
-          <XIcon size={24} weight="bold" className="text-foreground" />
+      <header className="relative z-10 flex items-center justify-between px-4 pb-3 pt-4">
+        <button
+          onClick={() => setShowLauncher(true)}
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border backdrop-blur-xl"
+          style={{
+            background: "hsl(var(--card) / 0.55)",
+            borderColor: "hsl(var(--border) / 0.55)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
+          }}
+          aria-label="Mini apps"
+        >
+          <SquaresFour size={22} weight="bold" className="text-foreground" />
         </button>
 
-        <button
-          onClick={() => setShowHistory(true)}
-          className="flex items-center gap-2 rounded-full border px-4 py-2 backdrop-blur-xl"
+        <div
+          className="flex items-center gap-1 rounded-full border p-1 backdrop-blur-xl"
           style={{
-            background: "hsl(var(--card) / 0.45)",
-            borderColor: "hsl(var(--border) / 0.65)",
-            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.8)",
+            background: "hsl(var(--card) / 0.55)",
+            borderColor: "hsl(var(--border) / 0.55)",
+            boxShadow: "inset 0 1px 0 hsl(var(--card) / 0.75)",
           }}
         >
-          <ClockCounterClockwise size={18} className="text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground">Chat history</span>
-        </button>
+          <button
+            onClick={() => setShowNotifications(true)}
+            className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Notifications"
+          >
+            <Bell size={19} weight="regular" className="text-foreground/80" />
+            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[#F66B9A]" />
+          </button>
+
+          <button
+            onClick={() => navigate("/settings/app-lock")}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Settings"
+          >
+            <Gear size={19} weight="regular" className="text-foreground/80" />
+          </button>
+          <button
+            onClick={() => navigate("/profile")}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Profile"
+          >
+            <UserCircle size={22} weight="fill" className="text-[#60A5FA]" />
+          </button>
+        </div>
       </header>
+
 
       {isEmptyState ? (
         <main className="relative flex-1 overflow-hidden">
@@ -240,7 +280,17 @@ export default function AIChat() {
           </div>
 
           <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-3">
+            <div className="mb-2 flex justify-center">
+              <button
+                onClick={() => setShowHistory(true)}
+                className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/60 px-3 py-1 text-[11px] font-medium text-muted-foreground backdrop-blur-xl"
+              >
+                <ClockCounterClockwise size={13} />
+                Chat history
+              </button>
+            </div>
             <div className="mb-2.5 grid grid-cols-2 gap-2.5">
+
               {quickChips.map((chip) => (
                 <button
                   key={chip.label}
@@ -399,6 +449,57 @@ export default function AIChat() {
           </>
         )}
       </AnimatePresence>
+
+      <AppLauncher open={showLauncher} onClose={() => setShowLauncher(false)} />
+
+      <AnimatePresence>
+        {showNotifications && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-black/40"
+              onClick={() => setShowNotifications(false)}
+            />
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 320, damping: 32 }}
+              className="fixed inset-x-0 bottom-0 z-[70] mx-auto w-full max-w-md rounded-t-3xl bg-background p-5 pb-8 shadow-2xl"
+            >
+              <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-muted" />
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-bold">Notifications</h2>
+                <button
+                  onClick={() => setShowNotifications(false)}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-muted"
+                >
+                  <XIcon size={16} />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { title: "Metformin due", body: "8:00 AM · Today", accent: "#F59E0B" },
+                  { title: "Dr. Sharma appointment", body: "Tomorrow at 11:30 AM", accent: "#8B5CF6" },
+                  { title: "HbA1c above range", body: "Report added yesterday", accent: "#EF4444" },
+                ].map((n) => (
+                  <div key={n.title} className="rounded-2xl border border-border/40 bg-card p-3.5 flex items-start gap-3">
+                    <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full" style={{ background: n.accent }} />
+                    <div>
+                      <p className="text-sm font-semibold">{n.title}</p>
+                      <p className="text-[11px] text-muted-foreground">{n.body}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
+
+
