@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
@@ -42,9 +43,146 @@ const initialMembers: Member[] = [
   },
 ];
 
+type Draft = { name: string; date: string };
+
+function AddRecordSheet({
+  open,
+  onClose,
+  onSave,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSave: (hpid: string, conds: Draft[]) => void;
+}) {
+  const [hpid, setHpid] = useState("");
+  const [conds, setConds] = useState<Draft[]>([{ name: "", date: "" }]);
+
+  const update = (i: number, key: keyof Draft, val: string) =>
+    setConds((prev) => prev.map((c, idx) => (idx === i ? { ...c, [key]: val } : c)));
+
+  const canSave = hpid.trim().length > 0 && conds.every((c) => c.name.trim().length > 0);
+
+  const handleSave = () => {
+    if (!canSave) return;
+    onSave(hpid.trim(), conds);
+    setHpid("");
+    setConds([{ name: "", date: "" }]);
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] bg-black/40"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 320, damping: 34 }}
+            className="fixed inset-x-0 bottom-0 z-[90] mx-auto w-full max-w-md rounded-t-3xl bg-background shadow-2xl max-h-[92dvh] flex flex-col"
+          >
+            <div className="pt-2 pb-1 flex justify-center">
+              <div className="h-1 w-10 rounded-full bg-muted" />
+            </div>
+            <div className="grid grid-cols-3 items-center px-5 py-2">
+              <button
+                onClick={onClose}
+                className="text-[15px] font-medium text-[#60A5FA] text-left"
+              >
+                Cancel
+              </button>
+              <h2 className="text-[16px] font-bold text-center">Add a Medical Record</h2>
+              <div />
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+              {/* Healthpedia ID */}
+              <div className="rounded-2xl border border-border/70 px-4 py-3">
+                <label className="text-[12px] text-muted-foreground">
+                  Healthpedia ID<span className="text-[#F66B9A]">*</span>
+                </label>
+                <input
+                  value={hpid}
+                  onChange={(e) => setHpid(e.target.value)}
+                  placeholder="#000000000000"
+                  className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                />
+              </div>
+
+              {conds.map((c, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex items-center justify-between px-1">
+                    <p className="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+                      Condition {i + 1}
+                      <span className="text-[#F66B9A]">*</span>
+                    </p>
+                    {conds.length > 1 && (
+                      <button
+                        onClick={() => setConds((prev) => prev.filter((_, idx) => idx !== i))}
+                        className="text-[13px] font-medium text-[#60A5FA]"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <div className="rounded-2xl border border-border/70 px-4 py-3">
+                    <label className="text-[12px] text-muted-foreground">
+                      Condition name<span className="text-[#F66B9A]">*</span>
+                    </label>
+                    <input
+                      value={c.name}
+                      onChange={(e) => update(i, "name", e.target.value)}
+                      placeholder="e.g. Hypothyroidism"
+                      className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                    />
+                  </div>
+                  <div className="rounded-2xl border border-border/70 px-4 py-3">
+                    <label className="text-[12px] text-muted-foreground">Diagnosis date</label>
+                    <input
+                      value={c.date}
+                      onChange={(e) => update(i, "date", e.target.value)}
+                      placeholder="00/00/0000"
+                      className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="px-5 py-4 border-t border-border/60 flex items-center gap-3 pb-6">
+              <button
+                onClick={() => setConds((prev) => [...prev, { name: "", date: "" }])}
+                className="flex-1 h-12 rounded-full border border-[#F66B9A]/60 text-[#F66B9A] font-semibold flex items-center justify-center gap-1.5"
+              >
+                <Plus className="h-4 w-4" strokeWidth={2.5} />
+                Add More
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={!canSave}
+                className="flex-1 h-12 rounded-full bg-black text-white font-semibold disabled:opacity-40"
+              >
+                Save
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function FamilyHistory() {
   const app = getMiniApp("family")!;
   const [members, setMembers] = useState<Member[]>(initialMembers);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const removeCondition = (mid: string, name: string) => {
     setMembers((prev) =>
@@ -52,6 +190,35 @@ export default function FamilyHistory() {
         m.id === mid ? { ...m, conditions: m.conditions.filter((c) => c.name !== name) } : m
       )
     );
+  };
+
+  const handleSaveRecord = (hpid: string, conds: Draft[]) => {
+    const cleanHpid = hpid.startsWith("#") ? hpid : `#${hpid}`;
+    const newConds: Condition[] = conds
+      .filter((c) => c.name.trim().length > 0)
+      .map((c) => ({ name: c.name.trim(), diagnosed: c.date.trim() || "—" }));
+
+    setMembers((prev) => {
+      const existing = prev.find((m) => m.hpid === cleanHpid);
+      if (existing) {
+        return prev.map((m) =>
+          m.id === existing.id ? { ...m, conditions: [...m.conditions, ...newConds] } : m
+        );
+      }
+      return [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          name: "New Member",
+          relation: "Family",
+          age: 0,
+          hpid: cleanHpid,
+          avatar: `https://api.dicebear.com/7.x/personas/svg?seed=${cleanHpid}`,
+          active: false,
+          conditions: newConds,
+        },
+      ];
+    });
   };
 
   return (
@@ -71,7 +238,6 @@ export default function FamilyHistory() {
               key={m.id}
               className="rounded-2xl border border-border/60 bg-card overflow-hidden"
             >
-              {/* Header */}
               <div className="flex items-start gap-3 p-4">
                 <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/40">
                   <img src={m.avatar} alt={m.name} className="w-full h-full object-cover" />
@@ -86,7 +252,12 @@ export default function FamilyHistory() {
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <button className="text-[13px] font-medium text-[#60A5FA]">Edit</button>
+                  <button
+                    onClick={() => setSheetOpen(true)}
+                    className="text-[13px] font-medium text-[#60A5FA]"
+                  >
+                    Edit
+                  </button>
                   {m.active && (
                     <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700">
                       Active Today
@@ -95,7 +266,6 @@ export default function FamilyHistory() {
                 </div>
               </div>
 
-              {/* Conditions */}
               {m.conditions.length > 0 && (
                 <div className="border-t border-border/60">
                   {m.conditions.map((c, i) => (
@@ -126,14 +296,20 @@ export default function FamilyHistory() {
           ))}
         </div>
 
-        {/* Floating Add member button */}
         <button
+          onClick={() => setSheetOpen(true)}
           className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
           style={{ background: "#171717" }}
         >
           <Plus className="h-5 w-5" strokeWidth={2.5} />
           <span className="font-semibold">Add member</span>
         </button>
+
+        <AddRecordSheet
+          open={sheetOpen}
+          onClose={() => setSheetOpen(false)}
+          onSave={handleSaveRecord}
+        />
       </MiniAppShell>
     </AppLockGate>
   );
