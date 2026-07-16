@@ -99,7 +99,7 @@ const SEED: Expense[] = [
   { id: "s3", title: "Blood test — CBC",        amount: 620, categoryId: "tests",    date: todayISO(), type: "expense" },
 ];
 
-type View = "overview" | "expenses" | "analytics";
+type View = "overview" | "analytics";
 
 /* ---------------- Main ---------------- */
 
