@@ -353,32 +353,9 @@ export default function Prescriptions() {
           </button>
         )}
 
-        {/* Add prescription bottom sheet (placeholder) */}
+        {/* Add prescription bottom sheet */}
         {showAdd && (
-          <div
-            className="fixed inset-0 z-[90] bg-black/40 flex items-end"
-            onClick={() => setShowAdd(false)}
-          >
-            <div
-              className="w-full max-w-md mx-auto bg-background rounded-t-3xl flex flex-col max-h-[92dvh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-10 h-1 rounded-full bg-muted mx-auto my-3 shrink-0" />
-              <div className="flex items-center px-5 pb-4 shrink-0">
-                <button
-                  onClick={() => setShowAdd(false)}
-                  className="text-sm font-medium text-[#60A5FA] w-16 text-left"
-                >
-                  Cancel
-                </button>
-                <h3 className="flex-1 text-center text-[17px] font-bold">Add prescription</h3>
-                <div className="w-16" />
-              </div>
-              <div className="px-5 pb-8 text-sm text-muted-foreground">
-                Upload photo, scan, or fill details manually.
-              </div>
-            </div>
-          </div>
+          <AddPrescriptionSheet onClose={() => setShowAdd(false)} />
         )}
 
         {/* Detail overlay */}
