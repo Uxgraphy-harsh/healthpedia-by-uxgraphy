@@ -52,10 +52,18 @@ function AddRecordSheet({
 }: {
   open: boolean;
   onClose: () => void;
-  onSave: (hpid: string, relation: string, conds: Draft[]) => void;
+  onSave: (
+    hpid: string,
+    relation: string,
+    birthday: string,
+    gender: string,
+    conds: Draft[]
+  ) => void;
 }) {
   const [hpid, setHpid] = useState("");
   const [relation, setRelation] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [gender, setGender] = useState("");
   const [conds, setConds] = useState<Draft[]>([{ name: "", date: "" }]);
 
   const update = (i: number, key: keyof Draft, val: string) =>
@@ -64,16 +72,20 @@ function AddRecordSheet({
   const canSave =
     hpid.trim().length > 0 &&
     relation.trim().length > 0 &&
+    gender.trim().length > 0 &&
     conds.every((c) => c.name.trim().length > 0);
 
   const handleSave = () => {
     if (!canSave) return;
-    onSave(hpid.trim(), relation.trim(), conds);
+    onSave(hpid.trim(), relation.trim(), birthday.trim(), gender.trim(), conds);
     setHpid("");
     setRelation("");
+    setBirthday("");
+    setGender("");
     setConds([{ name: "", date: "" }]);
     onClose();
   };
+
 
 
   return (
@@ -132,6 +144,33 @@ function AddRecordSheet({
                   placeholder="e.g. Father, Mother, Sister"
                   className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-border/70 px-4 py-3">
+                  <label className="text-[12px] text-muted-foreground">Birthday</label>
+                  <input
+                    type="date"
+                    value={birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                  />
+                </div>
+                <div className="rounded-2xl border border-border/70 px-4 py-3">
+                  <label className="text-[12px] text-muted-foreground">
+                    Gender<span className="text-[#F66B9A]">*</span>
+                  </label>
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full bg-transparent outline-none text-[15px] appearance-none"
+                  >
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
               </div>
 
               {conds.map((c, i) => (
@@ -210,18 +249,28 @@ export default function FamilyHistory() {
     );
   };
 
-  const handleSaveRecord = (hpid: string, relation: string, conds: Draft[]) => {
+  const handleSaveRecord = (
+    hpid: string,
+    relation: string,
+    birthday: string,
+    gender: string,
+    conds: Draft[]
+  ) => {
     const cleanHpid = hpid.startsWith("#") ? hpid : `#${hpid}`;
     const newConds: Condition[] = conds
       .filter((c) => c.name.trim().length > 0)
       .map((c) => ({ name: c.name.trim(), diagnosed: c.date.trim() || "—" }));
+
+    const age = birthday
+      ? Math.max(0, new Date().getFullYear() - new Date(birthday).getFullYear())
+      : 0;
 
     setMembers((prev) => {
       const existing = prev.find((m) => m.hpid === cleanHpid);
       if (existing) {
         return prev.map((m) =>
           m.id === existing.id
-            ? { ...m, relation, conditions: [...m.conditions, ...newConds] }
+            ? { ...m, relation, age: age || m.age, conditions: [...m.conditions, ...newConds] }
             : m
         );
       }
@@ -231,14 +280,15 @@ export default function FamilyHistory() {
           id: Date.now().toString(),
           name: cleanHpid,
           relation,
-          age: 0,
+          age,
           hpid: cleanHpid,
-          avatar: `https://api.dicebear.com/7.x/personas/svg?seed=${cleanHpid}`,
+          avatar: "",
           active: false,
           conditions: newConds,
         },
       ];
     });
+    void gender;
   };
 
   return (
@@ -259,10 +309,8 @@ export default function FamilyHistory() {
               className="rounded-2xl border border-border/60 bg-card overflow-hidden"
             >
               <div className="flex items-start gap-3 p-4">
-                <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/40">
-                  <img src={m.avatar} alt={m.name} className="w-full h-full object-cover" />
-                </div>
                 <div className="flex-1 min-w-0">
+
                   <p className="text-[12px] text-muted-foreground">
                     {m.relation} · {m.age} Years
                   </p>
