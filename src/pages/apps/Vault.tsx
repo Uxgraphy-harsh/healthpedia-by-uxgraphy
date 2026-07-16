@@ -78,6 +78,8 @@ export default function Vault() {
   const [folderQuery, setFolderQuery] = useState("");
   const [showSort, setShowSort] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("newest");
+  const [openReportId, setOpenReportId] = useState<string | null>(null);
+  const openReport = openReportId ? openFolder?.reports?.find((r) => r.id === openReportId) ?? null : null;
 
   const openFolder = openFolderId ? folders.find((f) => f.id === openFolderId) : null;
 
