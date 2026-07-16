@@ -30,6 +30,8 @@ import Childcare from "./pages/apps/Childcare";
 import Contacts from "./pages/apps/Contacts";
 import Insurance from "./pages/apps/Insurance";
 import Notes from "./pages/apps/Notes";
+import Impact from "./pages/apps/Impact";
+import Shop from "./pages/apps/Shop";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +68,8 @@ const App = () => (
               <Route path="/apps/contacts" element={<Contacts />} />
               <Route path="/apps/insurance" element={<Insurance />} />
               <Route path="/apps/notes" element={<Notes />} />
+              <Route path="/apps/impact" element={<Impact />} />
+              <Route path="/apps/shop" element={<Shop />} />
 
               {/* Legacy redirects */}
               <Route path="/home" element={<Navigate to="/chat" replace />} />
