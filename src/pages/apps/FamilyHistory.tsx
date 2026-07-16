@@ -315,9 +315,7 @@ export default function FamilyHistory() {
                     {m.relation} · {m.age} Years
                   </p>
                   <p className="text-[16px] font-bold leading-tight truncate">{m.name}</p>
-                  <p className="text-[12px] text-[#F66B9A] underline underline-offset-2 mt-0.5">
-                    HPID: {m.hpid}
-                  </p>
+
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   <button
