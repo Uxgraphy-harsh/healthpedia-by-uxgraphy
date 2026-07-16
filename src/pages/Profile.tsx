@@ -228,7 +228,7 @@ export default function Profile() {
 
   return (
     <div className="mobile-container pb-28">
-      <PageHeader title="Profile" subtitle="Manage your health identity" icon={User} />
+      <PageHeader title="Profile" subtitle="Manage your health identity" icon={User} showBack />
 
       <div className="px-5 space-y-3 mt-3">
         {/* ─── PROFILE HEADER ─── */}
