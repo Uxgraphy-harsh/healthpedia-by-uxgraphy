@@ -1,8 +1,9 @@
 import {
   FolderOpen, ShieldCheck, Users, CalendarCheck, Baby, Droplets,
   Activity, AlertTriangle, Contact, Stethoscope, BellRing, Pill,
-  StickyNote, Leaf, ShoppingBag, type LucideIcon
+  StickyNote, Leaf, ShoppingBag, Wallet, type LucideIcon
 } from "lucide-react";
+
 
 export interface MiniApp {
   id: string;
@@ -33,6 +34,8 @@ export const miniApps: MiniApp[] = [
   { id: "notes",         name: "Notes",          tagline: "Tag anything with @",   path: "/apps/notes",         icon: StickyNote,     bg: "bg-[#EAB308]/12",  fg: "text-[#EAB308]",  category: "utility" },
   { id: "impact",        name: "Impact",         tagline: "Environmental tracker", path: "/apps/impact",        icon: Leaf,           bg: "bg-[#2F7D5B]/12",  fg: "text-[#2F7D5B]",  category: "tracking" },
   { id: "shop",          name: "Shop",           tagline: "Period & wellness care",path: "/apps/shop",          icon: ShoppingBag,    bg: "bg-[#EF4E3B]/12",  fg: "text-[#EF4E3B]",  category: "utility" },
+  { id: "budget",        name: "Health Budget",  tagline: "Expenses & analytics",  path: "/apps/budget",        icon: Wallet,         bg: "bg-[#0EA5A5]/12",  fg: "text-[#0EA5A5]",  category: "utility", lockable: true },
+
 ];
 
 export const getMiniApp = (id: string) => miniApps.find((a) => a.id === id);
