@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from "react";
-import { Plus, ChevronRight, ArrowLeft, FileText, Upload, X } from "lucide-react";
+import { Plus, ChevronRight, ArrowLeft, FileText, Upload, X, Sparkles, Share2 } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
 import { sampleSymptoms } from "@/data/sampleData";
