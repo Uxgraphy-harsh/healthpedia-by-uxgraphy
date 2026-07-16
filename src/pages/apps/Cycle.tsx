@@ -371,7 +371,7 @@ export default function Cycle() {
             active: tab === "calendar",
             onClick: () => setTab("calendar"),
           },
-          { icon: Plus, label: "Log Now", primary: true, onClick: () => {} },
+          { icon: Plus, label: "Log Now", primary: true, onClick: goLogNow },
         ]}
       >
         {tab === "dashboard" && (
@@ -387,7 +387,7 @@ export default function Cycle() {
                 currentDay={currentDay}
                 cycleLen={cycleLen}
                 periodLen={periodLen}
-                onLog={() => {}}
+                onLog={goLogNow}
                 centerLabel={{
                   date: dateStr,
                   sub: `Period in ${daysUntilPeriod} days`,
@@ -439,8 +439,8 @@ export default function Cycle() {
           <div>
             <div className="mt-2 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-neutral-900">Calendar</h2>
-              <button className="flex items-center gap-1 text-lg text-neutral-700">
-                {today.getFullYear()}
+              <button onClick={() => setYearOpen(true)} className="flex items-center gap-1 text-lg text-neutral-700">
+                {calYear}
                 <ChevronDown className="h-5 w-5" />
               </button>
             </div>
@@ -452,29 +452,55 @@ export default function Cycle() {
               ))}
             </div>
 
-            <MonthCalendar
-              year={today.getFullYear()}
-              month={today.getMonth()}
-              today={today}
-              periodDays={[1, 2, 3, 4, 5]}
-              predictedPeriod={[29, 30, 31]}
-            />
-            <MonthCalendar
-              year={today.getFullYear()}
-              month={today.getMonth() + 1}
-              today={today}
-              periodDays={[]}
-              predictedPeriod={[1, 2]}
-            />
+            {Array.from({ length: 12 }, (_, m) => (
+              <MonthCalendar
+                key={m}
+                year={calYear}
+                month={m}
+                today={today}
+                periodDays={periodDaysForMonth(calYear, m)}
+                predictedPeriod={[]}
+              />
+            ))}
 
             {/* Floating log button */}
             <button
+              onClick={goLogPeriod}
               className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
               style={{ background: CTA }}
             >
               <Plus className="h-5 w-5" strokeWidth={2.5} />
               <span className="font-semibold">Log your period</span>
             </button>
+
+            {/* Year picker sheet */}
+            {yearOpen && (
+              <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setYearOpen(false)}>
+                <div className="absolute bottom-0 left-0 right-0 mx-auto max-w-[430px] rounded-t-3xl bg-white p-5 pb-10"
+                  onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center">
+                    <button onClick={() => setYearOpen(false)} className="w-10 h-10 flex items-center justify-center -ml-2">
+                      <ChevronDown className="w-6 h-6 rotate-90" />
+                    </button>
+                    <h2 className="flex-1 text-center text-lg font-semibold pr-8">Select Year</h2>
+                  </div>
+                  <div className="mt-6 space-y-3">
+                    {[today.getFullYear() - 2, today.getFullYear() - 1, today.getFullYear(), today.getFullYear() + 1].map((y) => {
+                      const sel = y === calYear;
+                      const dist = Math.abs(y - today.getFullYear());
+                      const opacity = sel ? 1 : dist === 0 ? 1 : dist === 1 ? 0.55 : 0.3;
+                      return (
+                        <button key={y} onClick={() => { setCalYear(y); setYearOpen(false); }}
+                          className="w-full h-16 rounded-full flex items-center justify-center text-3xl font-semibold"
+                          style={{ background: sel ? "#FFF3E4" : "transparent", color: CTA, opacity }}>
+                          {y}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </MiniAppShell>
