@@ -163,7 +163,7 @@ export default function Allergies({ embedded }: EmbeddedProps = {}) {
         }}
         existingNames={groups.flatMap((g) => g.items.map((i) => i.name))}
       />
-    </MiniAppShell>
+    </AppFrame>
   );
 }
 
