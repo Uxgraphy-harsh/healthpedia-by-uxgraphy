@@ -64,7 +64,7 @@ export default function MiniAppShell({
             aria-label="Switch mini app"
           >
             <Icon className={`h-5 w-5 ${fg}`} />
-            <span className={`text-[13px] font-semibold ${fg} pr-1`}>{name}</span>
+            <span className="text-[13px] font-semibold text-black pr-1">{name}</span>
           </button>
           <button
             onClick={() => navigate("/")}
