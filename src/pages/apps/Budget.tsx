@@ -348,9 +348,21 @@ function BudgetRing({ pct, over }: { pct: number; over: boolean }) {
 function ExpensesList({ expenses, onRemove }: {
   expenses: Expense[]; onRemove: (id: string) => void;
 }) {
+  const [filter, setFilter] = useState<string>("all");
+
+  const activeCatIds = useMemo(() => {
+    const set = new Set(expenses.map((e) => e.categoryId));
+    return CATEGORIES.filter((c) => set.has(c.id));
+  }, [expenses]);
+
+  const filtered = useMemo(
+    () => (filter === "all" ? expenses : expenses.filter((e) => e.categoryId === filter)),
+    [expenses, filter]
+  );
+
   const grouped = useMemo(() => {
     const map = new Map<string, Expense[]>();
-    [...expenses]
+    [...filtered]
       .sort((a, b) => (a.date < b.date ? 1 : -1))
       .forEach((e) => {
         const list = map.get(e.date) ?? [];
@@ -358,7 +370,7 @@ function ExpensesList({ expenses, onRemove }: {
         map.set(e.date, list);
       });
     return [...map.entries()];
-  }, [expenses]);
+  }, [filtered]);
 
   if (expenses.length === 0) {
     return (
@@ -370,10 +382,38 @@ function ExpensesList({ expenses, onRemove }: {
     );
   }
 
+  const filterTotal = filtered.reduce((a, b) => a + b.amount, 0);
+
   return (
     <div className="pb-24">
       <h2 className="mt-2 text-2xl font-bold text-neutral-900">All expenses</h2>
+      <p className="mt-1 text-sm text-neutral-500">
+        {filtered.length} {filtered.length === 1 ? "entry" : "entries"} · {currency(filterTotal)}
+      </p>
+
+      {/* Category filter chips */}
+      <div className="mt-3 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex w-max gap-2">
+          <FilterChip
+            label="All"
+            active={filter === "all"}
+            color={TEAL}
+            onClick={() => setFilter("all")}
+          />
+          {activeCatIds.map((c) => (
+            <FilterChip
+              key={c.id}
+              label={c.label}
+              active={filter === c.id}
+              color={c.color}
+              onClick={() => setFilter(c.id)}
+            />
+          ))}
+        </div>
+      </div>
+
       <div className="mt-4 space-y-5">
+
         {grouped.map(([date, list]) => (
           <div key={date}>
             <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">
