@@ -61,6 +61,8 @@ const App = () => (
               <Route path="/apps/symptoms" element={<Symptoms />} />
               <Route path="/apps/cycle" element={<Cycle />} />
               <Route path="/apps/cycle/onboarding" element={<CycleOnboarding />} />
+              <Route path="/apps/cycle/log" element={<CycleLogNow />} />
+              <Route path="/apps/cycle/log-period" element={<CycleLogPeriod />} />
               <Route path="/apps/fitness" element={<Fitness />} />
               <Route path="/apps/allergies" element={<Allergies />} />
               <Route path="/apps/family" element={<FamilyHistory />} />
