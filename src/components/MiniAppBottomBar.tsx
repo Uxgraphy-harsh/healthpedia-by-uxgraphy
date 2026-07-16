@@ -6,7 +6,9 @@ export interface MiniAppAction {
   onClick?: () => void;
   primary?: boolean;
   active?: boolean;
+  badge?: number;
 }
+
 
 interface Props {
   actions: MiniAppAction[];
