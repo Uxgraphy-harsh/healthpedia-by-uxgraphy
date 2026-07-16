@@ -35,7 +35,8 @@ export default function MiniAppShell({
   const navigate = useNavigate();
   const { hasPin, lockedApps, toggleAppLock } = useAppLock();
   const isLocked = lockedApps.includes(appId);
-  const bar = bottomActions ?? defaultBottomActions[appId];
+  const barSource = bottomActions ?? defaultBottomActions[appId];
+  const bar = barSource && barSource.length > 0 ? barSource : null;
 
   const [showLauncher, setShowLauncher] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);

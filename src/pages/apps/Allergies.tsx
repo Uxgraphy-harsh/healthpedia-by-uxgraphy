@@ -111,6 +111,7 @@ export default function Allergies() {
       icon={app.icon}
       bg={app.bg}
       fg={app.fg}
+      bottomActions={[]}
     >
       <div className="space-y-6 pb-32">
         {groups.map((g) => (
