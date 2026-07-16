@@ -1047,7 +1047,6 @@ export default function Prescriptions({ embedded }: EmbeddedProps = {}) {
             </div>
           </div>
         )}
-      </MiniAppShell>
-    </AppLockGate>
+    </AppFrame>
   );
 }
