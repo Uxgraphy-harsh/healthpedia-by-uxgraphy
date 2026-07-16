@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
-import { Calendar as CalendarIcon, LayoutDashboard, Plus, ChevronDown, Info } from "lucide-react";
+import { Calendar as CalendarIcon, LayoutDashboard, Plus, ChevronDown, Info, BarChart3 } from "lucide-react";
 
 // ─── Colors (burgundy palette from reference) ───────────────────────────────
 const BURGUNDY = "#5B0A0A";
