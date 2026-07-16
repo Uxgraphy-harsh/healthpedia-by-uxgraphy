@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { FolderOpen, Folder, Plus, FileText, Image as ImageIcon, ChevronRight, Upload, StickyNote } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
@@ -47,14 +48,6 @@ export default function Vault() {
         icon={app.icon}
         bg={app.bg}
         fg={app.fg}
-        action={
-          <button
-            onClick={() => setShowAdd(true)}
-            className="w-10 h-10 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shrink-0"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        }
       >
         {/* Tabs */}
         <div className="flex gap-2 mb-4">
@@ -144,6 +137,18 @@ export default function Vault() {
         </div>
 
         {/* Add folder sheet */}
+        {/* Floating add button */}
+        <motion.button
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.15 }}
+          onClick={() => setShowAdd(true)}
+          className="fixed bottom-24 right-5 z-40 w-14 h-14 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shadow-lg shadow-[#F66B9A]/30 active:scale-95"
+          aria-label="Add document"
+        >
+          <Plus className="w-6 h-6" strokeWidth={2.5} />
+        </motion.button>
+
         {showAdd && (
           <div
             className="fixed inset-0 z-50 bg-black/40 flex items-end"
