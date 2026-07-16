@@ -931,20 +931,8 @@ export default function Prescriptions({ embedded }: EmbeddedProps = {}) {
   const openRx = rx.find((r) => r.id === openId) || null;
 
   return (
-    <AppLockGate appId="prescriptions">
-      <MiniAppShell
-        appId="prescriptions"
-        name={app.name}
-        tagline={app.tagline}
-        icon={app.icon}
-        bg={app.bg}
-        fg={app.fg}
-        bottomActions={[
-          { icon: Pill, label: "All", active: true },
-          { icon: User, label: "Doctors" },
-          { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
-        ]}
-      >
+    <AppFrame appId="prescriptions" embedded={embedded}>
+
         <div className="space-y-3">
           {rx.map((r) => (
             <button
