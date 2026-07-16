@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Plus, User, Building2, Calendar, Pill, Search as SearchIcon, X, ArrowLeft } from "lucide-react";
+import { Plus, User, Building2, Calendar, Pill, Search as SearchIcon, X, ArrowLeft, ChevronRight } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
@@ -8,8 +8,10 @@ interface Rx {
   id: string;
   title: string;
   doctor: string;
+  specialty: string;
   hospital: string;
   date: string;
+  items: number;
   tags: string[];
 }
 
@@ -18,19 +20,24 @@ const initialRx: Rx[] = [
     id: "p1",
     title: "Metformin 500mg + Vitamin D3",
     doctor: "Dr. Sharma",
+    specialty: "Endocrinology",
     hospital: "Apollo Clinic",
     date: "28 Feb 2026",
+    items: 3,
     tags: ["Diabetes"],
   },
   {
     id: "p2",
     title: "Atorvastatin 10mg",
     doctor: "Dr. Mehta",
+    specialty: "Cardiology",
     hospital: "Fortis",
     date: "10 Jan 2026",
+    items: 2,
     tags: ["Cardio"],
   },
 ];
+
 
 export default function Prescriptions() {
   const app = getMiniApp("prescriptions")!;
@@ -71,23 +78,22 @@ export default function Prescriptions() {
       >
         <div className="space-y-3">
           {rx.map((r) => (
-            <div key={r.id} className="bg-card rounded-2xl p-4 border border-border/40">
-              <p className="font-semibold text-sm mb-2">{r.title}</p>
-              <div className="space-y-1 text-[11px] text-muted-foreground">
-                <div className="flex items-center gap-1.5"><User className="w-3 h-3" /> {r.doctor}</div>
-                <div className="flex items-center gap-1.5"><Building2 className="w-3 h-3" /> {r.hospital}</div>
-                <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {r.date}</div>
+            <button
+              key={r.id}
+              className="w-full text-left bg-card rounded-2xl px-4 py-3.5 border border-border/60 flex items-center gap-3"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] text-muted-foreground">{r.date}</p>
+                <p className="font-semibold text-[15px] mt-0.5 truncate">
+                  {r.doctor} — {r.specialty}
+                </p>
+                <p className="text-[12px] text-muted-foreground mt-0.5">{r.items} items</p>
               </div>
-              <div className="flex gap-1.5 mt-3">
-                {r.tags.map((t) => (
-                  <span key={t} className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#60A5FA]/10 text-[#60A5FA]">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+            </button>
           ))}
         </div>
+
 
         {/* Floating Add prescription button */}
         {!showAdd && !showSearch && (
@@ -183,13 +189,18 @@ export default function Prescriptions() {
               ) : (
                 <div className="space-y-3">
                   {results.map((r) => (
-                    <div key={r.id} className="bg-card rounded-2xl p-4 border border-border/40">
-                      <p className="font-semibold text-sm mb-2">{r.title}</p>
-                      <div className="space-y-1 text-[11px] text-muted-foreground">
-                        <div className="flex items-center gap-1.5"><User className="w-3 h-3" /> {r.doctor}</div>
-                        <div className="flex items-center gap-1.5"><Building2 className="w-3 h-3" /> {r.hospital}</div>
-                        <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {r.date}</div>
+                    <div
+                      key={r.id}
+                      className="bg-card rounded-2xl px-4 py-3.5 border border-border/60 flex items-center gap-3"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] text-muted-foreground">{r.date}</p>
+                        <p className="font-semibold text-[15px] mt-0.5 truncate">
+                          {r.doctor} — {r.specialty}
+                        </p>
+                        <p className="text-[12px] text-muted-foreground mt-0.5">{r.items} items</p>
                       </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
                     </div>
                   ))}
                 </div>
