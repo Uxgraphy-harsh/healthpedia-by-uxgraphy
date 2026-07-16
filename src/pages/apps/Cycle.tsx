@@ -360,16 +360,27 @@ export default function Cycle() {
   const cycleLen: number = onboarding?.cycleDays ?? 28;
   const periodLen: number = onboarding?.periodDays ?? 5;
 
-  // Stored period days from Log Period screen
-  const storedPeriodDays: string[] = useMemo(() => {
+  // Stored period days from Log Period screen (mutable via calendar taps)
+  const [storedPeriodDays, setStoredPeriodDays] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem("cycle_period_days") || "[]"); }
     catch { return []; }
-  }, [tab]);
+  });
   const periodDaysForMonth = (y: number, m: number) =>
     storedPeriodDays
       .map((iso) => new Date(iso))
       .filter((d) => d.getFullYear() === y && d.getMonth() === m)
       .map((d) => d.getDate());
+  const togglePeriodDay = (y: number, m: number, d: number) => {
+    const iso = new Date(y, m, d).toISOString().slice(0, 10);
+    setStoredPeriodDays((prev) => {
+      const next = prev.some((s) => s.slice(0, 10) === iso)
+        ? prev.filter((s) => s.slice(0, 10) !== iso)
+        : [...prev, iso];
+      localStorage.setItem("cycle_period_days", JSON.stringify(next));
+      return next;
+    });
+  };
+
 
   const today = new Date();
   const currentDay = 16; // mock — would be derived from last-period date
