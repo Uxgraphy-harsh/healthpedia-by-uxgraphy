@@ -1,13 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Stack, ListChecks, FolderOpen, UserCircle } from "@phosphor-icons/react";
+import { House, SquaresFour, ListChecks, UserCircle } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import askAiFlower from "@/assets/ask-ai-flower.svg";
 
 const tabs = [
-  { path: "/dashboard", icon: Stack, label: "Summary" },
-  { path: "/reminders", icon: ListChecks, label: "Reminders" },
+  { path: "/home", icon: House, label: "Home" },
+  { path: "/apps", icon: SquaresFour, label: "Apps" },
   { path: "/chat", icon: null, label: "Ask AI", isCenter: true },
-  { path: "/records", icon: FolderOpen, label: "Records" },
+  { path: "/reminders", icon: ListChecks, label: "Reminders" },
   { path: "/profile", icon: UserCircle, label: "Profile" },
 ];
 
@@ -18,11 +18,11 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="max-w-md mx-auto relative">
-        {/* Pink radial gradient overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "radial-gradient(ellipse at 50% 0%, hsl(340 100% 80% / 0.15), transparent 70%)",
+            background:
+              "radial-gradient(ellipse at 50% 0%, hsl(340 100% 80% / 0.15), transparent 70%)",
           }}
         />
         <div className="bg-card/90 backdrop-blur-xl border-t border-border/30 px-2 pb-safe relative">
@@ -36,7 +36,6 @@ export default function BottomNav() {
                     key={tab.path}
                     onClick={() => navigate(tab.path)}
                     className="flex flex-col items-center px-3 relative"
-                    style={{ marginBottom: 0 }}
                   >
                     <motion.div
                       whileTap={{ scale: 0.92 }}
@@ -52,10 +51,7 @@ export default function BottomNav() {
                       />
                     </motion.div>
                     <div className="h-6" />
-                    <span
-                      className="text-[10px] font-semibold"
-                      style={{ color: "#60A5FA" }}
-                    >
+                    <span className="text-[10px] font-semibold" style={{ color: "#60A5FA" }}>
                       {tab.label}
                     </span>
                   </button>
@@ -79,16 +75,10 @@ export default function BottomNav() {
                     <tab.icon
                       size={22}
                       weight={active ? "fill" : "regular"}
-                      className={`transition-colors ${
-                        active ? "text-foreground" : "text-muted-foreground"
-                      }`}
+                      className={`transition-colors ${active ? "text-foreground" : "text-muted-foreground"}`}
                     />
                   )}
-                  <span
-                    className={`text-[10px] font-medium ${
-                      active ? "text-foreground" : "text-muted-foreground"
-                    }`}
-                  >
+                  <span className={`text-[10px] font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>
                     {tab.label}
                   </span>
                 </button>
