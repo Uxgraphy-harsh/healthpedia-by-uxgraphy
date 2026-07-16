@@ -6,9 +6,10 @@ import {
   Wallet, BarChart3, List, Plus, ArrowUpRight, ArrowDownRight,
   Stethoscope, Pill, FlaskConical, ShieldCheck, HeartPulse, Hospital,
   Sparkles, Trash2, X, Delete, Check, Calendar as CalendarIcon,
-  Settings2,
+  Settings2, ChevronDown,
 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+
 
 
 const TEAL = "#0EA5A5";
@@ -98,7 +99,7 @@ const SEED: Expense[] = [
   { id: "s3", title: "Blood test — CBC",        amount: 620, categoryId: "tests",    date: todayISO(), type: "expense" },
 ];
 
-type View = "overview" | "expenses" | "analytics";
+type View = "overview" | "analytics";
 
 /* ---------------- Main ---------------- */
 
@@ -160,10 +161,7 @@ export default function Budget() {
       bg={app.bg}
       fg={app.fg}
       bottomActions={[
-        { icon: Wallet,    label: "Overview",  active: view === "overview",  onClick: () => setView("overview") },
-        { icon: List,      label: "Expenses",  active: view === "expenses",  onClick: () => setView("expenses"),
-          badge: monthExpenses.length },
-        { icon: Plus,      label: "Add",       primary: true, onClick: () => setAddOpen(true) },
+        { icon: Wallet,    label: "Home",      active: view === "overview",  onClick: () => setView("overview") },
         { icon: BarChart3, label: "Analytics", active: view === "analytics", onClick: () => setView("analytics") },
       ]}
     >
@@ -176,16 +174,20 @@ export default function Budget() {
         />
       )}
 
-      {view === "expenses" && (
-        <ExpensesList
-          expenses={expenses}
-          onRemove={removeExpense}
-          resolveCat={cats.byId}
-          categories={cats.all}
-        />
-      )}
       {view === "analytics" && (
         <Analytics expenses={expenses.filter((e) => e.type === "expense")} resolveCat={cats.byId} />
+      )}
+
+      {/* Floating Add Expense button (like period tracker's Log) */}
+      {!addOpen && (
+        <button
+          onClick={() => setAddOpen(true)}
+          className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+          style={{ background: "#171717" }}
+        >
+          <Plus className="h-5 w-5" strokeWidth={2.5} />
+          <span className="font-semibold">Add expense</span>
+        </button>
       )}
 
       <AddExpenseFullScreen
@@ -208,6 +210,7 @@ export default function Budget() {
   );
 }
 
+
 /* ---------------- Category chip renderer ---------------- */
 
 function CatGlyph({ cat, className, style }: { cat: Category; className?: string; style?: React.CSSProperties }) {
@@ -220,6 +223,33 @@ function CatGlyph({ cat, className, style }: { cat: Category; className?: string
 
 /* ---------------- Overview (recent + history + category filters) ---------------- */
 
+type RangeKey = "week" | "month" | "last" | "all";
+const RANGE_LABELS: Record<RangeKey, string> = {
+  week: "This week",
+  month: "This month",
+  last: "Last month",
+  all: "All time",
+};
+
+function inRange(iso: string, range: RangeKey): boolean {
+  if (range === "all") return true;
+  const d = new Date(iso);
+  const now = new Date();
+  if (range === "week") {
+    const start = new Date(now);
+    const day = (start.getDay() + 6) % 7; // Mon-start
+    start.setDate(start.getDate() - day);
+    start.setHours(0, 0, 0, 0);
+    return d >= start;
+  }
+  if (range === "month") {
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  }
+  // last month
+  const lm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  return d.getFullYear() === lm.getFullYear() && d.getMonth() === lm.getMonth();
+}
+
 function Overview({
   expenses, resolveCat, categories, onRemove,
 }: {
@@ -229,21 +259,32 @@ function Overview({
   onRemove: (id: string) => void;
 }) {
   const [filter, setFilter] = useState<string>("all");
+  const [range, setRange] = useState<RangeKey>("month");
+  const [rangeOpen, setRangeOpen] = useState(false);
+
+  const rangedAll = useMemo(
+    () => expenses.filter((e) => inRange(e.date, range)),
+    [expenses, range]
+  );
 
   const activeCats = useMemo(() => {
-    const set = new Set(expenses.map((e) => e.categoryId));
+    const set = new Set(rangedAll.map((e) => e.categoryId));
     return categories.filter((c) => set.has(c.id));
-  }, [expenses, categories]);
+  }, [rangedAll, categories]);
 
   const filtered = useMemo(
-    () => (filter === "all" ? expenses : expenses.filter((e) => e.categoryId === filter)),
-    [expenses, filter]
+    () => (filter === "all" ? rangedAll : rangedAll.filter((e) => e.categoryId === filter)),
+    [rangedAll, filter]
   );
 
   const sorted = useMemo(
     () => [...filtered].sort((a, b) => (a.date < b.date ? 1 : -1)),
     [filtered]
   );
+
+  const total = sorted
+    .filter((e) => e.type === "expense")
+    .reduce((a, b) => a + b.amount, 0);
 
   const recent = sorted.slice(0, 3);
   const history = sorted.slice(3);
@@ -259,11 +300,45 @@ function Overview({
   }, [history]);
 
   return (
-    <div className="pb-24">
-      <h2 className="mt-2 text-2xl font-bold text-neutral-900">Transactions</h2>
-      <p className="mt-1 text-sm text-neutral-500">
-        {expenses.length} {expenses.length === 1 ? "entry" : "entries"} logged
-      </p>
+    <div className="pb-32">
+      {/* Total summary card with date-range selector */}
+      <div className="mt-2 rounded-3xl p-5 text-white shadow-sm"
+        style={{ background: `linear-gradient(135deg, ${DEEP}, ${TEAL})` }}>
+        <button
+          onClick={() => setRangeOpen((v) => !v)}
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur"
+        >
+          {RANGE_LABELS[range]} <ChevronDown className="h-3.5 w-3.5" />
+        </button>
+        <p className="mt-3 text-xs uppercase tracking-widest text-white/70">Total expenses</p>
+        <p className="mt-1 text-4xl font-bold tracking-tight">{currency(total)}</p>
+        <p className="mt-1 text-xs text-white/70">
+          {sorted.length} {sorted.length === 1 ? "transaction" : "transactions"}
+        </p>
+
+        <AnimatePresence>
+          {rangeOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+              className="mt-3 flex flex-wrap gap-2"
+            >
+              {(Object.keys(RANGE_LABELS) as RangeKey[]).map((k) => (
+                <button
+                  key={k}
+                  onClick={() => { setRange(k); setRangeOpen(false); }}
+                  className="rounded-full px-3 py-1 text-xs font-semibold"
+                  style={{
+                    background: range === k ? "#FFFFFF" : "rgba(255,255,255,0.15)",
+                    color: range === k ? DEEP : "#FFFFFF",
+                  }}
+                >
+                  {RANGE_LABELS[k]}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Category filters */}
       <div className="mt-4 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -279,8 +354,8 @@ function Overview({
       {sorted.length === 0 ? (
         <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-neutral-200 p-10 text-center">
           <Wallet className="h-10 w-10" style={{ color: TEAL }} />
-          <p className="mt-4 text-lg font-bold text-neutral-900">No transactions yet</p>
-          <p className="mt-1 text-sm text-neutral-500">Tap the + button to log your first one.</p>
+          <p className="mt-4 text-lg font-bold text-neutral-900">No transactions</p>
+          <p className="mt-1 text-sm text-neutral-500">Tap Add expense to log your first one.</p>
         </div>
       ) : (
         <>
@@ -320,6 +395,7 @@ function Overview({
   );
 }
 
+
 function TxRow({ e, cat, onRemove }: { e: Expense; cat: Category; onRemove: (id: string) => void }) {
   const isIncome = e.type === "income";
   return (
@@ -344,103 +420,7 @@ function TxRow({ e, cat, onRemove }: { e: Expense; cat: Category; onRemove: (id:
 }
 
 
-/* ---------------- Expenses list ---------------- */
 
-function ExpensesList({
-  expenses, onRemove, resolveCat, categories,
-}: {
-  expenses: Expense[]; onRemove: (id: string) => void;
-  resolveCat: (id: string) => Category;
-  categories: Category[];
-}) {
-  const [filter, setFilter] = useState<string>("all");
-
-  const activeCats = useMemo(() => {
-    const set = new Set(expenses.map((e) => e.categoryId));
-    return categories.filter((c) => set.has(c.id));
-  }, [expenses, categories]);
-
-  const filtered = useMemo(
-    () => (filter === "all" ? expenses : expenses.filter((e) => e.categoryId === filter)),
-    [expenses, filter]
-  );
-
-  const grouped = useMemo(() => {
-    const map = new Map<string, Expense[]>();
-    [...filtered].sort((a, b) => (a.date < b.date ? 1 : -1)).forEach((e) => {
-      const list = map.get(e.date) ?? [];
-      list.push(e);
-      map.set(e.date, list);
-    });
-    return [...map.entries()];
-  }, [filtered]);
-
-  if (expenses.length === 0) {
-    return (
-      <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-neutral-200 p-10 text-center">
-        <Wallet className="h-10 w-10" style={{ color: TEAL }} />
-        <p className="mt-4 text-lg font-bold text-neutral-900">No expenses yet</p>
-        <p className="mt-1 text-sm text-neutral-500">Tap the + button to log your first one.</p>
-      </div>
-    );
-  }
-
-  const filterTotal = filtered.reduce((a, b) => a + (b.type === "expense" ? b.amount : -b.amount), 0);
-
-  return (
-    <div className="pb-24">
-      <h2 className="mt-2 text-2xl font-bold text-neutral-900">All transactions</h2>
-      <p className="mt-1 text-sm text-neutral-500">
-        {filtered.length} {filtered.length === 1 ? "entry" : "entries"} · Net {currency(filterTotal)}
-      </p>
-
-      <div className="mt-3 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="flex w-max gap-2">
-          <FilterChip label="All" active={filter === "all"} color={TEAL} onClick={() => setFilter("all")} />
-          {activeCats.map((c) => (
-            <FilterChip key={c.id} label={c.label} active={filter === c.id} color={c.color}
-              onClick={() => setFilter(c.id)} />
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-4 space-y-5">
-        {grouped.map(([date, list]) => (
-          <div key={date}>
-            <p className="mb-2 text-xs uppercase tracking-widest text-neutral-500">
-              {new Date(date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
-            </p>
-            <div className="space-y-2">
-              {list.map((e) => {
-                const cat = resolveCat(e.categoryId);
-                const isIncome = e.type === "income";
-                return (
-                  <div key={e.id} className="flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl text-lg"
-                      style={{ background: `${cat.color}22`, color: cat.color }}>
-                      <CatGlyph cat={cat} className="h-4 w-4" />
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="truncate text-sm font-semibold text-neutral-900">{e.title || cat.label}</p>
-                      <p className="text-xs text-neutral-500">{cat.label}{e.note ? ` · ${e.note}` : ""}</p>
-                    </div>
-                    <p className="text-sm font-bold" style={{ color: isIncome ? "#16A34A" : "#0A0A0A" }}>
-                      {isIncome ? "+" : ""}{currency(e.amount)}
-                    </p>
-                    <button onClick={() => onRemove(e.id)} aria-label="Delete"
-                      className="ml-1 rounded-full p-1.5 text-neutral-400 hover:text-red-500">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function FilterChip({ label, active, color, onClick }: {
   label: string; active: boolean; color: string; onClick: () => void;
