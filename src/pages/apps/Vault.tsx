@@ -48,14 +48,6 @@ export default function Vault() {
         icon={app.icon}
         bg={app.bg}
         fg={app.fg}
-        action={
-          <button
-            onClick={() => setShowAdd(true)}
-            className="w-10 h-10 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shrink-0"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        }
       >
         {/* Tabs */}
         <div className="flex gap-2 mb-4">
