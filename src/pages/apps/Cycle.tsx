@@ -460,8 +460,10 @@ export default function Cycle() {
             </div>
 
             {/* Phase info card */}
-            <div
-              className="mt-6 flex items-center gap-4 rounded-2xl p-4"
+            <button
+              type="button"
+              onClick={() => navigate(`/apps/cycle/phase?phase=${phase}`)}
+              className="mt-6 flex w-full items-center gap-4 rounded-2xl p-4 text-left transition active:scale-[0.99]"
               style={{ background: `${PHASE_COLORS[phase]}18` }}
             >
               <div className="flex-1">
@@ -477,7 +479,6 @@ export default function Cycle() {
                   </span>
                   <span>What does this mean?</span>
                 </div>
-
               </div>
               <div
                 className="flex h-14 w-14 items-center justify-center rounded-full"
@@ -488,7 +489,7 @@ export default function Cycle() {
                 {phase === "follicular" && <FlowerGlyph />}
                 {phase === "ovular" && <SparkGlyph />}
               </div>
-            </div>
+            </button>
           </div>
         )}
 
