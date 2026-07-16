@@ -67,7 +67,6 @@ export default function Vault() {
         fg={app.fg}
         bottomActions={[
           { icon: FolderOpen, label: "Files", active: true },
-          { icon: Plus, label: "New", primary: true, onClick: () => setShowAdd(true) },
           { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
         ]}
       >
