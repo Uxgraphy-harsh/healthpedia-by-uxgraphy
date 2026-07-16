@@ -306,6 +306,8 @@ export default function Cycle() {
   }, [navigate]);
 
   const [tab, setTab] = useState<"dashboard" | "calendar">("dashboard");
+  const [yearOpen, setYearOpen] = useState(false);
+  const [calYear, setCalYear] = useState(new Date().getFullYear());
 
   // Load onboarding data if present
   const onboarding = useMemo(() => {
@@ -318,6 +320,17 @@ export default function Cycle() {
   }, []);
   const cycleLen: number = onboarding?.cycleDays ?? 28;
   const periodLen: number = onboarding?.periodDays ?? 5;
+
+  // Stored period days from Log Period screen
+  const storedPeriodDays: string[] = useMemo(() => {
+    try { return JSON.parse(localStorage.getItem("cycle_period_days") || "[]"); }
+    catch { return []; }
+  }, [tab]);
+  const periodDaysForMonth = (y: number, m: number) =>
+    storedPeriodDays
+      .map((iso) => new Date(iso))
+      .filter((d) => d.getFullYear() === y && d.getMonth() === m)
+      .map((d) => d.getDate());
 
   const today = new Date();
   const currentDay = 16; // mock — would be derived from last-period date
@@ -332,6 +345,9 @@ export default function Cycle() {
 
   // Storage name greeting
   const name = (localStorage.getItem("user_display_name") || "there").toUpperCase();
+
+  const goLogNow = () => navigate("/apps/cycle/log");
+  const goLogPeriod = () => navigate("/apps/cycle/log-period");
 
   return (
     <AppLockGate appId="cycle">
