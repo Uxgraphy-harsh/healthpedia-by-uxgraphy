@@ -122,6 +122,18 @@ function AddRecordSheet({
                 />
               </div>
 
+              <div className="rounded-2xl border border-border/70 px-4 py-3">
+                <label className="text-[12px] text-muted-foreground">
+                  Relation<span className="text-[#F66B9A]">*</span>
+                </label>
+                <input
+                  value={relation}
+                  onChange={(e) => setRelation(e.target.value)}
+                  placeholder="e.g. Father, Mother, Sister"
+                  className="w-full bg-transparent outline-none text-[15px] placeholder:text-muted-foreground/60"
+                />
+              </div>
+
               {conds.map((c, i) => (
                 <div key={i} className="space-y-2">
                   <div className="flex items-center justify-between px-1">
