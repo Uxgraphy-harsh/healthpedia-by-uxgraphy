@@ -161,10 +161,7 @@ export default function Budget() {
       bg={app.bg}
       fg={app.fg}
       bottomActions={[
-        { icon: Wallet,    label: "Overview",  active: view === "overview",  onClick: () => setView("overview") },
-        { icon: List,      label: "Expenses",  active: view === "expenses",  onClick: () => setView("expenses"),
-          badge: monthExpenses.length },
-        { icon: Plus,      label: "Add",       primary: true, onClick: () => setAddOpen(true) },
+        { icon: Wallet,    label: "Home",      active: view === "overview",  onClick: () => setView("overview") },
         { icon: BarChart3, label: "Analytics", active: view === "analytics", onClick: () => setView("analytics") },
       ]}
     >
@@ -177,16 +174,20 @@ export default function Budget() {
         />
       )}
 
-      {view === "expenses" && (
-        <ExpensesList
-          expenses={expenses}
-          onRemove={removeExpense}
-          resolveCat={cats.byId}
-          categories={cats.all}
-        />
-      )}
       {view === "analytics" && (
         <Analytics expenses={expenses.filter((e) => e.type === "expense")} resolveCat={cats.byId} />
+      )}
+
+      {/* Floating Add Expense button (like period tracker's Log) */}
+      {!addOpen && (
+        <button
+          onClick={() => setAddOpen(true)}
+          className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+          style={{ background: "#171717" }}
+        >
+          <Plus className="h-5 w-5" strokeWidth={2.5} />
+          <span className="font-semibold">Add expense</span>
+        </button>
       )}
 
       <AddExpenseFullScreen
@@ -208,6 +209,7 @@ export default function Budget() {
     </MiniAppShell>
   );
 }
+
 
 /* ---------------- Category chip renderer ---------------- */
 
