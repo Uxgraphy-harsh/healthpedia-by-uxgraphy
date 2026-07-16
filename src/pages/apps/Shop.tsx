@@ -640,10 +640,11 @@ function OrderDetailView({ order, onBack, onTrack, onHelp }: {
   const delivered = order.status === "delivered";
   const shipped = order.status === "shipped";
   const verifying = order.status === "verifying";
+  const topBorder = rejected ? ERR : delivered ? OK : "#E5E5E5";
   return (
     <div className="pb-32">
       <SubHeader title={`Order #${order.id}`} onBack={onBack} />
-      <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-4">
+      <div className="mt-4 rounded-2xl border bg-white p-4" style={{ borderColor: topBorder, borderWidth: rejected || delivered ? 1.5 : 1 }}>
         {rejected ? (
           <>
             <p className="text-lg font-bold" style={{ color: ERR }}>Rejected</p>
@@ -651,7 +652,7 @@ function OrderDetailView({ order, onBack, onTrack, onHelp }: {
           </>
         ) : delivered ? (
           <>
-            <p className="text-lg font-bold text-neutral-900">Hope you&apos;re enjoying your order.</p>
+            <p className="text-lg font-bold text-neutral-900">Hope you&apos;re enjoying your reward.</p>
             <p className="mt-1 text-sm font-semibold" style={{ color: OK }}>Delivered {order.deliveredOn ?? "Tue"}</p>
           </>
         ) : (
@@ -666,6 +667,7 @@ function OrderDetailView({ order, onBack, onTrack, onHelp }: {
         )}
         <ProgressBar status={order.status} className="mt-4" />
       </div>
+
 
       <div className="mt-4 rounded-2xl border border-neutral-200 bg-white p-4">
         <p className="text-sm font-bold text-neutral-900">Delivery Details</p>
