@@ -61,11 +61,7 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
     A(Dna, "Risk"),
     A(Info, "About"),
   ],
-  childcare: [
-    A(Baby, "Kids", { active: true }),
-    A(Syringe, "Vaccines"),
-    A(TrendingUp, "Growth"),
-  ],
+  childcare: [],
 
   contacts: [
     A(User, "All", { active: true }),
