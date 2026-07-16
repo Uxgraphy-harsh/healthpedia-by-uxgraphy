@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Upload, Search as SearchIcon, FolderOpen, X, ArrowLeft, MoreHorizontal, SlidersHorizontal, FileText, Image as ImageIcon, ChevronRight, Check } from "lucide-react";
+import { useState, useMemo, useRef } from "react";
+import { Upload, Search as SearchIcon, FolderOpen, X, ArrowLeft, MoreHorizontal, SlidersHorizontal, FileText, Image as ImageIcon, ChevronRight, Check, Sparkles } from "lucide-react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
@@ -70,7 +70,9 @@ export default function Vault() {
   const app = getMiniApp("vault")!;
   const [folders, setFolders] = useState(initialFolders);
   const [showAdd, setShowAdd] = useState(false);
-  const [newName, setNewName] = useState("");
+  const [condition, setCondition] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: number; type: string }[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>([]);
@@ -98,19 +100,38 @@ export default function Vault() {
       : copy;
   }, [openFolder, sortKey, folderQuery]);
 
-  const createFolder = () => {
-    if (!newName.trim()) return;
-    setFolders((prev) => [
-      {
-        id: `n${Date.now()}`,
-        name: newName.trim(),
-        updated: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-        files: 0,
-        emoji: "📁",
-      },
-      ...prev,
-    ]);
-    setNewName("");
+  const addFiles = (files: FileList | null) => {
+    if (!files) return;
+    const arr = Array.from(files).map((f) => ({ name: f.name, size: f.size, type: f.type }));
+    setUploadedFiles((prev) => [...prev, ...arr]);
+  };
+
+  const uploadReport = () => {
+    if (!condition.trim() || uploadedFiles.length === 0) return;
+    setFolders((prev) => {
+      const idx = prev.findIndex((f) => f.name.toLowerCase() === condition.trim().toLowerCase());
+      if (idx >= 0) {
+        const copy = [...prev];
+        copy[idx] = {
+          ...copy[idx],
+          files: copy[idx].files + uploadedFiles.length,
+          updated: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        };
+        return copy;
+      }
+      return [
+        {
+          id: `n${Date.now()}`,
+          name: condition.trim(),
+          updated: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+          files: uploadedFiles.length,
+          emoji: "📁",
+        },
+        ...prev,
+      ];
+    });
+    setCondition("");
+    setUploadedFiles([]);
     setShowAdd(false);
   };
 
@@ -328,37 +349,99 @@ export default function Vault() {
           </button>
         )}
 
-        {/* Add sheet */}
+        {/* Upload Report bottom sheet */}
         {showAdd && (
           <div
-            className="fixed inset-0 z-50 bg-black/40 flex items-end"
+            className="fixed inset-0 z-[90] bg-black/40 flex items-end"
             onClick={() => setShowAdd(false)}
           >
             <div
-              className="w-full max-w-md mx-auto bg-background rounded-t-3xl p-6"
+              className="w-full max-w-md mx-auto bg-background rounded-t-3xl flex flex-col max-h-[92dvh]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-10 h-1 rounded-full bg-muted mx-auto mb-5" />
-              <h3 className="text-lg font-bold mb-1">New folder</h3>
-              <p className="text-xs text-muted-foreground mb-4">
-                Group related files together for quick access.
-              </p>
-              <input
-                autoFocus
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && createFolder()}
-                placeholder="Folder name (e.g. Thyroid)"
-                className="w-full rounded-2xl border border-border/60 bg-muted/40 px-4 py-3 text-sm outline-none mb-4"
-              />
-              <button
-                onClick={createFolder}
-                disabled={!newName.trim()}
-                className="w-full rounded-full py-3 font-semibold text-white disabled:opacity-40"
-                style={{ background: "#F66B9A" }}
-              >
-                Create folder
-              </button>
+              <div className="w-10 h-1 rounded-full bg-muted mx-auto my-3 shrink-0" />
+              <div className="flex items-center px-5 pb-4 shrink-0">
+                <button
+                  onClick={() => setShowAdd(false)}
+                  className="text-sm font-medium text-[#60A5FA] w-16 text-left"
+                >
+                  Cancel
+                </button>
+                <h3 className="flex-1 text-center text-[17px] font-bold">Upload Report</h3>
+                <div className="w-16" />
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-5 pb-4 space-y-4">
+                {/* Condition */}
+                <div className="rounded-2xl border border-border/60 px-4 py-3">
+                  <label className="text-[12px] text-muted-foreground">
+                    Condition name<span className="text-[#F66B9A]">*</span>
+                  </label>
+                  <input
+                    value={condition}
+                    onChange={(e) => setCondition(e.target.value)}
+                    placeholder="Type to add or search existing symptom…"
+                    className="w-full bg-transparent outline-none text-[15px] mt-0.5 placeholder:text-muted-foreground"
+                  />
+                </div>
+
+                {/* Upload dropzone */}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full rounded-2xl border-2 border-dashed border-border/70 py-8 flex flex-col items-center gap-2"
+                >
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: "#FDECF2" }}>
+                    <Upload className="w-5 h-5" style={{ color: "#F66B9A" }} strokeWidth={2.5} />
+                  </div>
+                  <p className="text-[16px] font-bold">Tap to upload</p>
+                  <p className="text-[12px] text-muted-foreground">Max upto 2 mb per file upload</p>
+                  <div className="flex gap-2 mt-1">
+                    {["PDF", "JPG", "PNG"].map((t) => (
+                      <span key={t} className="px-3 py-1 rounded-md bg-muted/70 text-[11px] font-semibold text-foreground/70">{t}</span>
+                    ))}
+                  </div>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  className="hidden"
+                  onChange={(e) => addFiles(e.target.files)}
+                />
+
+                {/* Uploaded files list */}
+                {uploadedFiles.map((f, i) => {
+                  const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
+                  const isPdf = ext === "pdf";
+                  const isJpg = ext === "jpg" || ext === "jpeg";
+                  const iconColor = isPdf ? "#EF4444" : isJpg ? "#F59E0B" : "#60A5FA";
+                  const kb = f.size / 1024;
+                  const sizeLabel = kb > 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${Math.round(kb)} KB`;
+                  return (
+                    <div key={i} className="flex items-center gap-3 rounded-2xl border border-border/60 px-4 py-3">
+                      <FileText className="w-5 h-5 shrink-0" style={{ color: iconColor }} />
+                      <span className="flex-1 text-[14px] font-semibold truncate">{f.name}</span>
+                      <span className="text-[12px] text-muted-foreground">{sizeLabel}</span>
+                      <button onClick={() => setUploadedFiles((prev) => prev.filter((_, j) => j !== i))}>
+                        <X className="w-4 h-4 text-muted-foreground" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="px-5 pt-2 pb-6 shrink-0">
+                <button
+                  onClick={uploadReport}
+                  disabled={!condition.trim() || uploadedFiles.length === 0}
+                  className="w-full rounded-full py-4 font-semibold text-white flex items-center justify-center gap-2 disabled:opacity-40"
+                  style={{ background: "#111" }}
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Upload & Organize with AI
+                </button>
+              </div>
             </div>
           </div>
         )}
