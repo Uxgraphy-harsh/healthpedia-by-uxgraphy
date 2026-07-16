@@ -303,9 +303,10 @@ export default function Shop() {
 }
 
 /* ---------------- Shop grid ---------------- */
-function ShopView({ category, setCategory, products, cart, onInc, onDec }: {
+function ShopView({ category, setCategory, products, cart, onInc, onDec, onOpenFilters, filterCount }: {
   category: string; setCategory: (c: string) => void; products: Product[];
   cart: Record<string, number>; onInc: (id: string) => void; onDec: (id: string) => void;
+  onOpenFilters: () => void; filterCount: number;
 }) {
   return (
     <>
@@ -319,9 +320,21 @@ function ShopView({ category, setCategory, products, cart, onInc, onDec }: {
           <Search className="h-4 w-4 text-neutral-500" />
           <input className="w-full bg-transparent text-sm outline-none placeholder:text-neutral-400" placeholder="Search products" />
         </div>
-        <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-neutral-200">
+        <button
+          onClick={onOpenFilters}
+          className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-neutral-200"
+        >
           <SlidersHorizontal className="h-4 w-4 text-neutral-700" />
+          {filterCount > 0 && (
+            <span
+              className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white"
+              style={{ background: CORAL }}
+            >
+              {filterCount}
+            </span>
+          )}
         </button>
+      </div>
       </div>
       <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
         {CATEGORIES.map((c) => (
