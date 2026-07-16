@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
-import { HeartStraight, Sneaker, Moon, Fire, ArrowUp } from "@phosphor-icons/react";
+import { HeartStraight, Sneaker, Moon, Fire } from "@phosphor-icons/react";
 
 type Vital = {
   key: string;
@@ -110,60 +110,39 @@ export default function Fitness() {
       bg={app.bg}
       fg={app.fg}
     >
-      {/* Health hero */}
-      <div
-        className="relative overflow-hidden rounded-3xl p-5 text-white"
-        style={{
-          background:
-            "radial-gradient(120% 100% at 100% 0%, #4A1830 0%, #2A0E1C 55%, #1A0812 100%)",
-        }}
-      >
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-[56px] font-bold leading-none tracking-tight">74</p>
-            <p className="mt-2 text-sm text-white/85">Health score</p>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5">
-              <ArrowUp size={14} weight="bold" className="text-[#4ADE80]" />
-              <span className="text-[12px] font-medium text-[#4ADE80]">+3 from last week</span>
-            </div>
-          </div>
-        </div>
+      {/* Sync status */}
+      <div className="flex items-center gap-2 px-1 mb-4">
+        <span className="h-2 w-2 rounded-full bg-[#4ADE80]" />
+        <p className="text-[13px] text-foreground/70">Synced 4 mins ago</p>
+      </div>
 
-        <div className="my-5 h-px bg-white/10" />
-
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#4ADE80]" />
-          <p className="text-[12px] text-white/70">Synced 4 mins ago</p>
-        </div>
-
-        {/* Vitals horizontal scroller */}
-        <div className="-mx-5 mt-4 overflow-x-auto scrollbar-hide">
-          <div className="flex gap-3 px-5 pb-1">
-            {vitals.map((v) => {
-              const statusColor =
-                v.status === "Normal" ? "#4ADE80" : v.status === "Above Goal" ? "#F87171" : "#FB923C";
-              return (
-                <div
-                  key={v.key}
-                  className="min-w-[150px] rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur"
+      {/* Vitals grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {vitals.map((v) => {
+          const statusColor =
+            v.status === "Normal" ? "#4ADE80" : v.status === "Above Goal" ? "#F87171" : "#FB923C";
+          return (
+            <div
+              key={v.key}
+              className="rounded-2xl border border-border/60 bg-card p-4"
+            >
+              <div className="flex items-start justify-between">
+                <v.icon weight="duotone" size={24} style={{ color: v.color }} />
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+                  style={{ color: statusColor, background: `${statusColor}14` }}
                 >
-                  <v.icon weight="duotone" size={26} style={{ color: v.color }} />
-                  <div className="mt-3 flex items-baseline gap-1">
-                    <span className="text-[26px] font-bold leading-none">{v.value}</span>
-                    {v.unit && <span className="text-[13px] text-white/60">{v.unit}</span>}
-                  </div>
-                  <p className="mt-1 text-[12px] text-white/75">{v.label}</p>
-                  <span
-                    className="mt-3 inline-block rounded-full px-2.5 py-1 text-[11px] font-medium"
-                    style={{ color: statusColor, background: `${statusColor}1A` }}
-                  >
-                    {v.status}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                  {v.status}
+                </span>
+              </div>
+              <div className="mt-3 flex items-baseline gap-1">
+                <span className="text-[24px] font-bold leading-none text-foreground">{v.value}</span>
+                {v.unit && <span className="text-[12px] text-foreground/55">{v.unit}</span>}
+              </div>
+              <p className="mt-1 text-[12px] text-foreground/65">{v.label}</p>
+            </div>
+          );
+        })}
       </div>
 
       {/* Devices & Apps */}
