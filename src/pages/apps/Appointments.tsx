@@ -14,16 +14,16 @@ interface Appt {
   reminderCreated: boolean;
 }
 
-const initial: Appt[] = [
-  { id: "a1", doctor: "Dr. Meena Sharma", specialty: "Endocrinology", place: "Apollo Clinic, Pune", date: "Tomorrow", time: "11:30 AM", status: "upcoming", reminderCreated: true },
-  { id: "a2", doctor: "Dr. Mehta", specialty: "Cardiology", place: "Fortis", date: "Mar 28", time: "4:00 PM", status: "upcoming", reminderCreated: true },
-  { id: "a3", doctor: "Dr. Iyer", specialty: "Dermatology", place: "Skin Clinic", date: "Feb 12", time: "10:00 AM", status: "done", reminderCreated: false },
-];
+const initial: Appt[] = [];
 
 export default function Appointments() {
   const app = getMiniApp("appointments")!;
-  const [appts] = useState(initial);
+  const [appts] = useState<Appt[]>(initial);
   const [showAdd, setShowAdd] = useState(false);
+
+  const upcoming = appts.filter((a) => a.status === "upcoming");
+  const past = appts.filter((a) => a.status === "done");
+  const isEmpty = appts.length === 0;
 
   return (
     <MiniAppShell
@@ -39,42 +39,73 @@ export default function Appointments() {
         { icon: MapPin, label: "Nearby" },
       ]}
     >
+      {isEmpty ? (
+        <div className="rounded-3xl border border-black/10 bg-white px-6 py-14 flex flex-col items-center text-center shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
+            style={{ background: "linear-gradient(160deg, #EDE9FE 0%, #C4B5FD 60%, #8B5CF6 100%)" }}
+          >
+            <Calendar className="w-7 h-7 text-white" strokeWidth={2.2} />
+          </div>
+          <h2 className="text-[20px] font-bold text-black">No appointments</h2>
+          <p className="text-[14px] text-muted-foreground mt-2 max-w-[280px]">
+            Your upcoming and past appointments will appear when you book
+          </p>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="mt-6 rounded-full border border-black/15 px-6 h-11 text-[14px] font-semibold text-black"
+          >
+            Book appointment
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="rounded-2xl bg-[#8B5CF6]/8 border border-[#8B5CF6]/20 p-3 mb-4 flex items-center gap-3">
+            <BellRing className="w-4 h-4 text-[#8B5CF6] shrink-0" />
+            <p className="text-[11px] text-foreground/70">
+              Reminders are auto-created for every scheduled appointment.
+            </p>
+          </div>
 
-      <div className="rounded-2xl bg-[#8B5CF6]/8 border border-[#8B5CF6]/20 p-3 mb-4 flex items-center gap-3">
-        <BellRing className="w-4 h-4 text-[#8B5CF6] shrink-0" />
-        <p className="text-[11px] text-foreground/70">
-          Reminders are auto-created for every scheduled appointment.
-        </p>
-      </div>
-
-      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Upcoming</h3>
-      <div className="space-y-2 mb-6">
-        {appts.filter((a) => a.status === "upcoming").map((a) => (
-          <div key={a.id} className="bg-card rounded-2xl p-4 border-l-[3px] border-[#8B5CF6]">
-            <p className="font-semibold text-sm">{a.doctor}</p>
-            <p className="text-[11px] text-muted-foreground mb-2">{a.specialty}</p>
-            <div className="space-y-1 text-[11px] text-muted-foreground">
-              <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {a.date} · {a.time}</div>
-              <div className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> {a.place}</div>
-            </div>
-            {a.reminderCreated && (
-              <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-medium text-[#22C55E]">
-                <Check className="w-3 h-3" /> Reminder set
+          {upcoming.length > 0 && (
+            <>
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Upcoming</h3>
+              <div className="space-y-2 mb-6">
+                {upcoming.map((a) => (
+                  <div key={a.id} className="bg-card rounded-2xl p-4 border-l-[3px] border-[#8B5CF6]">
+                    <p className="font-semibold text-sm">{a.doctor}</p>
+                    <p className="text-[11px] text-muted-foreground mb-2">{a.specialty}</p>
+                    <div className="space-y-1 text-[11px] text-muted-foreground">
+                      <div className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {a.date} · {a.time}</div>
+                      <div className="flex items-center gap-1.5"><MapPin className="w-3 h-3" /> {a.place}</div>
+                    </div>
+                    {a.reminderCreated && (
+                      <div className="mt-2.5 flex items-center gap-1.5 text-[10px] font-medium text-[#22C55E]">
+                        <Check className="w-3 h-3" /> Reminder set
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+            </>
+          )}
 
-      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Past</h3>
-      <div className="space-y-2">
-        {appts.filter((a) => a.status === "done").map((a) => (
-          <div key={a.id} className="bg-card rounded-2xl p-3.5 border border-border/40 opacity-70">
-            <p className="text-sm font-semibold">{a.doctor}</p>
-            <p className="text-[11px] text-muted-foreground">{a.date} · {a.specialty}</p>
-          </div>
-        ))}
-      </div>
+          {past.length > 0 && (
+            <>
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">Past</h3>
+              <div className="space-y-2">
+                {past.map((a) => (
+                  <div key={a.id} className="bg-card rounded-2xl p-3.5 border border-border/40 opacity-70">
+                    <p className="text-sm font-semibold">{a.doctor}</p>
+                    <p className="text-[11px] text-muted-foreground">{a.date} · {a.specialty}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
+
 
       {/* Floating Book appointment button */}
       {!showAdd && (
