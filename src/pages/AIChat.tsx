@@ -240,6 +240,14 @@ export default function AIChat() {
           }}
         >
           <button
+            onClick={() => setShowHistory(true)}
+            className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
+            aria-label="Chat history"
+          >
+            <ClockCounterClockwise size={19} weight="regular" className="text-foreground/80" />
+          </button>
+
+          <button
             onClick={() => setShowNotifications(true)}
             className="relative flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted/50"
             aria-label="Notifications"
@@ -280,15 +288,6 @@ export default function AIChat() {
           </div>
 
           <div className="absolute inset-x-0 bottom-0 px-4 pb-8 pt-3">
-            <div className="mb-2 flex justify-center">
-              <button
-                onClick={() => setShowHistory(true)}
-                className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/60 px-3 py-1 text-[11px] font-medium text-muted-foreground backdrop-blur-xl"
-              >
-                <ClockCounterClockwise size={13} />
-                Chat history
-              </button>
-            </div>
             <div className="mb-2.5 grid grid-cols-2 gap-2.5">
 
               {quickChips.map((chip) => (
