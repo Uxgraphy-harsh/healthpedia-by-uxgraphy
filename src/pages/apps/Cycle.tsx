@@ -277,9 +277,9 @@ function MonthCalendar({
                 className="relative flex items-center justify-center"
                 style={{ height: ROW_H }}
               >
-                {(isPeriod || isPredicted) && (
+                {isPeriod && (
                   <span className="absolute top-1.5">
-                    <BloodDrop muted={isPredicted && !isPeriod} />
+                    <BloodDrop />
                   </span>
                 )}
                 {isToday ? (
@@ -290,8 +290,8 @@ function MonthCalendar({
                   <span
                     className="relative text-base"
                     style={{
-                      color: isPeriod ? CTA : isPredicted ? "#F5A9A0" : "#111",
-                      fontWeight: isPeriod ? 600 : 400,
+                      color: isPeriod ? CTA : isPredicted ? "#B84E3F" : "#111",
+                      fontWeight: isPeriod ? 700 : isPredicted ? 500 : 400,
                     }}
                   >
                     {d}
