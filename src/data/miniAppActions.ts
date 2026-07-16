@@ -80,7 +80,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   notes: [
     A(StickyNote, "All", { active: true }),
     A(Filter, "Filter"),
-    A(Plus, "New", { primary: true }),
     A(Search, "Search"),
   ],
 };
