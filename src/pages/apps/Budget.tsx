@@ -223,6 +223,33 @@ function CatGlyph({ cat, className, style }: { cat: Category; className?: string
 
 /* ---------------- Overview (recent + history + category filters) ---------------- */
 
+type RangeKey = "week" | "month" | "last" | "all";
+const RANGE_LABELS: Record<RangeKey, string> = {
+  week: "This week",
+  month: "This month",
+  last: "Last month",
+  all: "All time",
+};
+
+function inRange(iso: string, range: RangeKey): boolean {
+  if (range === "all") return true;
+  const d = new Date(iso);
+  const now = new Date();
+  if (range === "week") {
+    const start = new Date(now);
+    const day = (start.getDay() + 6) % 7; // Mon-start
+    start.setDate(start.getDate() - day);
+    start.setHours(0, 0, 0, 0);
+    return d >= start;
+  }
+  if (range === "month") {
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  }
+  // last month
+  const lm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  return d.getFullYear() === lm.getFullYear() && d.getMonth() === lm.getMonth();
+}
+
 function Overview({
   expenses, resolveCat, categories, onRemove,
 }: {
@@ -232,21 +259,32 @@ function Overview({
   onRemove: (id: string) => void;
 }) {
   const [filter, setFilter] = useState<string>("all");
+  const [range, setRange] = useState<RangeKey>("month");
+  const [rangeOpen, setRangeOpen] = useState(false);
+
+  const rangedAll = useMemo(
+    () => expenses.filter((e) => inRange(e.date, range)),
+    [expenses, range]
+  );
 
   const activeCats = useMemo(() => {
-    const set = new Set(expenses.map((e) => e.categoryId));
+    const set = new Set(rangedAll.map((e) => e.categoryId));
     return categories.filter((c) => set.has(c.id));
-  }, [expenses, categories]);
+  }, [rangedAll, categories]);
 
   const filtered = useMemo(
-    () => (filter === "all" ? expenses : expenses.filter((e) => e.categoryId === filter)),
-    [expenses, filter]
+    () => (filter === "all" ? rangedAll : rangedAll.filter((e) => e.categoryId === filter)),
+    [rangedAll, filter]
   );
 
   const sorted = useMemo(
     () => [...filtered].sort((a, b) => (a.date < b.date ? 1 : -1)),
     [filtered]
   );
+
+  const total = sorted
+    .filter((e) => e.type === "expense")
+    .reduce((a, b) => a + b.amount, 0);
 
   const recent = sorted.slice(0, 3);
   const history = sorted.slice(3);
@@ -262,11 +300,45 @@ function Overview({
   }, [history]);
 
   return (
-    <div className="pb-24">
-      <h2 className="mt-2 text-2xl font-bold text-neutral-900">Transactions</h2>
-      <p className="mt-1 text-sm text-neutral-500">
-        {expenses.length} {expenses.length === 1 ? "entry" : "entries"} logged
-      </p>
+    <div className="pb-32">
+      {/* Total summary card with date-range selector */}
+      <div className="mt-2 rounded-3xl p-5 text-white shadow-sm"
+        style={{ background: `linear-gradient(135deg, ${DEEP}, ${TEAL})` }}>
+        <button
+          onClick={() => setRangeOpen((v) => !v)}
+          className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur"
+        >
+          {RANGE_LABELS[range]} <ChevronDown className="h-3.5 w-3.5" />
+        </button>
+        <p className="mt-3 text-xs uppercase tracking-widest text-white/70">Total expenses</p>
+        <p className="mt-1 text-4xl font-bold tracking-tight">{currency(total)}</p>
+        <p className="mt-1 text-xs text-white/70">
+          {sorted.length} {sorted.length === 1 ? "transaction" : "transactions"}
+        </p>
+
+        <AnimatePresence>
+          {rangeOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+              className="mt-3 flex flex-wrap gap-2"
+            >
+              {(Object.keys(RANGE_LABELS) as RangeKey[]).map((k) => (
+                <button
+                  key={k}
+                  onClick={() => { setRange(k); setRangeOpen(false); }}
+                  className="rounded-full px-3 py-1 text-xs font-semibold"
+                  style={{
+                    background: range === k ? "#FFFFFF" : "rgba(255,255,255,0.15)",
+                    color: range === k ? DEEP : "#FFFFFF",
+                  }}
+                >
+                  {RANGE_LABELS[k]}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Category filters */}
       <div className="mt-4 -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -282,8 +354,8 @@ function Overview({
       {sorted.length === 0 ? (
         <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-neutral-200 p-10 text-center">
           <Wallet className="h-10 w-10" style={{ color: TEAL }} />
-          <p className="mt-4 text-lg font-bold text-neutral-900">No transactions yet</p>
-          <p className="mt-1 text-sm text-neutral-500">Tap the + button to log your first one.</p>
+          <p className="mt-4 text-lg font-bold text-neutral-900">No transactions</p>
+          <p className="mt-1 text-sm text-neutral-500">Tap Add expense to log your first one.</p>
         </div>
       ) : (
         <>
@@ -322,6 +394,7 @@ function Overview({
     </div>
   );
 }
+
 
 function TxRow({ e, cat, onRemove }: { e: Expense; cat: Category; onRemove: (id: string) => void }) {
   const isIncome = e.type === "income";
