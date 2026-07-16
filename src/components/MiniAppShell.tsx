@@ -13,6 +13,8 @@ import { useAppLock } from "@/contexts/AppLockContext";
 import MiniAppBottomBar, { type MiniAppAction } from "@/components/MiniAppBottomBar";
 import { defaultBottomActions } from "@/data/miniAppActions";
 import AppLauncher from "@/components/AppLauncher";
+import askAiFlower from "@/assets/ask-ai-flower.svg";
+
 
 interface Props {
   appId: string;
