@@ -25,6 +25,7 @@ import Cycle from "./pages/apps/Cycle";
 import CycleOnboarding from "./pages/apps/CycleOnboarding";
 import CycleLogNow from "./pages/apps/CycleLogNow";
 import CycleLogPeriod from "./pages/apps/CycleLogPeriod";
+import CycleInsights from "./pages/apps/CycleInsights";
 import Fitness from "./pages/apps/Fitness";
 import Allergies from "./pages/apps/Allergies";
 import FamilyHistory from "./pages/apps/FamilyHistory";
