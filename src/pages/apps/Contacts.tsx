@@ -40,12 +40,8 @@ export default function Contacts() {
       icon={app.icon}
       bg={app.bg}
       fg={app.fg}
-      action={
-        <button className="w-10 h-10 rounded-full bg-[#F66B9A] text-white flex items-center justify-center shrink-0">
-          <Plus className="w-5 h-5" />
-        </button>
-      }
     >
+
       <button
         onClick={() => setQrFor("all")}
         className="w-full bg-gradient-to-r from-[#14B8A6] to-[#0EA5E9] rounded-2xl p-4 text-white flex items-center gap-3 mb-4"
@@ -97,6 +93,16 @@ export default function Contacts() {
           </div>
         </div>
       )}
+
+      {/* Floating Add contact button */}
+      <button
+        className="fixed bottom-24 right-6 z-40 flex items-center gap-2 rounded-full px-5 py-3 text-white shadow-lg"
+        style={{ background: "#171717" }}
+      >
+        <Plus className="h-5 w-5" strokeWidth={2.5} />
+        <span className="font-semibold">Add contact</span>
+      </button>
+
     </MiniAppShell>
   );
 }
