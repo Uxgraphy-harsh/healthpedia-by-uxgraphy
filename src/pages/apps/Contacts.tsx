@@ -102,14 +102,63 @@ function FakeQR({ label }: { label: string }) {
 export default function Contacts() {
   const app = getMiniApp("contacts")!;
   const [tab, setTab] = useState<"contacts" | "emergency">("contacts");
+  const [contacts, setContacts] = useState<SavedContact[]>(initialContacts);
   const [qrFor, setQrFor] = useState<null | "all" | string>(null);
   const [regionKey, setRegionKey] = useState<keyof typeof regions>("in");
   const [showRegion, setShowRegion] = useState(false);
   const region = regions[regionKey];
 
+  // add-contact flow state
+  const [addStep, setAddStep] = useState<null | "choose" | "manual">(null);
+  const [formName, setFormName] = useState("");
+  const [formRole, setFormRole] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [pickerError, setPickerError] = useState<string | null>(null);
+
+  const resetForm = () => { setFormName(""); setFormRole(""); setFormPhone(""); };
+  const closeAdd = () => { setAddStep(null); resetForm(); setPickerError(null); };
+
+  const saveManual = () => {
+    if (!formName.trim() || !formPhone.trim()) return;
+    setContacts((prev) => [
+      { id: `c${Date.now()}`, name: formName.trim(), role: formRole.trim() || "Contact", phone: formPhone.trim() },
+      ...prev,
+    ]);
+    closeAdd();
+  };
+
+  const pickFromDevice = async () => {
+    setPickerError(null);
+    // Web Contact Picker API (Chrome on Android over HTTPS)
+    const nav = navigator as unknown as {
+      contacts?: { select: (props: string[], opts?: { multiple?: boolean }) => Promise<Array<{ name?: string[]; tel?: string[] }>> };
+    };
+    if (!nav.contacts?.select) {
+      setPickerError(
+        "Your device or browser doesn't expose the contacts picker here. In the installed mobile app you'll see your real phonebook — add manually for now."
+      );
+      return;
+    }
+    try {
+      const picked = await nav.contacts.select(["name", "tel"], { multiple: true });
+      if (!picked?.length) return;
+      const mapped: SavedContact[] = picked.map((p, i) => ({
+        id: `c${Date.now()}${i}`,
+        name: p.name?.[0] || "Unnamed",
+        role: "From phone",
+        phone: p.tel?.[0] || "",
+      })).filter((c) => c.phone);
+      if (mapped.length) setContacts((prev) => [...mapped, ...prev]);
+      closeAdd();
+    } catch {
+      setPickerError("Contact picker was cancelled or denied.");
+    }
+  };
+
   const label = qrFor === "all"
     ? "All my contacts"
     : contacts.find((c) => c.id === qrFor)?.name || "";
+
 
   return (
     <MiniAppShell
