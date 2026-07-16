@@ -304,23 +304,39 @@ function ScheduleToggle({ label, active, onClick }: { label: string; active: boo
   );
 }
 
+interface DetailsDraft {
+  doctor: string;
+  hospital: string;
+  date: string;
+  speciality: string;
+}
+
 function DetailsSubSheet({
   initial,
   onClose,
   onSave,
 }: {
-  initial: { hospital: string; doctor: string; date: string; notes: string };
+  initial: DetailsDraft;
   onClose: () => void;
-  onSave: (v: { hospital: string; doctor: string; date: string; notes: string }) => void;
+  onSave: (v: DetailsDraft) => void;
 }) {
-  const [hospital, setHospital] = useState(initial.hospital);
   const [doctor, setDoctor] = useState(initial.doctor);
+  const [hospital, setHospital] = useState(initial.hospital);
   const [date, setDate] = useState(initial.date);
-  const [notes, setNotes] = useState(initial.notes);
+  const [speciality, setSpeciality] = useState(initial.speciality || "Endocrinology");
+
+  const sampleAttachments = [
+    { id: "a1", name: "Thyroid_Jan25.pdf", size: "24.4 MB" },
+  ];
+  const relatedReports = [
+    { id: "r1", d: "14", m: "JAN", y: "2025", files: "3 files  •  PDF + 2 photos", lab: "SRL Diagnostics, Baner", doctor: "Ref. Dr. Meena Sharma" },
+    { id: "r2", d: "14", m: "JAN", y: "2025", files: "3 files  •  PDF + 2 photos", lab: "SRL Diagnostics, Baner", doctor: "Ref. Dr. Meena Sharma" },
+  ];
+
   return (
     <div className="fixed inset-0 z-[95] bg-black/40 flex items-end" onClick={onClose}>
       <div
-        className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[92dvh]"
+        className="w-full max-w-md mx-auto bg-white rounded-t-3xl flex flex-col max-h-[95dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1 rounded-full bg-black/15 mx-auto my-3 shrink-0" />
@@ -328,45 +344,117 @@ function DetailsSubSheet({
           <button onClick={onClose} className="text-[15px] font-medium text-[#60A5FA] w-20 text-left">
             Back
           </button>
-          <h3 className="flex-1 text-center text-[17px] font-bold text-black">Details</h3>
+          <h3 className="flex-1 text-center text-[17px] font-bold text-black">Prescription details</h3>
           <button
-            onClick={() => { onSave({ hospital, doctor, date, notes }); onClose(); }}
+            onClick={() => { onSave({ doctor, hospital, date, speciality }); onClose(); }}
             className="text-[15px] font-semibold text-[#60A5FA] w-20 text-right"
           >
             Save
           </button>
         </div>
-        <div className="px-5 pb-8 space-y-3 overflow-y-auto">
-          {[
-            { label: "Hospital / Lab", value: hospital, set: setHospital, placeholder: "e.g. SRL Diagnostics" },
-            { label: "Doctor", value: doctor, set: setDoctor, placeholder: "e.g. Dr. Sharma" },
-            { label: "Date", value: date, set: setDate, placeholder: "e.g. 14 Jan 2026" },
-          ].map((f) => (
-            <div key={f.label} className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
-              <p className="text-[11px] font-medium text-muted-foreground mb-1">{f.label}</p>
-              <input
-                value={f.value}
-                onChange={(e) => f.set(e.target.value)}
-                placeholder={f.placeholder}
-                className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30"
-              />
+
+        <div className="px-5 pb-10 space-y-6 overflow-y-auto flex-1">
+          {/* Upload dropzone */}
+          <button
+            className="w-full rounded-2xl border-2 border-dashed border-black/15 py-7 px-5 flex flex-col items-center justify-center text-center"
+            style={{
+              background:
+                "linear-gradient(135deg, #DCE7FF 0%, #FFFFFF 35%, #F5E1F0 70%, #FFE9C2 100%)",
+            }}
+          >
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-2">
+              <Upload className="w-6 h-6 text-[#E5484D]" strokeWidth={2.2} />
             </div>
-          ))}
-          <div className="bg-[#F1F1F3] rounded-2xl px-4 py-3">
-            <p className="text-[11px] font-medium text-muted-foreground mb-1">Notes</p>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Any extra notes"
-              rows={3}
-              className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30 resize-none"
-            />
+            <p className="text-[16px] font-bold text-black leading-snug">
+              Upload file for AI to<br />automatically fetch details
+            </p>
+            <p className="text-[12px] text-muted-foreground mt-1">Max upto 2 mb per file upload</p>
+            <div className="flex gap-2 mt-3">
+              {["PDF", "JPG", "PNG"].map((t) => (
+                <span key={t} className="px-3 py-1 rounded-lg bg-black/5 text-[12px] font-semibold text-black/60">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </button>
+
+          {/* Prescription details fields */}
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+              Prescription details
+            </p>
+            <div className="space-y-3">
+              {[
+                { label: "Doctor", req: true, value: doctor, set: setDoctor, placeholder: "Type to add or search existing symptom…" },
+                { label: "Hospital / Lab", req: true, value: hospital, set: setHospital, placeholder: "Type to add or search existing symptom…" },
+                { label: "Date", req: false, value: date, set: setDate, placeholder: "00/00/0000" },
+                { label: "Speciality", req: false, value: speciality, set: setSpeciality, placeholder: "e.g. Endocrinology" },
+              ].map((f) => (
+                <div key={f.label} className="rounded-2xl border border-black/10 px-4 py-2.5">
+                  <p className="text-[11px] font-medium text-muted-foreground">
+                    {f.label}
+                    {f.req && <span className="text-[#E5484D]">*</span>}
+                  </p>
+                  <input
+                    value={f.value}
+                    onChange={(e) => f.set(e.target.value)}
+                    placeholder={f.placeholder}
+                    className="w-full bg-transparent outline-none text-[15px] text-black placeholder:text-black/30 mt-0.5"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Attachments */}
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+              Attachments
+            </p>
+            <div className="space-y-3">
+              {sampleAttachments.map((a) => (
+                <button
+                  key={a.id}
+                  className="w-full flex items-center gap-3 rounded-2xl border border-black/10 px-4 py-3 text-left"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-[#FDECEC] flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5 text-[#E5484D]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[14px] text-black truncate">{a.name}</p>
+                    <p className="text-[12px] text-muted-foreground">{a.size}</p>
+                  </div>
+                  <ArrowLeft className="w-4 h-4 -rotate-[135deg] text-muted-foreground shrink-0" />
+                </button>
+              ))}
+
+              {relatedReports.map((rel) => (
+                <button
+                  key={rel.id}
+                  className="w-full flex items-center gap-3 rounded-2xl border border-black/10 px-3 py-3 text-left"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-[#1a1330] text-white flex flex-col items-center justify-center leading-none shrink-0">
+                    <span className="text-[15px] font-bold">{rel.d}</span>
+                    <span className="text-[10px] font-semibold mt-0.5">{rel.m}</span>
+                    <span className="text-[9px] mt-0.5 opacity-80">{rel.y}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] text-muted-foreground">{rel.files}</p>
+                    <p className="font-semibold text-[14px] text-black truncate mt-0.5">{rel.lab}</p>
+                    <p className="text-[12px] text-muted-foreground truncate">{rel.doctor}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+
 
 function MedicinesSubSheet({
   meds,
