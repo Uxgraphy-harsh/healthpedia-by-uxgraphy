@@ -75,8 +75,7 @@ const typeToCategory: Record<AllergyType, string> = {
   Other: "Other",
 };
 
-export default function Allergies() {
-  const app = getMiniApp("allergies")!;
+export default function Allergies({ embedded }: EmbeddedProps = {}) {
   const [groups, setGroups] = useState(seedGroups);
   const [sheetOpen, setSheetOpen] = useState(false);
 
