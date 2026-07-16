@@ -52,10 +52,18 @@ function AddRecordSheet({
 }: {
   open: boolean;
   onClose: () => void;
-  onSave: (hpid: string, relation: string, conds: Draft[]) => void;
+  onSave: (
+    hpid: string,
+    relation: string,
+    birthday: string,
+    gender: string,
+    conds: Draft[]
+  ) => void;
 }) {
   const [hpid, setHpid] = useState("");
   const [relation, setRelation] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [gender, setGender] = useState("");
   const [conds, setConds] = useState<Draft[]>([{ name: "", date: "" }]);
 
   const update = (i: number, key: keyof Draft, val: string) =>
@@ -64,16 +72,20 @@ function AddRecordSheet({
   const canSave =
     hpid.trim().length > 0 &&
     relation.trim().length > 0 &&
+    gender.trim().length > 0 &&
     conds.every((c) => c.name.trim().length > 0);
 
   const handleSave = () => {
     if (!canSave) return;
-    onSave(hpid.trim(), relation.trim(), conds);
+    onSave(hpid.trim(), relation.trim(), birthday.trim(), gender.trim(), conds);
     setHpid("");
     setRelation("");
+    setBirthday("");
+    setGender("");
     setConds([{ name: "", date: "" }]);
     onClose();
   };
+
 
 
   return (
