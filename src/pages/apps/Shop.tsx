@@ -335,7 +335,6 @@ function ShopView({ category, setCategory, products, cart, onInc, onDec, onOpenF
           )}
         </button>
       </div>
-      </div>
       <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
         {CATEGORIES.map((c) => (
           <button key={c} onClick={() => setCategory(c)}
