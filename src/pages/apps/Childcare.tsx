@@ -10,9 +10,19 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 
-const kids = [
-  { id: "aarav", name: "Aarav", age: "6 yrs", ageDetail: "26 months 9 days", nextVaccine: "MMR booster · Apr 12", initials: "A", color: "bg-[#FB923C]" },
-  { id: "zara", name: "Zara", age: "3 yrs", ageDetail: "12 months 4 days", nextVaccine: "DTP booster · May 4", initials: "Z", color: "bg-[#EC4899]" },
+const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+const avatarColors = [
+  { bg: "bg-[#FB923C]", label: "Orange" },
+  { bg: "bg-[#EC4899]", label: "Pink" },
+  { bg: "bg-[#60A5FA]", label: "Blue" },
+  { bg: "bg-[#34D399]", label: "Green" },
+  { bg: "bg-[#A78BFA]", label: "Purple" },
+  { bg: "bg-[#FBBF24]", label: "Yellow" },
+];
+
+const initialKids = [
+  { id: "aarav", name: "Aarav", age: "6 yrs", ageDetail: "26 months 9 days", nextVaccine: "MMR booster · Apr 12", initials: "A", color: "bg-[#FB923C]", dob: "2018-05-12", bloodGroup: "B+" },
+  { id: "zara", name: "Zara", age: "3 yrs", ageDetail: "12 months 4 days", nextVaccine: "DTP booster · May 4", initials: "Z", color: "bg-[#EC4899]", dob: "2021-08-03", bloodGroup: "O+" },
 ];
 
 type Entry = {
