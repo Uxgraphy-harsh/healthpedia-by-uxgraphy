@@ -36,7 +36,6 @@ const nightEntry: Entry = {
 
 const linkedApps = [
   { id: "prescriptions", label: "Prescriptions", emoji: "💊", bg: "bg-[#FEE2E2]" },
-  { id: "reminders", label: "Reminders", emoji: "⏰", bg: "bg-[#FEF3C7]" },
   { id: "symptoms", label: "Symptoms", emoji: "🌡️", bg: "bg-[#FED7AA]" },
   { id: "allergies", label: "Allergies", emoji: "🥜", bg: "bg-[#FCE7F3]" },
   { id: "insurance", label: "Insurance", emoji: "🛡️", bg: "bg-[#DBEAFE]" },
