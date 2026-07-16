@@ -100,19 +100,38 @@ export default function Vault() {
       : copy;
   }, [openFolder, sortKey, folderQuery]);
 
-  const createFolder = () => {
-    if (!newName.trim()) return;
-    setFolders((prev) => [
-      {
-        id: `n${Date.now()}`,
-        name: newName.trim(),
-        updated: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
-        files: 0,
-        emoji: "📁",
-      },
-      ...prev,
-    ]);
-    setNewName("");
+  const addFiles = (files: FileList | null) => {
+    if (!files) return;
+    const arr = Array.from(files).map((f) => ({ name: f.name, size: f.size, type: f.type }));
+    setUploadedFiles((prev) => [...prev, ...arr]);
+  };
+
+  const uploadReport = () => {
+    if (!condition.trim() || uploadedFiles.length === 0) return;
+    setFolders((prev) => {
+      const idx = prev.findIndex((f) => f.name.toLowerCase() === condition.trim().toLowerCase());
+      if (idx >= 0) {
+        const copy = [...prev];
+        copy[idx] = {
+          ...copy[idx],
+          files: copy[idx].files + uploadedFiles.length,
+          updated: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+        };
+        return copy;
+      }
+      return [
+        {
+          id: `n${Date.now()}`,
+          name: condition.trim(),
+          updated: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+          files: uploadedFiles.length,
+          emoji: "📁",
+        },
+        ...prev,
+      ];
+    });
+    setCondition("");
+    setUploadedFiles([]);
     setShowAdd(false);
   };
 
