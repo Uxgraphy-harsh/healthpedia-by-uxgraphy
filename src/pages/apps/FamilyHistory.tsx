@@ -309,10 +309,8 @@ export default function FamilyHistory() {
               className="rounded-2xl border border-border/60 bg-card overflow-hidden"
             >
               <div className="flex items-start gap-3 p-4">
-                <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex-shrink-0 ring-1 ring-border/40">
-                  <img src={m.avatar} alt={m.name} className="w-full h-full object-cover" />
-                </div>
                 <div className="flex-1 min-w-0">
+
                   <p className="text-[12px] text-muted-foreground">
                     {m.relation} · {m.age} Years
                   </p>
