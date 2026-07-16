@@ -774,29 +774,52 @@ function AddExpenseFullScreen({
             </button>
           </SimpleSheet>
 
-          {/* Category picker sheet */}
-          <SimpleSheet open={catPickerOpen} onClose={() => setCatPickerOpen(false)} title="Choose category">
-            <div className="grid grid-cols-4 gap-2">
-              {categories.map((c) => {
-                const sel = c.id === categoryId;
-                return (
-                  <button key={c.id} onClick={() => { setCategoryId(c.id); setCatPickerOpen(false); }}
-                    className="flex flex-col items-center gap-1.5 rounded-2xl border p-2.5 transition-colors"
-                    style={{ borderColor: sel ? c.color : "#E5E5E5", background: sel ? `${c.color}18` : "transparent" }}>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl text-lg"
-                      style={{ background: `${c.color}22`, color: c.color }}>
-                      <CatGlyph cat={c} className="h-4 w-4" />
-                    </span>
-                    <span className="text-[11px] font-medium text-neutral-800">{c.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <button onClick={() => { setCatPickerOpen(false); onManageCategories(); }}
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-neutral-300 py-3 text-sm font-semibold text-neutral-700">
-              <Settings2 className="h-4 w-4" /> Manage categories
-            </button>
-          </SimpleSheet>
+          {/* Category picker — right-anchored floating stack */}
+          <AnimatePresence>
+            {catPickerOpen && (
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="absolute inset-0 z-10"
+                onClick={() => setCatPickerOpen(false)}
+              >
+                <div
+                  className="absolute right-3 flex max-h-[70vh] flex-col items-end gap-2 overflow-y-auto pr-1"
+                  style={{ top: "18%" }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <motion.button
+                    initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+                    onClick={() => { setCatPickerOpen(false); onManageCategories(); }}
+                    className="flex items-center gap-2 rounded-2xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-semibold text-neutral-900 shadow-sm"
+                  >
+                    <Settings2 className="h-4 w-4" /> Edit
+                  </motion.button>
+                  {categories.map((c, i) => {
+                    const sel = c.id === categoryId;
+                    return (
+                      <motion.button
+                        key={c.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.02 * (i + 1) }}
+                        onClick={() => { setCategoryId(c.id); setCatPickerOpen(false); }}
+                        className="flex items-center gap-2 rounded-2xl border bg-white px-4 py-2.5 text-sm font-semibold shadow-sm"
+                        style={{
+                          borderColor: sel ? c.color : "#E5E5E5",
+                          color: sel ? c.color : "#171717",
+                          background: sel ? `${c.color}12` : "#fff",
+                        }}
+                      >
+                        <CatGlyph cat={c} className="h-4 w-4" />
+                        <span>{c.label}</span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </motion.div>
       )}
     </AnimatePresence>
