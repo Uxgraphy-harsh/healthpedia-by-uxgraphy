@@ -435,7 +435,15 @@ function CartView({ items, total, inc, dec, onBrowse, onCheckout }: {
 
   return (
     <div className="pb-24">
-      <div className="mt-3 space-y-3">
+      <div className="mt-2 flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-neutral-900">Cart</h2>
+        <div className="flex items-center gap-1.5 rounded-full border border-amber-200 px-3 py-1" style={{ background: "linear-gradient(90deg,#FFF4D6,#FFE7B0)" }}>
+          <span className="flex h-5 w-5 items-center justify-center rounded-full text-[10px]" style={{ background: "#F5B23B", color: "#fff" }}>₹</span>
+          <span className="text-sm font-bold text-neutral-900">80,000</span>
+        </div>
+      </div>
+      <div className="mt-4 space-y-3">
+
         {items.map(({ p, qty }) => (
           <div key={p.id} className="flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-3">
             <div className="flex h-16 w-16 items-center justify-center rounded-xl text-3xl" style={{ background: "#FBEEE1" }}>{p.emoji}</div>
