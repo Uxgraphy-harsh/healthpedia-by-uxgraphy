@@ -386,7 +386,6 @@ export default function Reminders() {
   const bottomActions = [
     { icon: Bell, label: "Today", active: !showHistory, onClick: () => setShowHistory(false) },
     { icon: Clock, label: "History", active: showHistory, onClick: () => setShowHistory(true) },
-    { icon: Plus, label: "Add", primary: true, onClick: () => setShowAddSheet(true) },
     { icon: Filter, label: "Filter" },
   ];
 
