@@ -8,7 +8,7 @@ import {
   Microphone,
   Paperclip,
   X as XIcon,
-  SquaresFour,
+  DotsNine,
   Gear,
   Bell,
   UserCircle,
@@ -228,7 +228,7 @@ export default function AIChat() {
           }}
           aria-label="Mini apps"
         >
-          <SquaresFour size={22} weight="bold" className="text-foreground" />
+          <DotsNine size={22} weight="bold" className="text-foreground" />
         </button>
 
         <div
