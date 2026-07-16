@@ -9,7 +9,7 @@ export default function Index() {
 
   useEffect(() => {
     if (onboarded) {
-      navigate("/dashboard", { replace: true });
+      navigate("/home", { replace: true });
     }
   }, [onboarded, navigate]);
 

@@ -249,6 +249,22 @@ export default function Profile() {
           </button>
         </motion.div>
 
+        {/* ─── APP LOCK SHORTCUT ─── */}
+        <button
+          onClick={() => navigate("/settings/app-lock")}
+          className="w-full glass-card p-4 flex items-center gap-3"
+        >
+          <div className="w-10 h-10 rounded-xl bg-[#F66B9A]/12 flex items-center justify-center">
+            <Lock className="w-5 h-5 text-[#F66B9A]" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-semibold">App lock</p>
+            <p className="text-[10px] text-muted-foreground">PIN-protect sensitive mini apps</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </button>
+
+
         {/* Profile Completion */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="glass-card p-4">
           <div className="flex items-center justify-between mb-2">
