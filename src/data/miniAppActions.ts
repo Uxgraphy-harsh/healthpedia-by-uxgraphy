@@ -15,7 +15,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   reminders: [
     A(Bell, "Today", { active: true }),
     A(Clock, "History"),
-    A(Filter, "Filter"),
   ],
   vault: [
     A(FolderOpen, "Files", { active: true }),
