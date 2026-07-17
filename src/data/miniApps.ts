@@ -24,7 +24,7 @@ export const miniApps: MiniApp[] = [
   { id: "appointments",  name: "Appointments",   tagline: "Visits & follow-ups",   path: "/apps/appointments",  icon: CalendarCheck,  bg: "bg-[#8B5CF6]/12",  fg: "text-[#8B5CF6]",  category: "care" },
   { id: "reminders",     name: "Reminders",      tagline: "Meds & tasks",          path: "/reminders",          icon: BellRing,       bg: "bg-[#F59E0B]/12",  fg: "text-[#F59E0B]",  category: "care" },
   { id: "symptoms",      name: "Symptoms",       tagline: "Track how you feel",    path: "/apps/symptoms",      icon: Stethoscope,    bg: "bg-[#EF4444]/12",  fg: "text-[#EF4444]",  category: "tracking" },
-  { id: "cycle",         name: "Menstrual",      tagline: "Cycle tracking",        path: "/apps/cycle",         icon: Droplets,       bg: "bg-[#EC4899]/12",  fg: "text-[#EC4899]",  category: "tracking", lockable: true },
+  { id: "cycle",         name: "Period Tracker", tagline: "Cycle tracking",        path: "/apps/cycle",         icon: Droplets,       bg: "bg-[#EC4899]/12",  fg: "text-[#EC4899]",  category: "tracking", lockable: true },
   { id: "fitness",       name: "Fitness",        tagline: "Devices & activity",    path: "/apps/fitness",       icon: Activity,       bg: "bg-[#10B981]/12",  fg: "text-[#10B981]",  category: "tracking" },
   { id: "allergies",     name: "Allergies",      tagline: "Triggers & reactions",  path: "/apps/allergies",     icon: AlertTriangle,  bg: "bg-[#F97316]/12",  fg: "text-[#F97316]",  category: "tracking" },
   { id: "family",        name: "Family History", tagline: "Genetic & hereditary",  path: "/apps/family",        icon: Users,          bg: "bg-[#0EA5E9]/12",  fg: "text-[#0EA5E9]",  category: "people",  lockable: true },
