@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
-import { Leaf, TrendingUp, Users, Award, Plus } from "lucide-react";
+import { Leaf, TrendingUp, Users, Award } from "lucide-react";
 
 const GREEN = "#2F7D5B";
 const CTA = "#EF4E3B";
