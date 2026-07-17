@@ -34,11 +34,7 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
     A(Settings2, "Settings"),
   ],
   fitness: [],
-  allergies: [
-    A(AlertTriangle, "All", { active: true }),
-    A(Bell, "Alerts"),
-    A(Phone, "SOS"),
-  ],
+  allergies: [],
   family: [
     A(Users, "Members", { active: true }),
     A(Dna, "Risk"),
