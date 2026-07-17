@@ -48,9 +48,5 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
     A(Phone, "SOS"),
   ],
   insurance: [],
-  notes: [
-    A(StickyNote, "All", { active: true }),
-    A(Filter, "Filter"),
-    A(Search, "Search"),
-  ],
+  notes: [],
 };
