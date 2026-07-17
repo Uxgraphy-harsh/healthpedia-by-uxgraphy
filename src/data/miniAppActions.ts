@@ -26,12 +26,7 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
     A(User, "Doctors"),
     A(Search, "Search"),
   ],
-  appointments: [
-    A(Calendar, "Upcoming", { active: true }),
-    A(Clock, "Past"),
-    A(Plus, "Book", { primary: true }),
-    A(MapPin, "Nearby"),
-  ],
+  appointments: [],
   symptoms: [
     A(Stethoscope, "Log", { active: true }),
     A(TrendingUp, "Trends"),
