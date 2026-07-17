@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import { getMiniApp } from "@/data/miniApps";
-import { Leaf, TrendingUp, Users, Award, Plus } from "lucide-react";
+import { Leaf, TrendingUp, Users, Award } from "lucide-react";
 
 const GREEN = "#2F7D5B";
 const CTA = "#EF4E3B";
@@ -27,7 +27,6 @@ export default function Impact() {
       bottomActions={[
         { icon: Leaf, label: "My Impact", active: tab === "mine", onClick: () => setTab("mine") },
         { icon: Users, label: "Community", active: tab === "community", onClick: () => setTab("community") },
-        { icon: Plus, label: "Log", primary: true, onClick: () => {} },
         { icon: Award, label: "Badges" },
       ]}
     >
