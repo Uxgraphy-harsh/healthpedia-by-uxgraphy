@@ -318,7 +318,7 @@ export default function Cycle() {
     }
   }, [navigate]);
 
-  const [tab, setTab] = useState<"dashboard" | "calendar">("dashboard");
+  const [tab, setTab] = useState<"dashboard" | "calendar" | "insights">("dashboard");
   const [yearOpen, setYearOpen] = useState(false);
   const [calYear, setCalYear] = useState(new Date().getFullYear());
 
