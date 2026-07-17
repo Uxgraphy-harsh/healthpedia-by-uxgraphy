@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
+import type { MiniAppAction } from "@/components/MiniAppBottomBar";
 import { getMiniApp } from "@/data/miniApps";
 
 export interface EmbeddedProps {
@@ -8,21 +9,17 @@ export interface EmbeddedProps {
   scopeLabel?: string;
 }
 
-/**
- * AppFrame wraps a mini-app's inner content with the standard MiniAppShell
- * + AppLockGate when rendered as a top-level route. When `embedded` is true
- * (e.g. rendered inside the Childcare overlay), the wrappers are skipped so
- * the host provides its own top/bottom chrome.
- */
 export function AppFrame({
   appId,
   embedded,
   lock = true,
+  bottomActions,
   children,
 }: {
   appId: string;
   embedded?: boolean;
   lock?: boolean;
+  bottomActions?: MiniAppAction[];
   children: ReactNode;
 }) {
   if (embedded) return <>{children}</>;
@@ -36,9 +33,11 @@ export function AppFrame({
       icon={app.icon}
       bg={app.bg}
       fg={app.fg}
+      bottomActions={bottomActions}
     >
       {children}
     </MiniAppShell>
   );
   return lock ? <AppLockGate appId={appId}>{shell}</AppLockGate> : shell;
 }
+
