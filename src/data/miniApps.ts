@@ -1,7 +1,7 @@
 import {
   FolderOpen, ShieldCheck, Users, CalendarCheck, Baby, Droplets,
   Activity, AlertTriangle, Contact, Stethoscope, BellRing, Pill,
-  StickyNote, Leaf, ShoppingBag, Wallet, type LucideIcon
+  StickyNote, Leaf, ShoppingBag, Wallet, Cigarette, type LucideIcon
 } from "lucide-react";
 
 
