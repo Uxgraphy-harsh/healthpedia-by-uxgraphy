@@ -421,7 +421,12 @@ export default function Cycle() {
             onClick: () => setTab("calendar"),
           },
           
-          { icon: BarChart3, label: "Insights", onClick: () => navigate("/apps/cycle/insights") },
+          {
+            icon: BarChart3,
+            label: "Insights",
+            active: tab === "insights",
+            onClick: () => setTab("insights"),
+          },
         ]}
       >
         {tab === "dashboard" && (
