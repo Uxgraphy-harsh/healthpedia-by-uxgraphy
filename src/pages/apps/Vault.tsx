@@ -161,7 +161,16 @@ export default function Vault({ embedded }: EmbeddedProps = {}) {
   };
 
   return (
-    <AppFrame appId="vault" embedded={embedded}>
+    <AppFrame
+      appId="vault"
+      embedded={embedded}
+      bottomActions={[
+        { icon: FolderOpen, label: "Files", active: true },
+        { icon: SearchIcon, label: "Search", onClick: () => setShowSearch(true) },
+      ]}
+    >
+
+
 
         {/* Folder grid */}
         <div className="grid grid-cols-2 gap-3">
