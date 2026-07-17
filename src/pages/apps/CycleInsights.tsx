@@ -89,9 +89,7 @@ function MoodBar({ counts }: { counts: Record<string, number> }) {
   );
 }
 
-export default function CycleInsights() {
-  const navigate = useNavigate();
-
+export function InsightsBody({ embedded = false }: { embedded?: boolean } = {}) {
   const periodDays: string[] = useMemo(() => {
     try { return JSON.parse(localStorage.getItem("cycle_period_days") || "[]"); }
     catch { return []; }
@@ -110,7 +108,6 @@ export default function CycleInsights() {
   const lastCycleRange = lastCycle ? formatRange(lastCycle) : "—";
   const periodLength = lastCycle ? lastCycle.length : 0;
 
-  // Cycle length: gap between last two cycle starts, else onboarding default when we have 1 cycle
   let cycleLength = 0;
   if (cycles.length >= 2) {
     const a = new Date(cycles[cycles.length - 2][0]);
@@ -120,19 +117,16 @@ export default function CycleInsights() {
     cycleLength = onboarding.cycleDays ?? 0;
   }
 
-  // Flow points for last cycle
   const flowPoints = (lastCycle || [])
     .map((iso) => ({ date: iso, level: FLOW_LEVEL[logs[iso]?.flow || ""] || 0 }))
     .filter((p) => p.level > 0);
 
-  // Mood counts across last cycle
   const moodCounts: Record<string, number> = {};
   (lastCycle || []).forEach((iso) => {
     const m = logs[iso]?.mood;
     if (m) moodCounts[m] = (moodCounts[m] || 0) + 1;
   });
 
-  // Symptom counts
   const symCounts: Record<string, number> = {};
   (lastCycle || []).forEach((iso) => {
     (logs[iso]?.symptoms || []).forEach((s) => {
@@ -141,7 +135,6 @@ export default function CycleInsights() {
     });
   });
 
-  // Avg products per day
   const prodDays = (lastCycle || []).filter((iso) => (logs[iso]?.productCount ?? 0) > 0);
   const avgProducts = prodDays.length
     ? Math.round(prodDays.reduce((s, iso) => s + (logs[iso]?.productCount || 0), 0) / prodDays.length)
@@ -151,23 +144,21 @@ export default function CycleInsights() {
   const hasMood = Object.keys(moodCounts).length > 0;
   const hasSym = Object.keys(symCounts).length > 0;
 
-  return (
-    <div className="mobile-container min-h-[100dvh] bg-white pb-28">
-      <div className="px-5 pt-6 pb-4 flex items-center">
-        <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center -ml-2">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-      </div>
+  const padX = embedded ? "" : "px-5";
 
-      <div className="px-5 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Insights</h1>
-        <button className="h-10 w-10 rounded-xl bg-neutral-100 flex items-center justify-center">
-          <ChevronDown className="w-5 h-5" />
-        </button>
-      </div>
+  return (
+    <div className={embedded ? "" : "pb-4"}>
+      {!embedded && (
+        <div className={`${padX} flex items-center justify-between`}>
+          <h1 className="text-3xl font-bold">Insights</h1>
+          <button className="h-10 w-10 rounded-xl bg-neutral-100 flex items-center justify-center">
+            <ChevronDown className="w-5 h-5" />
+          </button>
+        </div>
+      )}
 
       {/* Cycles logged pill */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} ${embedded ? "mt-2" : "mt-6"}`}>
         <div className="w-full rounded-full text-white text-xl font-semibold py-4 text-center"
              style={{ background: CTA }}>
           {cycles.length} {cycles.length === 1 ? "cycle" : "cycles"} logged
@@ -175,8 +166,9 @@ export default function CycleInsights() {
         <p className="mt-3 text-center text-neutral-700">Log consistently for better insights</p>
       </div>
 
+
       {/* Your flow */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Your flow</p>
           <p className="mt-1 text-base" style={{ color: CTA }}>
@@ -195,7 +187,7 @@ export default function CycleInsights() {
       </div>
 
       {/* Your last cycle */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Your last cycle</p>
           <p className="mt-1 text-xl font-semibold" style={{ color: CTA }}>{lastCycleRange}</p>
@@ -208,7 +200,7 @@ export default function CycleInsights() {
       </div>
 
       {/* Mood */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Mood Tracker</p>
         </div>
@@ -224,7 +216,7 @@ export default function CycleInsights() {
       </div>
 
       {/* Symptoms */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Symptoms Tracker</p>
         </div>
@@ -249,6 +241,20 @@ export default function CycleInsights() {
   );
 }
 
+export default function CycleInsights() {
+  const navigate = useNavigate();
+  return (
+    <div className="mobile-container min-h-[100dvh] bg-white pb-28">
+      <div className="px-5 pt-6 pb-4 flex items-center">
+        <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center -ml-2">
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+      </div>
+      <InsightsBody />
+    </div>
+  );
+}
+
 function Row({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3">
@@ -258,3 +264,4 @@ function Row({ icon, label, value }: { icon: React.ReactNode; label: string; val
     </div>
   );
 }
+

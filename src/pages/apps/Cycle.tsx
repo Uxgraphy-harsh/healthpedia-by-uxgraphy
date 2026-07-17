@@ -5,6 +5,7 @@ import MiniAppShell from "@/components/MiniAppShell";
 import AppLockGate from "@/components/AppLockGate";
 import { getMiniApp } from "@/data/miniApps";
 import { Calendar as CalendarIcon, LayoutDashboard, Plus, ChevronDown, Info, BarChart3 } from "lucide-react";
+import { InsightsBody } from "./CycleInsights";
 
 // ─── Colors (burgundy palette from reference) ───────────────────────────────
 const BURGUNDY = "#5B0A0A";
@@ -318,7 +319,7 @@ export default function Cycle() {
     }
   }, [navigate]);
 
-  const [tab, setTab] = useState<"dashboard" | "calendar">("dashboard");
+  const [tab, setTab] = useState<"dashboard" | "calendar" | "insights">("dashboard");
   const [yearOpen, setYearOpen] = useState(false);
   const [calYear, setCalYear] = useState(new Date().getFullYear());
 
@@ -421,7 +422,12 @@ export default function Cycle() {
             onClick: () => setTab("calendar"),
           },
           
-          { icon: BarChart3, label: "Insights", onClick: () => navigate("/apps/cycle/insights") },
+          {
+            icon: BarChart3,
+            label: "Insights",
+            active: tab === "insights",
+            onClick: () => setTab("insights"),
+          },
         ]}
       >
         {tab === "dashboard" && (
@@ -559,6 +565,13 @@ export default function Cycle() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {tab === "insights" && (
+          <div className="mt-2">
+            <h2 className="text-2xl font-bold text-neutral-900">Insights</h2>
+            <InsightsBody embedded />
           </div>
         )}
       </MiniAppShell>
