@@ -33,12 +33,7 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
     A(Droplets, "Log", { primary: true }),
     A(Settings2, "Settings"),
   ],
-  fitness: [
-    A(Activity, "Today", { active: true }),
-    A(Smartphone, "Devices"),
-    A(Goal, "Goals"),
-    A(TrendingUp, "Trends"),
-  ],
+  fitness: [],
   allergies: [
     A(AlertTriangle, "All", { active: true }),
     A(Bell, "Alerts"),
