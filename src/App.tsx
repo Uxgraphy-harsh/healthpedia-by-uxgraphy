@@ -37,6 +37,7 @@ import Notes from "./pages/apps/Notes";
 import Impact from "./pages/apps/Impact";
 import Shop from "./pages/apps/Shop";
 import Budget from "./pages/apps/Budget";
+import Habits from "./pages/apps/Habits";
 
 
 const queryClient = new QueryClient();
@@ -81,6 +82,7 @@ const App = () => (
               <Route path="/apps/impact" element={<Impact />} />
               <Route path="/apps/shop" element={<Shop />} />
               <Route path="/apps/budget" element={<Budget />} />
+              <Route path="/apps/habits" element={<Habits />} />
 
 
               {/* Legacy redirects */}
