@@ -27,7 +27,6 @@ export default function Impact() {
       bottomActions={[
         { icon: Leaf, label: "My Impact", active: tab === "mine", onClick: () => setTab("mine") },
         { icon: Users, label: "Community", active: tab === "community", onClick: () => setTab("community") },
-        { icon: Plus, label: "Log", primary: true, onClick: () => {} },
         { icon: Award, label: "Badges" },
       ]}
     >
