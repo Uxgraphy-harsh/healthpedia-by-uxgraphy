@@ -567,6 +567,13 @@ export default function Cycle() {
             )}
           </div>
         )}
+
+        {tab === "insights" && (
+          <div className="mt-2">
+            <h2 className="text-2xl font-bold text-neutral-900">Insights</h2>
+            <InsightsBody embedded />
+          </div>
+        )}
       </MiniAppShell>
     </AppLockGate>
   );
