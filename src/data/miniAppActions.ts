@@ -24,7 +24,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   prescriptions: [
     A(Pill, "All", { active: true }),
     A(User, "Doctors"),
-    A(Plus, "Add", { primary: true }),
     A(Search, "Search"),
   ],
   appointments: [
