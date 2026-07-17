@@ -35,6 +35,7 @@ export const miniApps: MiniApp[] = [
   { id: "impact",        name: "Impact",         tagline: "Environmental tracker", path: "/apps/impact",        icon: Leaf,           bg: "bg-[#2F7D5B]/12",  fg: "text-[#2F7D5B]",  category: "tracking" },
   { id: "shop",          name: "Shop",           tagline: "Period & wellness care",path: "/apps/shop",          icon: ShoppingBag,    bg: "bg-[#EF4E3B]/12",  fg: "text-[#EF4E3B]",  category: "utility" },
   { id: "budget",        name: "Expenses",  tagline: "Expenses & analytics",  path: "/apps/budget",        icon: Wallet,         bg: "bg-[#0EA5A5]/12",  fg: "text-[#0EA5A5]",  category: "utility", lockable: true },
+  { id: "habits",        name: "Habits",         tagline: "Alcohol, tobacco & more",path: "/apps/habits",       icon: Cigarette,      bg: "bg-[#7C3AED]/12",  fg: "text-[#7C3AED]",  category: "tracking", lockable: true },
 
 ];
 
