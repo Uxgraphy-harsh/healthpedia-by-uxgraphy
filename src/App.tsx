@@ -82,6 +82,7 @@ const App = () => (
               <Route path="/apps/impact" element={<Impact />} />
               <Route path="/apps/shop" element={<Shop />} />
               <Route path="/apps/budget" element={<Budget />} />
+              <Route path="/apps/habits" element={<Habits />} />
 
 
               {/* Legacy redirects */}
