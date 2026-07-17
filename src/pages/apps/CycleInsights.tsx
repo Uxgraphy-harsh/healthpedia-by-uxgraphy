@@ -168,7 +168,7 @@ export function InsightsBody({ embedded = false }: { embedded?: boolean } = {}) 
 
 
       {/* Your flow */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Your flow</p>
           <p className="mt-1 text-base" style={{ color: CTA }}>
@@ -187,7 +187,7 @@ export function InsightsBody({ embedded = false }: { embedded?: boolean } = {}) 
       </div>
 
       {/* Your last cycle */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Your last cycle</p>
           <p className="mt-1 text-xl font-semibold" style={{ color: CTA }}>{lastCycleRange}</p>
@@ -200,7 +200,7 @@ export function InsightsBody({ embedded = false }: { embedded?: boolean } = {}) 
       </div>
 
       {/* Mood */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Mood Tracker</p>
         </div>
@@ -216,7 +216,7 @@ export function InsightsBody({ embedded = false }: { embedded?: boolean } = {}) 
       </div>
 
       {/* Symptoms */}
-      <div className="px-5 mt-6">
+      <div className={`${padX} mt-6`}>
         <div className="rounded-2xl bg-neutral-50 p-5">
           <p className="text-lg font-semibold">Symptoms Tracker</p>
         </div>
@@ -241,6 +241,20 @@ export function InsightsBody({ embedded = false }: { embedded?: boolean } = {}) 
   );
 }
 
+export default function CycleInsights() {
+  const navigate = useNavigate();
+  return (
+    <div className="mobile-container min-h-[100dvh] bg-white pb-28">
+      <div className="px-5 pt-6 pb-4 flex items-center">
+        <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center -ml-2">
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+      </div>
+      <InsightsBody />
+    </div>
+  );
+}
+
 function Row({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3">
@@ -250,3 +264,4 @@ function Row({ icon, label, value }: { icon: React.ReactNode; label: string; val
     </div>
   );
 }
+
