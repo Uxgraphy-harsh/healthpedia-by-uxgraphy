@@ -19,7 +19,6 @@ export const defaultBottomActions: Record<string, MiniAppAction[]> = {
   ],
   vault: [
     A(FolderOpen, "Files", { active: true }),
-    A(Plus, "New", { primary: true }),
     A(Search, "Search"),
   ],
   prescriptions: [
